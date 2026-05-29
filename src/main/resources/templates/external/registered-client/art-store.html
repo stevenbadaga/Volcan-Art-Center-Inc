@@ -7,13 +7,12 @@
 </head>
 
 <body>
-<main layout:fragment="content">
+<main layout:fragment="content" class="vac-shop-market">
 
     <section class="hero-golden hero-golden--compact hero-golden--art hero-golden--fitted hero-golden--frame-fill hero-golden--portrait-source vac-cinematic-hero reveal">
         <div class="hero-golden__bg vac-cinematic-hero__bg">
-            <img class="hero-slide-backdrop" src="/uploads/art-gallery-interior.jpeg" alt="" aria-hidden="true"
-                 onerror="this.onerror=null;this.src='/uploads/arthomepage.jpeg';" />
-            <img class="hero-slide active vac-cinematic-hero__img" src="/uploads/art-gallery-interior.jpeg" alt="Premium Rwandan art gallery"
+            <img class="hero-slide-backdrop" src="/uploads/art-hero-premium.png" alt="" aria-hidden="true" />
+            <img class="hero-slide active vac-cinematic-hero__img" src="/uploads/art-hero-premium.png" alt="Contemporary Rwandan art"
                  onerror="this.onerror=null;this.src='/uploads/arthomepage.jpeg';" />
             <div class="hero-golden__veil vac-cinematic-hero__veil vac-cinematic-hero__veil--light"></div>
         </div>
@@ -52,18 +51,25 @@
         <div class="container">
             <div class="vac-market-head">
                 <div>
-                    <p class="vac-eyebrow">Original Artworks</p>
-                    <h2 class="vac-market-title">Collect from Rwanda.</h2>
+                    <p class="vac-eyebrow">International Art Market</p>
+                    <h2 class="vac-market-title">Discover thousands of original works.</h2>
                 </div>
                 <p class="vac-lead">
-                    Built for thousands of pieces — search, filter by category and price, and browse page by page.
-                    <strong th:if="${productsPage != null}" th:text="${productsPage.totalElements} + ' artworks'">0 artworks</strong>
+                    Browse museum-quality Rwandan art, craft, and cultural pieces — filter by category, artist, and price like a global collector's marketplace.
+                    <strong th:if="${productsPage != null}" th:text="${productsPage.totalElements} + ' listings'">0 listings</strong>
                 </p>
+            </div>
+
+            <div class="vac-market-trust reveal">
+                <div class="vac-market-trust__item"><strong>5,000+ artworks</strong><span>Curated Rwandan &amp; East African collections</span></div>
+                <div class="vac-market-trust__item"><strong>Ship worldwide</strong><span>Secure packaging &amp; tracked delivery</span></div>
+                <div class="vac-market-trust__item"><strong>Artist direct</strong><span>Authentic provenance from Musanze makers</span></div>
+                <div class="vac-market-trust__item"><strong>Secure checkout</strong><span>Stripe, MoMo &amp; inquiry options</span></div>
             </div>
 
             <div class="vac-market-layout">
                 <aside class="vac-filter-panel reveal">
-                    <h3 class="vac-filter-panel__title">Filter By</h3>
+                    <h3 class="vac-filter-panel__title">Refine your search</h3>
                     <a th:href="@{/art-store}" class="vac-filter-panel__clear">Clear all</a>
 
                     <form method="get" th:action="@{/art-store}" class="vac-catalog-filters">

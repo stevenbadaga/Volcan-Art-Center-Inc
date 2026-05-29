@@ -223,7 +223,8 @@ public class ContentManagerService {
     }
     public BlogPost createBlogPost(String title, String slug, String excerpt, String content,
                                    BlogPost.BlogCategory category, Boolean published, String featuredImageUrl,
-                                   Long coverMediaId, Boolean highlighted, String metaTitle, String metaDescription) {
+                                   Long coverMediaId, Boolean highlighted, String metaTitle, String metaDescription,
+                                   List<String> additionalImageUrls) {
         if (title == null || title.isBlank()) {
             throw new IllegalArgumentException("Blog title is required");
         }
@@ -249,11 +250,14 @@ public class ContentManagerService {
                 .published(publish)
                 .publishedAt(publish ? java.time.LocalDateTime.now() : null)
                 .build();
+        if (additionalImageUrls != null && !additionalImageUrls.isEmpty()) {
+            post.setAdditionalImages(new ArrayList<>(additionalImageUrls));
+        }
         return blogPostRepository.save(post);
     }
     public BlogPost updateBlogPost(Long id, String title, String excerpt, String content, BlogPost.BlogCategory category, Boolean published,
                                    Long coverMediaId, Boolean highlighted, String featuredImageUrl,
-                                   String metaTitle, String metaDescription) {
+                                   String metaTitle, String metaDescription, List<String> additionalImageUrls) {
         if (title == null || title.isBlank()) {
             throw new IllegalArgumentException("Blog title is required");
         }
@@ -270,6 +274,9 @@ public class ContentManagerService {
         post.setHighlighted(Boolean.TRUE.equals(highlighted));
         post.setMetaTitle(metaTitle);
         post.setMetaDescription(metaDescription);
+        if (additionalImageUrls != null) {
+            post.setAdditionalImages(new ArrayList<>(additionalImageUrls));
+        }
         return blogPostRepository.save(post);
     }
     public void deleteBlogPost(Long id) { superAdminService.deleteBlogPost(id); }

@@ -119,6 +119,15 @@ platform:
     secret: ${HCAPTCHA_SECRET:}
   storage:
     local-upload-dir: ${LOCAL_UPLOAD_DIR:${user.home}/.volcano-platform/uploads}
+  site:
+    whatsapp-number: ${SITE_WHATSAPP_NUMBER:}
+    site-url: ${SITE_URL:https://volcanoartscenter.rw}
+    inquiry-message: ${SITE_INQUIRY_MESSAGE:Hello Volcano Arts Center! I would like to inquire about your artworks, experiences, and cultural collections.}
+    social:
+      youtube: ${SITE_SOCIAL_YOUTUBE:}
+      twitter: ${SITE_SOCIAL_TWITTER:}
+      instagram: ${SITE_SOCIAL_INSTAGRAM:}
+      facebook: ${SITE_SOCIAL_FACEBOOK:}
     s3:
       enabled: false
       bucket: ${S3_BUCKET:}

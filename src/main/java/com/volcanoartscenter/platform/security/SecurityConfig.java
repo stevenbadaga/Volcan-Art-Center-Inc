@@ -1,6 +1,7 @@
 package com.volcanoartscenter.platform.security;
 
 import com.volcanoartscenter.platform.security.oauth.GoogleOAuth2UserService;
+import com.volcanoartscenter.platform.web.external.account.TwoFactorLoginController;
 import com.volcanoartscenter.platform.shared.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.ObjectProvider;
@@ -24,6 +25,7 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
@@ -59,7 +61,8 @@ public class SecurityConfig {
     @Order(2)
     public SecurityFilterChain webFilterChain(HttpSecurity http,
                                               ObjectProvider<ClientRegistrationRepository> clientRegistrationRepository,
-                                              GoogleOAuth2UserService googleOAuth2UserService) throws Exception {
+                                              GoogleOAuth2UserService googleOAuth2UserService,
+                                              AuthenticationSuccessHandler roleBasedSuccessHandler) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
                 // Public pages — accessible by everyone (guest browsing + cart pre-checkout)
@@ -69,7 +72,7 @@ public class SecurityConfig {
                     "/conservation/**", "/conservation",
                     "/talent/**",
                     "/blog/**", "/contact",
-                    "/register",
+                    "/register", "/forgot-password", "/login/verify-2fa",
                     "/oauth2/**", "/login/oauth2/**",
                     "/tour-operators/request", "/tour-operators/register",
                     "/talent/register",
@@ -101,7 +104,7 @@ public class SecurityConfig {
             )
             .formLogin(form -> form
                 .loginPage("/login")
-                .successHandler(roleBasedSuccessHandler())
+                .successHandler(roleBasedSuccessHandler)
                 .usernameParameter("username")
                 .permitAll()
             );
@@ -111,7 +114,7 @@ public class SecurityConfig {
             http.oauth2Login(oauth -> oauth
                     .loginPage("/login")
                     .userInfoEndpoint(userInfo -> userInfo.userService(googleOAuth2UserService))
-                    .successHandler(roleBasedSuccessHandler()));
+                    .successHandler(roleBasedSuccessHandler));
         }
 
         http
@@ -177,8 +180,32 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationSuccessHandler roleBasedSuccessHandler() {
+    public AuthenticationSuccessHandler roleBasedSuccessHandler(UserRepository userRepository) {
         return (request, response, authentication) -> {
+            var userOpt = userRepository.findByEmail(authentication.getName());
+            if (userOpt.isPresent() && Boolean.TRUE.equals(userOpt.get().getTwoFactorEnabled())
+                    && userOpt.get().getTotpSecret() != null) {
+                HttpSession session = request.getSession(true);
+                session.setAttribute(TwoFactorLoginController.SESSION_PENDING_EMAIL, authentication.getName());
+                String redirect = request.getParameter("redirect");
+                if (isSafeRedirect(redirect)) {
+                    session.setAttribute(TwoFactorLoginController.SESSION_PENDING_REDIRECT, redirect);
+                } else {
+                    HttpSession existing = request.getSession(false);
+                    if (existing != null) {
+                        Object sessionRedirect = existing.getAttribute("postLoginRedirect");
+                        if (sessionRedirect instanceof String value && isSafeRedirect(value)) {
+                            session.setAttribute(TwoFactorLoginController.SESSION_PENDING_REDIRECT, value);
+                        }
+                        existing.removeAttribute("postLoginRedirect");
+                    }
+                }
+                SecurityContextHolder.clearContext();
+                session.removeAttribute(org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
+                response.sendRedirect("/login/verify-2fa");
+                return;
+            }
+
             boolean isSuperAdmin = authentication.getAuthorities().stream().anyMatch(a -> "ROLE_SUPER_ADMIN".equals(a.getAuthority()));
             boolean isContentManager = authentication.getAuthorities().stream().anyMatch(a -> "ROLE_CONTENT_MANAGER".equals(a.getAuthority()));
             boolean isOpsManager = authentication.getAuthorities().stream().anyMatch(a -> "ROLE_OPS_MANAGER".equals(a.getAuthority()));

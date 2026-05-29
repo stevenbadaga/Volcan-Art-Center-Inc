@@ -31,12 +31,15 @@
         <div class="container vac-product-detail-grid">
 
             <div class="vac-product-gallery">
-                <img th:src="${product.displayPrimaryImageUrl != null ? product.displayPrimaryImageUrl : '/uploads/arthomepage.jpeg'}"
+                <img id="vac-pd-main"
+                     th:src="${product.displayPrimaryImageUrl != null ? product.displayPrimaryImageUrl : '/uploads/arthomepage.jpeg'}"
                      th:alt="${product.name}"
                      loading="eager"
                      onerror="this.onerror=null;this.src='/uploads/art-layered-sculpture.jpeg';" />
                 <div th:if="${!#lists.isEmpty(product.additionalImages)}" class="vac-product-gallery__thumbs">
-                    <button type="button" class="vac-product-gallery__thumb" th:each="imageUrl : ${product.additionalImages}">
+                    <button type="button" class="vac-product-gallery__thumb" th:each="imageUrl : ${product.additionalImages}"
+                            th:attr="data-full=${imageUrl}"
+                            onclick="var m=document.getElementById('vac-pd-main'); if(m){m.src=this.getAttribute('data-full');} document.querySelectorAll('.vac-product-gallery__thumb').forEach(function(t){t.classList.remove('is-active');}); this.classList.add('is-active');">
                         <img th:src="${imageUrl}" alt="Additional artwork image" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentElement.remove();" />
                     </button>
                 </div>
@@ -45,6 +48,14 @@
             <div class="vac-product-panel">
                 <span class="vac-eyebrow" th:text="${product.inventoryType}">UNIQUE</span>
                 <h2 class="vac-heading-lg" th:text="${product.name}">Product Name</h2>
+
+                <div th:if="${reviewCount > 0}" class="vac-pd-rating">
+                    <span class="vac-stars" th:with="r=${T(java.lang.Math).round(averageRating)}">
+                        <span th:each="i : ${#numbers.sequence(1,5)}" th:classappend="${i <= r} ? ' is-on'">&#9733;</span>
+                    </span>
+                    <strong th:text="${#numbers.formatDecimal(averageRating,1,1)}">4.8</strong>
+                    <span th:text="'(' + ${reviewCount} + ' reviews)'">(12 reviews)</span>
+                </div>
 
                 <p th:if="${product.shortDescription != null}" class="vac-lead" th:text="${product.shortDescription}">Short description</p>
                 <p class="vac-product-description" th:text="${product.description}">Description</p>
@@ -200,8 +211,10 @@
                                     <p th:text="${review.reviewerCountry != null ? review.reviewerCountry : 'Verified buyer'}">Verified buyer</p>
                                 </div>
                                 <div class="vac-review-card__meta">
-                                    <span class="vac-exp-stars" th:text="${review.rating} + ' / 5'">5 / 5</span>
-                                    <time th:text="${#temporals.format(review.createdAt, 'yyyy-MM-dd')}">Date</time>
+                                    <span class="vac-stars" th:with="r=${review.rating}">
+                                        <span th:each="i : ${#numbers.sequence(1,5)}" th:classappend="${i <= r} ? ' is-on'">&#9733;</span>
+                                    </span>
+                                    <time th:text="${#temporals.format(review.createdAt, 'd MMM yyyy')}">Date</time>
                                 </div>
                             </div>
                             <p th:text="${review.comment}">Review comment</p>
@@ -240,6 +253,53 @@
                         <p th:if="${!isAuthenticated}" class="vac-muted-note">Sign in as a registered client to submit verified reviews for delivered orders.</p>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <ul class="vac-pd-assurance">
+                <li>
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+                    <div><strong>Certificate of authenticity</strong><span>Every piece is verified and signed by the artist.</span></div>
+                </li>
+                <li>
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                    <div><strong>Worldwide shipping</strong><span>Insured, hand-packed delivery coordinated by our team.</span></div>
+                </li>
+                <li>
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    <div><strong>Secure checkout</strong><span>Card &amp; mobile money, protected end-to-end.</span></div>
+                </li>
+                <li>
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                    <div><strong>Curator support</strong><span>Questions answered within 24 hours.</span></div>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Related artworks -->
+    <section class="vac-section vac-section--ivory" th:if="${!#lists.isEmpty(relatedProducts)}">
+        <div class="container">
+            <div class="vac-section-head">
+                <div>
+                    <p class="vac-eyebrow">You may also love</p>
+                    <h2 class="vac-heading-lg">More from the collection</h2>
+                </div>
+                <a th:href="@{/art-store}" class="btn btn--outline">Browse the gallery</a>
+            </div>
+            <div class="vac-xp-related-grid">
+                <a th:each="rel : ${relatedProducts}" th:href="@{/art-store/{slug}(slug=${rel.slug})}" class="vac-xp-related-card vac-clickable-card">
+                    <div class="vac-xp-related-card__media">
+                        <img th:src="${rel.displayPrimaryImageUrl != null ? rel.displayPrimaryImageUrl : '/uploads/arthomepage.jpeg'}" th:alt="${rel.name}" loading="lazy" onerror="this.onerror=null;this.src='/uploads/art-gallery-interior.jpeg';" />
+                        <span th:if="${rel.category != null}" th:text="${rel.category.name}">Category</span>
+                    </div>
+                    <div class="vac-xp-related-card__body">
+                        <h3 th:text="${rel.name}">Artwork</h3>
+                        <p th:if="${rel.artistName != null}" th:text="'by ' + ${rel.artistName}">by Artist</p>
+                        <strong>$<span th:text="${#numbers.formatDecimal(rel.price,1,'COMMA',2,'POINT')}">0</span></strong>
+                    </div>
+                </a>
             </div>
         </div>
     </section>

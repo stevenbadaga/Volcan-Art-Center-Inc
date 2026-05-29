@@ -38,6 +38,14 @@ public class User {
     @Column(name = "profile_image_url")
     private String profileImageUrl;
 
+    /** Base32 TOTP secret for authenticator apps (Google Authenticator, Authy). */
+    @Column(name = "totp_secret", length = 128)
+    private String totpSecret;
+
+    @Column(name = "two_factor_enabled", nullable = false)
+    @Builder.Default
+    private Boolean twoFactorEnabled = false;
+
     @Column(nullable = false)
     @Builder.Default
     private Boolean enabled = true;

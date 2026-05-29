@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head><title>Verify 2FA — Volcano Arts Center</title></head>
+<body>
+<main layout:fragment="content" class="vac-forgot">
+    <section class="vac-forgot-shell">
+        <div class="vac-forgot-card reveal">
+            <span class="vac-eyebrow">Two-factor verification</span>
+            <h1>Enter your code</h1>
+            <p>Open your authenticator app and enter the 6-digit code for Volcano Arts Center.</p>
+
+            <div th:if="${errorMessage}" class="vac-xp-alert vac-xp-alert--err" th:text="${errorMessage}"></div>
+
+            <form th:action="@{/login/verify-2fa}" method="post" class="vac-forgot-form">
+                <div class="form-group">
+                    <label class="form-label">Authenticator code</label>
+                    <input class="form-input" name="code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="000000" required autofocus />
+                </div>
+                <button class="btn btn--primary" type="submit">Verify and continue</button>
+            </form>
+
+            <p class="vac-forgot-back"><a th:href="@{/login}">← Back to sign in</a></p>
+        </div>
+    </section>
+</main>
+</body>
+</html>

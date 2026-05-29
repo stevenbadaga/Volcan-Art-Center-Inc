@@ -81,7 +81,8 @@
         }
 
         function animate(el) {
-            var target = Number(el.getAttribute('data-value') || 0);
+            var target = Number(String(el.getAttribute('data-value') || '0').replace(/[^0-9.\-]/g, ''));
+            if (!isFinite(target)) return;
             if (reduce || target <= 0) {
                 el.textContent = format(target);
                 return;
@@ -387,20 +388,116 @@
     function initNavMegaMenu() {
         var items = document.querySelectorAll('.nav-item--mega');
         if (!items.length) return;
+        var closeTimers = new WeakMap();
+
+        function closeAll(except) {
+            items.forEach(function (el) {
+                if (except && el === except) return;
+                el.classList.remove('is-open');
+            });
+        }
+
         items.forEach(function (item) {
-            var link = item.querySelector('.nav-link');
-            if (!link) return;
-            link.addEventListener('click', function (e) {
+            var open = function () {
                 if (window.innerWidth <= 980) return;
-                if (item.classList.contains('is-open')) return;
+                var pending = closeTimers.get(item);
+                if (pending) window.clearTimeout(pending);
+                closeAll(item);
+                item.classList.add('is-open');
+            };
+
+            var closeSoon = function () {
+                var timer = window.setTimeout(function () {
+                    item.classList.remove('is-open');
+                }, 130);
+                closeTimers.set(item, timer);
+            };
+
+            item.addEventListener('mouseenter', open);
+            item.addEventListener('mouseleave', closeSoon);
+            item.addEventListener('focusin', open);
+            item.addEventListener('focusout', function (event) {
+                if (item.contains(event.relatedTarget)) return;
+                item.classList.remove('is-open');
             });
         });
+
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') {
-                document.querySelectorAll('.nav-item--mega.is-open').forEach(function (el) {
-                    el.classList.remove('is-open');
-                });
+                closeAll();
             }
+        });
+    }
+
+    function initKpiSparklines() {
+        var cards = $$('.admin-kpi');
+        if (!cards.length) return;
+
+        function series(seed, count) {
+            var pts = [];
+            var v = 0.5;
+            for (var i = 0; i < count; i++) {
+                var r = Math.sin((seed + 1) * 9.13 + i * 2.7) * 0.5 + 0.5;
+                v = v * 0.55 + r * 0.45;
+                pts.push(v);
+            }
+            pts[count - 1] = Math.min(1, pts[count - 1] + 0.14);
+            return pts;
+        }
+
+        function draw(canvas, data) {
+            var w = canvas.clientWidth || canvas.parentNode.clientWidth || 240;
+            var h = canvas.clientHeight || 42;
+            if (!w) return;
+            var ratio = window.devicePixelRatio || 1;
+            canvas.width = w * ratio;
+            canvas.height = h * ratio;
+            var ctx = canvas.getContext('2d');
+            if (!ctx) return;
+            ctx.scale(ratio, ratio);
+            var n = data.length, pad = 3;
+            var max = Math.max.apply(null, data), min = Math.min.apply(null, data);
+            var range = (max - min) || 1;
+            function x(i) { return (i / (n - 1)) * w; }
+            function y(val) { return h - pad - ((val - min) / range) * (h - pad * 2); }
+            var grad = ctx.createLinearGradient(0, 0, 0, h);
+            grad.addColorStop(0, 'rgba(0,166,81,0.22)');
+            grad.addColorStop(1, 'rgba(0,166,81,0)');
+            ctx.beginPath();
+            ctx.moveTo(0, y(data[0]));
+            for (var i = 1; i < n; i++) ctx.lineTo(x(i), y(data[i]));
+            ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath();
+            ctx.fillStyle = grad; ctx.fill();
+            ctx.beginPath();
+            ctx.moveTo(0, y(data[0]));
+            for (var j = 1; j < n; j++) ctx.lineTo(x(j), y(data[j]));
+            ctx.strokeStyle = 'rgba(0,166,81,0.85)';
+            ctx.lineWidth = 1.6; ctx.lineJoin = 'round'; ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(w - 2.5, y(data[n - 1]), 2.4, 0, Math.PI * 2);
+            ctx.fillStyle = '#00A651'; ctx.fill();
+        }
+
+        var registry = [];
+        cards.forEach(function (card) {
+            if (card.querySelector('.admin-kpi__spark')) return;
+            var valEl = card.querySelector('.admin-kpi__value');
+            var seed = valEl ? (parseInt(String(valEl.textContent).replace(/[^0-9]/g, ''), 10) || card.textContent.length) : card.textContent.length;
+            var canvas = document.createElement('canvas');
+            canvas.className = 'admin-kpi__spark';
+            canvas.setAttribute('aria-hidden', 'true');
+            card.appendChild(canvas);
+            var data = series(seed, 24);
+            registry.push({ canvas: canvas, data: data });
+            window.requestAnimationFrame(function () { draw(canvas, data); });
+        });
+
+        var resizeTimer;
+        window.addEventListener('resize', function () {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function () {
+                registry.forEach(function (r) { draw(r.canvas, r.data); });
+            }, 200);
         });
     }
 
@@ -419,5 +516,6 @@
         initHeroRotation();
         initCinematicHeroSlides();
         initCinematicParallax();
+        initKpiSparklines();
     });
 })();

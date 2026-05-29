@@ -18,6 +18,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -95,10 +97,21 @@ public class RegisteredClientController {
         boolean reservedByMe = isUnique && remainingSeconds != null && !reservedByOther;
         Integer remainingMinutes = remainingSeconds == null ? null : (int) Math.max(1, (remainingSeconds + 59) / 60);
 
+        var productReviews = registeredClientService.productReviews(product.getId());
+        double averageRating = productReviews.stream()
+                .filter(r -> r.getRating() != null)
+                .mapToInt(Review::getRating)
+                .average().orElse(0d);
+
         model.addAttribute("currentPage", "art-store");
         model.addAttribute("pageTitle", product.getName() + " — Volcano Arts Center");
         model.addAttribute("product", product);
-        model.addAttribute("reviews", registeredClientService.productReviews(product.getId()));
+        model.addAttribute("reviews", productReviews);
+        model.addAttribute("reviewCount", productReviews.size());
+        model.addAttribute("averageRating", averageRating);
+        model.addAttribute("relatedProducts", registeredClientService.listProducts(null, null, null, null).stream()
+                .filter(p -> !p.getId().equals(product.getId()))
+                .limit(4).toList());
         model.addAttribute("isAuthenticated", isAuthenticated);
         model.addAttribute("isSold", isSold);
         model.addAttribute("isUnique", isUnique);
@@ -233,10 +246,23 @@ public class RegisteredClientController {
 
         User user = currentUser(authentication).orElse(null);
         boolean isAuthenticated = isAuthenticated(authentication);
+        var reviews = registeredClientService.experienceReviews(experience.getId());
+        double averageRating = reviews.stream()
+                .filter(r -> r.getRating() != null)
+                .mapToInt(Review::getRating)
+                .average().orElse(0d);
+
         model.addAttribute("currentPage", "experiences");
         model.addAttribute("pageTitle", experience.getTitle() + " — Volcano Arts Center");
         model.addAttribute("experience", experience);
-        model.addAttribute("reviews", registeredClientService.experienceReviews(experience.getId()));
+        model.addAttribute("reviews", reviews);
+        model.addAttribute("reviewCount", reviews.size());
+        model.addAttribute("averageRating", averageRating);
+        model.addAttribute("includedItems", splitToList(experience.getWhatsIncluded()));
+        model.addAttribute("bringItems", splitToList(experience.getWhatToBring()));
+        model.addAttribute("relatedExperiences", registeredClientService.activeExperiences().stream()
+                .filter(e -> !e.getId().equals(experience.getId()))
+                .limit(3).toList());
         model.addAttribute("availabilitySlots", registeredClientService.upcomingSlots(experience.getId()));
         model.addAttribute("isAuthenticated", isAuthenticated);
         model.addAttribute("canSubmitReview", registeredClientService.canSubmitExperienceReview(experience, user));
@@ -244,6 +270,39 @@ public class RegisteredClientController {
         model.addAttribute("reviewerDisplayName", user != null ? user.getFullName() : null);
         model.addAttribute("reviewerDisplayEmail", user != null ? user.getEmail() : null);
         return "external/registered-client/experience-detail";
+    }
+
+    @GetMapping("/forgot-password")
+    public String forgotPassword(Model model) {
+        model.addAttribute("currentPage", "login");
+        model.addAttribute("pageTitle", "Reset Password — Volcano Arts Center");
+        return "external/guest/forgot-password";
+    }
+
+    @PostMapping("/forgot-password")
+    public String submitForgotPassword(@RequestParam String email,
+                                       @RequestParam(required = false) String captchaToken,
+                                       RedirectAttributes redirectAttributes) {
+        // Log a support-actionable request without revealing whether the account exists.
+        if (email != null && !email.isBlank()) {
+            registeredClientService.createContactInquiry(
+                    email.trim(), email.trim(), null, "password-reset",
+                    "Password reset requested from the sign-in page. Please verify the account and help this user reset their password.");
+        }
+        redirectAttributes.addFlashAttribute("successMessage",
+                "If an account exists for that email, our team will send reset instructions shortly.");
+        return "redirect:/forgot-password";
+    }
+
+    /** Splits an admin-entered block (newlines, commas or semicolons) into clean list items. */
+    private List<String> splitToList(String text) {
+        if (text == null || text.isBlank()) {
+            return List.of();
+        }
+        return Arrays.stream(text.split("\\r?\\n|;|,"))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .toList();
     }
 
     @PostMapping("/experiences/{slug}/book")

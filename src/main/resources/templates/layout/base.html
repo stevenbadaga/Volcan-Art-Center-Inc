@@ -258,53 +258,22 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                 </a>
 
-                <div th:if="${navContext.authenticated}" class="bell" id="bell">
-                    <button type="button" id="bell-trigger" class="nav-icon nav-icon-btn bell__btn" aria-label="Notifications" aria-expanded="false">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                        </svg>
-                        <span id="bell-dot" class="nav-badge nav-badge--count"
-                              th:if="${notificationSummary != null and notificationSummary.unread > 0}"
-                              th:text="${notificationSummary.unread > 9 ? '9+' : notificationSummary.unread}"></span>
-                    </button>
-                    <div id="bell-dropdown" class="bell__panel" hidden>
-                        <div class="bell__panel-head">
-                            <span class="bell__panel-title">Notifications <span id="bell-unread-count" style="color:var(--ash); font-weight:400;"
-                                th:if="${notificationSummary != null and notificationSummary.unread > 0}"
-                                th:text="'(' + ${notificationSummary.unread} + ' new)'"></span></span>
-                            <button type="button" class="bell__mark-all" id="bell-mark-all">Mark all read</button>
-                        </div>
-                        <div class="bell__filters" id="bell-filters">
-                            <button type="button" class="bell__filter is-active" data-filter="all">All</button>
-                            <button type="button" class="bell__filter" data-filter="orders">Orders</button>
-                            <button type="button" class="bell__filter" data-filter="bookings">Bookings</button>
-                            <button type="button" class="bell__filter" data-filter="messages">Messages</button>
-                        </div>
-                        <div class="bell__list" id="bell-list">
-                            <div th:if="${notificationSummary == null or #lists.isEmpty(notificationSummary.recent)}" class="bell__empty">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-                                <p class="bell__empty-title">You're all caught up.</p>
-                                <p class="bell__empty-sub">New activity will show up here.</p>
-                            </div>
-                            <div th:each="n : ${notificationSummary != null ? notificationSummary.recent : {}}"
-                                 th:classappend="${n.unread} ? ' is-unread'"
-                                 th:attr="data-notif-type=${n.category != null ? #strings.toLowerCase(n.category) : 'system'}"
-                                 class="notif-item">
-                                <span class="notif-item__dot"></span>
-                                <div class="notif-item__icon notif-item__icon--system">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
-                                </div>
-                                <div class="notif-item__content">
-                                    <p class="notif-item__title" th:text="${n.title}">Title</p>
-                                    <p class="notif-item__body" th:text="${n.body}">Body</p>
-                                    <span class="notif-item__time" th:text="${n.createdAt != null ? #temporals.format(n.createdAt, 'MMM d, HH:mm') : ''}"></span>
-                                </div>
-                                <a th:href="${n.ctaUrl != null ? n.ctaUrl : '/account/notifications'}" class="bell__mark-all" style="align-self:start;">View →</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <a th:if="${navContext.authenticated}" th:href="@{/account/notifications}" class="nav-icon nav-icon-btn bell__btn" id="bell-link" aria-label="Notifications">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                    <span id="bell-dot" class="nav-badge nav-badge--count"
+                          th:if="${notificationSummary != null and notificationSummary.unread > 0}"
+                          th:text="${notificationSummary.unread > 9 ? '9+' : notificationSummary.unread}"></span>
+                </a>
+
+                <a th:if="${navContext.authenticated}" th:href="@{/account/settings}" class="nav-icon nav-icon-btn" aria-label="Account settings">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                </a>
                 <a th:if="${!navContext.authenticated}" th:href="@{/login}" class="btn-signin">Sign In</a>
 
                 <button type="button" class="nav-icon nav-icon-btn" id="cart-trigger" aria-label="Cart" data-cart-open>
@@ -333,13 +302,122 @@
         <!-- Page content injected here -->
     </main>
 
-    <!-- ── Simple Footer Bar ── -->
-    <footer class="site-footer">
-        <div class="site-footer__scroll-down">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><polyline points="6 9 12 15 18 9"/></svg>
+    <!-- ── Advanced Footer ── -->
+    <footer class="site-footer site-footer--xl">
+        <div class="site-footer__glow" aria-hidden="true"></div>
+
+        <div class="site-footer__top container">
+            <div class="site-footer__brandcol">
+                <a href="/" th:href="@{/}" class="site-footer__logo">
+                    <img th:src="@{/images/volcano-logo.png}" alt="Volcano Arts Center logo" width="52" height="52" loading="lazy" />
+                    <span>
+                        <strong>VOLCANO ARTS</strong>
+                        <small>Center Inc · Rwanda</small>
+                    </span>
+                </a>
+                <p class="site-footer__mission">
+                    Experience Rwanda through art, culture, and people. An international platform connecting
+                    collectors and travellers to authentic creativity near Volcanoes National Park.
+                </p>
+
+                <form class="site-footer__news" onsubmit="event.preventDefault();" aria-label="Newsletter signup">
+                    <label for="footer-news-email">Join our journal</label>
+                    <div class="site-footer__news-row">
+                        <input type="email" id="footer-news-email" name="email" placeholder="Your email address" required maxlength="120" />
+                        <button type="submit">
+                            Subscribe
+                            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                        </button>
+                    </div>
+                    <span class="site-footer__news-hint">Stories, new arrivals &amp; conservation updates. No spam.</span>
+                </form>
+
+                <div class="site-footer__social" aria-label="Social links">
+                    <a th:if="${siteContact.hasInstagram}" th:href="${siteContact.instagramUrl}" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+                    </a>
+                    <a th:href="${siteContact.facebookUrl}" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                    </a>
+                    <a th:if="${siteContact.hasYoutube}" th:href="${siteContact.youtubeUrl}" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 8.5a3 3 0 0 0-2-2C18 6 12 6 12 6s-6 0-8 .5a3 3 0 0 0-2 2A31 31 0 0 0 1.5 12 31 31 0 0 0 2 15.5a3 3 0 0 0 2 2C6 18 12 18 12 18s6 0 8-.5a3 3 0 0 0 2-2 31 31 0 0 0 .5-3.5 31 31 0 0 0-.5-3.5z"/><path d="M10 15l5-3-5-3z" fill="currentColor" stroke="none"/></svg>
+                    </a>
+                    <a th:href="${siteContact.twitterUrl}" target="_blank" rel="noopener noreferrer" aria-label="X">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" stroke="none"><path d="M18.244 2H21.5l-7.5 8.57L23 22h-6.844l-5.36-6.99L4.66 22H1.4l8.02-9.17L1 2h7.02l4.84 6.39zm-1.2 18h1.9L7.04 4H5.01z"/></svg>
+                    </a>
+                    <a th:if="${siteContact.hasWhatsapp}" th:href="${siteContact.whatsappUrl}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" stroke="none"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="site-footer__links">
+                <div class="site-footer__col">
+                    <h4>Explore</h4>
+                    <a th:href="@{/art-store}">Art Store</a>
+                    <a th:href="@{/experiences}">Experiences</a>
+                    <a th:href="@{/conservation}">Conservation</a>
+                    <a th:href="@{/talent}">Talent &amp; Media</a>
+                    <a th:href="@{/blog}">Blog &amp; Stories</a>
+                </div>
+                <div class="site-footer__col">
+                    <h4>Visit Rwanda</h4>
+                    <a th:href="@{/experiences(category='CULTURAL')}">Cultural Tours</a>
+                    <a th:href="@{/experiences(category='CONSERVATION')}">Gorilla &amp; Wildlife</a>
+                    <a th:href="@{/experiences(category='VILLAGE')}">Village Life</a>
+                    <a th:href="@{/experiences(category='CUSTOM')}">Custom Itineraries</a>
+                    <a th:href="@{/contact}">Plan With Our Team</a>
+                </div>
+                <div class="site-footer__col">
+                    <h4>Company</h4>
+                    <a th:href="@{/about}">About Us</a>
+                    <a th:href="@{/contact}">Contact</a>
+                    <a th:href="@{/conservation}">Our Impact</a>
+                    <a th:href="@{/talent}">Join the Talent Pipeline</a>
+                    <a th:href="@{/blog}">Newsroom</a>
+                </div>
+                <div class="site-footer__col">
+                    <h4>Support</h4>
+                    <a th:href="@{/contact}">Help &amp; FAQ</a>
+                    <a th:href="@{/contact}">Shipping &amp; Returns</a>
+                    <a th:href="@{/contact}">Track an Order</a>
+                    <a th:href="@{/login}">Account &amp; Sign In</a>
+                    <a th:href="@{/contact}">Commission Art</a>
+                </div>
+                <div class="site-footer__col site-footer__col--contact">
+                    <h4>Reach Us</h4>
+                    <a href="https://maps.google.com/?q=Musanze+Rwanda" target="_blank" rel="noopener" class="site-footer__contact">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        <span>Musanze · Volcanoes National Park, Rwanda</span>
+                    </a>
+                    <a href="mailto:hello@volcanoartsandhospes.com" class="site-footer__contact">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg>
+                        <span>hello@volcanoartsandhospes.com</span>
+                    </a>
+                    <a href="tel:+250780000000" class="site-footer__contact">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2 4.2 2 2 0 0 1 4 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg>
+                        <span>+250 780 000 000</span>
+                    </a>
+                </div>
+            </div>
         </div>
+
+        <div class="site-footer__assurance container">
+            <span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> Worldwide FedEx fulfilment</span>
+            <span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> USD · EUR · RWF accepted</span>
+            <span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Secure global checkout</span>
+            <span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> English &amp; French support</span>
+        </div>
+
         <div class="site-footer__bar">
-            <p>© 2026 <a href="/" class="footer-brand">Volcano Arts Center Inc Rwanda</a> · volcanoartsandhospes.com · Built by CODAFRIQA</p>
+            <div class="container site-footer__bar-inner">
+                <p>© 2026 <a href="/" th:href="@{/}" class="footer-brand">Volcano Arts Center Inc Rwanda</a>. All rights reserved.</p>
+                <div class="site-footer__legal">
+                    <a th:href="@{/contact}">Privacy</a>
+                    <a th:href="@{/contact}">Terms</a>
+                    <span>Built by CODAFRIQA</span>
+                </div>
+            </div>
         </div>
     </footer>
 
@@ -439,8 +517,8 @@
     <!-- ── Toast stack ── -->
     <div class="toast-stack" id="toast-stack" aria-live="polite" aria-atomic="true"></div>
 
-    <!-- Mobile-only WhatsApp float (V2 spec) -->
-    <a href="https://wa.me/250788000000" class="wa-float" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+    <!-- Mobile WhatsApp float (non-home pages) -->
+    <a th:if="${siteContact.hasWhatsapp}" th:href="${siteContact.whatsappUrl}" class="wa-float" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
     </a>
 

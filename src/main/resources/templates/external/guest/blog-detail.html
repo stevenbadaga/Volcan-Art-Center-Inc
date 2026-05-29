@@ -4,66 +4,106 @@
       layout:decorate="~{layout/base}">
 <head><title>Blog Post</title></head>
 <body>
-<main layout:fragment="content">
-    <section class="hero hero--premium vac-article-hero" style="min-height:44vh;">
-        <div class="hero__bg">
-            <img th:src="${post.displayFeaturedImageUrl != null ? post.displayFeaturedImageUrl : '/uploads/conservation.png'}" alt="Blog cover" loading="eager" />
+<main layout:fragment="content" class="vac-post"
+      th:with="readMin=${post.content != null ? T(java.lang.Math).max(1, #strings.length(post.content) / 900) : 1}">
+
+    <!-- Hero -->
+    <section class="vac-post-hero reveal">
+        <img class="vac-post-hero__img"
+             th:src="${post.displayFeaturedImageUrl != null ? post.displayFeaturedImageUrl : '/uploads/conservation.png'}"
+             alt="Article cover" loading="eager" onerror="this.onerror=null;this.src='/uploads/conservation3.jpg';" />
+        <div class="vac-post-hero__veil"></div>
+        <div class="container vac-post-hero__inner">
+            <nav class="vac-xp-crumb">
+                <a th:href="@{/}">Home</a><span>/</span>
+                <a th:href="@{/blog}">Journal</a><span>/</span>
+                <span th:text="${post.category != null ? post.category.name() : 'Story'}">Story</span>
+            </nav>
+            <span class="vac-post-hero__badge" th:text="${post.category != null ? post.category.name() : 'STORY'}">STORY</span>
+            <h1 class="vac-post-hero__title" th:text="${post.title}">Post title</h1>
+            <p class="vac-post-hero__lead" th:if="${post.excerpt != null}" th:text="${post.excerpt}">Excerpt</p>
         </div>
-        <div class="hero__overlay"></div>
-        <div class="container">
-            <div class="hero__content" style="max-width:760px;">
-                <div class="breadcrumb"><a th:href="@{/}">Home</a><span class="breadcrumb__separator">/</span><a th:href="@{/blog}">Blog</a></div>
-                <span class="hero__tagline" data-hero th:text="${post.category != null ? post.category.name() : 'STORY'}">Article</span>
-                <h1 class="hero__title" data-hero style="font-size:clamp(2.2rem, 4.8vw, 3.5rem);" th:text="${post.title}">Post title</h1>
-                <p class="hero__desc" data-hero style="max-width:620px;" th:text="${post.excerpt}">Excerpt</p>
-                <div class="vac-article-meta" data-hero>
-                    <span th:if="${post.publishedAt != null}" th:text="${#temporals.format(post.publishedAt, 'MMMM d, yyyy')}">May 9, 2026</span>
-                    <span>Volcano Arts Journal</span>
+    </section>
+
+    <!-- Article -->
+    <section class="container vac-post-shell">
+        <article class="vac-post-col reveal">
+            <!-- Meta bar -->
+            <div class="vac-post-meta">
+                <span class="vac-post-meta__author">
+                    <span class="vac-post-meta__avatar" th:text="${post.authorDisplayName != null ? #strings.substring(post.authorDisplayName,0,1) : 'V'}">V</span>
+                    <span>
+                        <strong th:text="${post.authorDisplayName != null ? post.authorDisplayName : 'Volcano Arts Journal'}">Volcano Arts Journal</strong>
+                        <small th:if="${post.publishedAt != null}" th:text="${#temporals.format(post.publishedAt, 'MMMM d, yyyy')}">May 9, 2026</small>
+                    </span>
+                </span>
+                <span class="vac-post-meta__facts">
+                    <span th:text="${readMin} + ' min read'">4 min read</span>
+                    <span th:if="${post.viewCount != null}" th:text="${post.viewCount} + ' views'">0 views</span>
+                </span>
+            </div>
+
+            <!-- Body -->
+            <div class="vac-post-prose" th:text="${post.content}">Content</div>
+
+            <!-- Gallery -->
+            <div class="vac-post-gallery" th:if="${!#lists.isEmpty(post.additionalImages)}">
+                <h3 class="vac-post-gallery__title">In this story</h3>
+                <div class="vac-post-gallery__grid">
+                    <a th:each="img : ${post.additionalImages}" th:href="${img}" target="_blank" rel="noopener" class="vac-post-gallery__item">
+                        <img th:src="${img}" alt="Story image" loading="lazy" onerror="this.parentElement.style.display='none';" />
+                    </a>
                 </div>
+            </div>
+
+            <!-- Share -->
+            <div class="vac-post-share">
+                <span>Share this story</span>
+                <div class="vac-post-share__links">
+                    <a th:href="'https://wa.me/?text=' + ${post.title}" target="_blank" rel="noopener" aria-label="Share on WhatsApp">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1-.3-.1-.4-.1-.6.1l-.9 1c-.2.2-.3.2-.6.1-1.6-.8-2.6-1.4-3.7-3.2-.3-.5.3-.5.8-1.5.1-.2 0-.3 0-.5L9.4 7c-.2-.6-.5-.5-.6-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5 1.8.7 2.5.8 3.4.7.5-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.5-.3z"/></svg>
+                    </a>
+                    <a th:href="'mailto:?subject=' + ${post.title}" aria-label="Share by email">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+                    </a>
+                    <a href="#" onclick="if(navigator.clipboard){navigator.clipboard.writeText(window.location.href);this.classList.add('is-copied');}return false;" aria-label="Copy link" class="vac-post-share__copy">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="vac-post-cta">
+                <a th:href="@{/experiences}" class="btn btn--primary">Book an experience</a>
+                <a th:href="@{/art-store}" class="btn btn--outline">Shop artworks</a>
+            </div>
+        </article>
+    </section>
+
+    <!-- Continue reading -->
+    <section class="vac-section vac-section--ivory" th:if="${relatedPosts != null and !#lists.isEmpty(relatedPosts)}">
+        <div class="container">
+            <div class="vac-section-head">
+                <div>
+                    <p class="vac-eyebrow">Continue reading</p>
+                    <h2 class="vac-heading-lg">More from the journal</h2>
+                </div>
+                <a th:href="@{/blog}" class="btn btn--outline">Open journal</a>
+            </div>
+            <div class="vac-xp-related-grid">
+                <a th:each="p,iter : ${relatedPosts}" th:href="@{|/blog/${p.slug}|}" class="vac-xp-related-card vac-clickable-card">
+                    <div class="vac-xp-related-card__media">
+                        <img th:src="${p.displayFeaturedImageUrl != null ? p.displayFeaturedImageUrl : (iter.index % 3 == 0 ? '/uploads/conservation.png' : iter.index % 3 == 1 ? '/uploads/conservation2.png' : '/uploads/conservation3.jpg')}" th:alt="${p.title}" loading="lazy" />
+                        <span th:text="${p.category != null ? p.category.name() : 'STORY'}">STORY</span>
+                    </div>
+                    <div class="vac-xp-related-card__body">
+                        <h3 th:text="${p.title}">Related title</h3>
+                        <p th:if="${p.publishedAt != null}" th:text="${#temporals.format(p.publishedAt, 'MMM d, yyyy')}">May 9, 2026</p>
+                    </div>
+                </a>
             </div>
         </div>
     </section>
 
-    <section class="section vac-article-shell">
-        <div class="container">
-            <div class="vac-article-grid">
-                <article class="vac-article-body reveal">
-                    <div style="color:var(--color-gray-300); line-height:1.9; white-space:pre-line;" th:text="${post.content}">Content</div>
-                    <div class="vac-article-cta">
-                        <a th:href="@{/experiences}" class="btn btn--primary">Book an experience</a>
-                        <a th:href="@{/art-store}" class="btn btn--outline">Shop artworks</a>
-                    </div>
-                </article>
-                <aside class="vac-article-side reveal-fade">
-                    <div class="vac-article-side__card">
-                        <h3>Continue reading</h3>
-                        <div class="vac-related-list">
-                            <a th:if="${relatedPosts != null and !#lists.isEmpty(relatedPosts)}"
-                               th:each="p,iter : ${relatedPosts}" th:href="@{|/blog/${p.slug}|}" class="vac-related-item">
-                                <img th:src="${p.displayFeaturedImageUrl != null ? p.displayFeaturedImageUrl : (iter.index % 3 == 0 ? '/uploads/conservation.png' : iter.index % 3 == 1 ? '/uploads/conservation2.png' : '/uploads/conservation3.jpg')}" alt="" loading="lazy" />
-                                <div>
-                                    <p th:text="${p.title}">Related title</p>
-                                    <span th:if="${p.publishedAt != null}" th:text="${#temporals.format(p.publishedAt, 'MMM d, yyyy')}">May 9, 2026</span>
-                                </div>
-                            </a>
-                            <a th:if="${relatedPosts == null or #lists.isEmpty(relatedPosts)}" th:href="@{/blog}" class="vac-related-item">
-                                <img src="/uploads/conservation3.jpg" alt="" loading="lazy" />
-                                <div>
-                                    <p>More stories from Volcano Arts</p>
-                                    <span>Open journal</span>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="vac-article-side__card">
-                        <h3>Need help planning?</h3>
-                        <p>Our team can pair stories with real trips and art collections that match your interests.</p>
-                        <a th:href="@{/contact#live-chat}" class="btn btn--primary btn--sm">Start live messaging</a>
-                    </div>
-                </aside>
-            </div>
-        </div>
-    </section>
 </main>
 </body>
 </html>

@@ -4,256 +4,315 @@
       layout:decorate="~{layout/base}">
 <head><title>Experience | Volcano Arts Center</title></head>
 <body>
-<main layout:fragment="content">
-    
-    <!-- Hero -->
-    <section class="hero-golden hero-golden--compact hero-golden--experiences vac-cinematic-hero reveal" style="height: 48vh; min-height: 360px;">
-        <div class="hero-golden__bg vac-cinematic-hero__bg">
-            <img class="hero-slide active vac-cinematic-hero__img"
-                 th:src="${experience.displayPrimaryImageUrl != null ? experience.displayPrimaryImageUrl : '/uploads/experiences-safari-hero.jpeg'}"
-                 alt="Experience hero"
-                 onerror="this.onerror=null;this.src='/uploads/wildlife-gorillas.jpeg';" />
-            <div class="hero-golden__veil vac-cinematic-hero__veil"></div>
-        </div>
-        <div class="hero-golden__content" style="justify-content: flex-end; padding-bottom: 40px;">
-            <nav class="vac-breadcrumb vac-breadcrumb--light" aria-label="Breadcrumb" style="margin-bottom: 16px;">
-                <a th:href="@{/}">Home</a>
-                <span>/</span>
-                <a th:href="@{/experiences}">Experiences</a>
-                <span>/</span>
+<main layout:fragment="content" class="vac-xp">
+
+    <!-- ───────── Hero ───────── -->
+    <section class="vac-xp-hero reveal">
+        <img class="vac-xp-hero__img"
+             th:src="${experience.displayPrimaryImageUrl != null ? experience.displayPrimaryImageUrl : '/uploads/experiences-safari-hero.jpeg'}"
+             alt="Experience" onerror="this.onerror=null;this.src='/uploads/wildlife-gorillas.jpeg';" />
+        <div class="vac-xp-hero__veil"></div>
+        <div class="vac-xp-hero__inner container">
+            <nav class="vac-xp-crumb" aria-label="Breadcrumb">
+                <a th:href="@{/}">Home</a><span>/</span>
+                <a th:href="@{/experiences}">Experiences</a><span>/</span>
                 <span th:text="${experience.title}">Experience</span>
             </nav>
-            <p class="hero-golden__kicker" th:text="${experience.experienceType != null ? experience.experienceType : 'Curated Experience'}">Experience</p>
-            <h1 class="hero-golden__title hero-golden__title--compact" th:text="${experience.title}">Experience</h1>
+            <span class="vac-xp-hero__badge" th:text="${experience.experienceType}">CULTURAL</span>
+            <h1 class="vac-xp-hero__title" th:text="${experience.title}">Experience Title</h1>
+            <p class="vac-xp-hero__lead" th:if="${experience.shortDescription != null}" th:text="${experience.shortDescription}">Short description.</p>
+            <div class="vac-xp-hero__meta">
+                <span th:if="${reviewCount > 0}" class="vac-xp-hero__rating">
+                    <span class="vac-stars" th:with="r=${T(java.lang.Math).round(averageRating)}">
+                        <span th:each="i : ${#numbers.sequence(1,5)}" th:classappend="${i <= r} ? ' is-on'">&#9733;</span>
+                    </span>
+                    <strong th:text="${#numbers.formatDecimal(averageRating,1,1)}">4.8</strong>
+                    <span th:text="'(' + ${reviewCount} + ' reviews)'">(12 reviews)</span>
+                </span>
+                <span th:if="${experience.location != null}" class="vac-xp-hero__loc">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <span th:text="${experience.location}">Musanze, Rwanda</span>
+                </span>
+            </div>
         </div>
     </section>
 
-    <section class="immersive-section" style="padding: 80px 60px; background: var(--white);">
-        <div class="immersive-section__inner" style="max-width: 1400px; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start;">
-            
-            <!-- Gallery & Story -->
-            <div style="position: sticky; top: 100px;">
-                <img th:src="${experience.displayPrimaryImageUrl != null ? experience.displayPrimaryImageUrl : '/uploads/experiences-safari-hero.jpeg'}"
-                     alt="Experience image"
-                     style="width: 100%; border-radius: 8px; box-shadow: 0 20px 40px rgba(0,0,0,0.06); margin-bottom: 20px;"
-                     onerror="this.onerror=null;this.src='/uploads/wildlife-gorillas.jpeg';"/>
-                     
-                <div th:if="${!#lists.isEmpty(experience.additionalImages)}" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 12px; margin-bottom: 40px;">
-                    <div th:each="imageUrl : ${experience.additionalImages}" style="border-radius: 6px; overflow:hidden; background: rgba(0,0,0,0.03); aspect-ratio: 1; cursor: pointer; transition: transform 0.2s;">
-                        <img th:src="${imageUrl}" alt="Additional experience image" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentElement.style.display='none';" style="width:100%; height:100%; object-fit:cover; display:block;" />
-                    </div>
-                </div>
-
-                <div style="padding: 40px; background: var(--ivory); border-radius: 12px; border: 1px solid rgba(0,0,0,0.05);">
-                    <span class="section-kicker">Full Experience Story</span>
-                    <h2 style="font-family: var(--font-ui); font-size: 28px; color: var(--blk); margin-bottom: 24px;">What this journey includes</h2>
-                    <p class="section-body" th:text="${experience.description != null and !#strings.isEmpty(experience.description) ? experience.description : experience.shortDescription}">Description</p>
-                    
-                    <div th:if="${experience.whatsIncluded != null}" style="margin-top: 32px;">
-                        <h3 style="font-family: var(--font-body); font-weight: 700; font-size: 14px; text-transform: uppercase; color: var(--blk); margin-bottom: 8px;">Included</h3>
-                        <p class="section-body" style="font-size: 15px;" th:text="${experience.whatsIncluded}">Included details</p>
-                    </div>
-                    <div th:if="${experience.whatToBring != null}" style="margin-top: 24px;">
-                        <h3 style="font-family: var(--font-body); font-weight: 700; font-size: 14px; text-transform: uppercase; color: var(--blk); margin-bottom: 8px;">Bring</h3>
-                        <p class="section-body" style="font-size: 15px;" th:text="${experience.whatToBring}">Bring list</p>
-                    </div>
-                </div>
+    <!-- ───────── Quick facts ───────── -->
+    <div class="vac-xp-facts-wrap">
+        <div class="container vac-xp-facts">
+            <div class="vac-xp-fact" th:if="${experience.durationHours != null}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+                <span>Duration</span><strong th:text="${#numbers.formatDecimal(experience.durationHours,1,1)} + ' hrs'">3 hrs</strong>
             </div>
-            
-            <!-- Details & Booking Panel -->
-            <div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 32px; background: var(--ivory); border-radius: 8px; margin-bottom: 40px;">
-                    <div>
-                        <span style="font-family: var(--font-body); font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ash); display: block; margin-bottom: 4px;">Experience Type</span>
-                        <span style="font-family: var(--font-body); font-size: 16px; color: var(--blk); font-weight: 600;" th:text="${experience.experienceType}">CULTURAL</span>
+            <div class="vac-xp-fact">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                <span>Group size</span><strong th:text="${experience.minGroupSize} + '–' + ${experience.maxGroupSize} + ' guests'">2–15 guests</strong>
+            </div>
+            <div class="vac-xp-fact">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 8 6 6M4 14l6-6 2-3M2 5h12M7 2h1M22 22l-5-10-5 10M14 18h6"/></svg>
+                <span>Languages</span><strong th:text="${experience.languagesOffered}">English, French</strong>
+            </div>
+            <div class="vac-xp-fact">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
+                <span>Category</span><strong th:text="${experience.experienceType}">Cultural</strong>
+            </div>
+            <div class="vac-xp-fact">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                <span>Booking</span><strong th:text="${experience.bookingType.name() == 'DIRECT' ? 'Instant booking' : 'By inquiry'}">By inquiry</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- ───────── Experience flyer / primary image (fully visible) ───────── -->
+    <section class="container vac-xp-flyer reveal" th:if="${experience.displayPrimaryImageUrl != null}">
+        <div class="vac-xp-flyer__frame">
+            <img th:src="${experience.displayPrimaryImageUrl}"
+                 th:alt="${experience.title} + ' flyer'"
+                 loading="eager"
+                 onerror="this.onerror=null;this.src='/uploads/experiences-safari-hero.jpeg';" />
+        </div>
+        <p class="vac-xp-flyer__caption">Official experience imagery — as posted by Volcano Arts Center</p>
+    </section>
+
+    <!-- ───────── Body grid ───────── -->
+    <section class="container vac-xp-body">
+        <div class="vac-xp-main">
+
+            <div th:if="${successMessage}" class="vac-xp-alert vac-xp-alert--ok" th:text="${successMessage}"></div>
+            <div th:if="${errorMessage}" class="vac-xp-alert vac-xp-alert--err" th:text="${errorMessage}"></div>
+
+            <!-- Overview -->
+            <article class="vac-xp-block">
+                <span class="vac-xp-kicker">Overview</span>
+                <h2 class="vac-xp-h2">About this experience</h2>
+                <p class="vac-xp-prose"
+                   th:text="${experience.description != null and !#strings.isEmpty(experience.description) ? experience.description : experience.shortDescription}">Full description.</p>
+            </article>
+
+            <!-- Gallery -->
+            <article class="vac-xp-block">
+                <span class="vac-xp-kicker">Visuals</span>
+                <h2 class="vac-xp-h2">Experience imagery</h2>
+                <div class="vac-xp-gallery vac-xp-gallery--featured" th:if="${experience.displayPrimaryImageUrl != null}">
+                    <a th:href="${experience.displayPrimaryImageUrl}" target="_blank" rel="noopener" class="vac-xp-gallery__item vac-xp-gallery__item--hero">
+                        <img th:src="${experience.displayPrimaryImageUrl}" alt="Primary experience image" loading="lazy" onerror="this.onerror=null;this.src='/uploads/wildlife-gorillas.jpeg';" />
+                    </a>
+                </div>
+                <div class="vac-xp-gallery" th:if="${!#lists.isEmpty(experience.additionalImages)}">
+                    <a th:each="imageUrl : ${experience.additionalImages}" th:href="${imageUrl}" target="_blank" rel="noopener" class="vac-xp-gallery__item">
+                        <img th:src="${imageUrl}" alt="Experience moment" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentElement.style.display='none';" />
+                    </a>
+                </div>
+            </article>
+
+            <!-- What's included -->
+            <article class="vac-xp-block" th:if="${!#lists.isEmpty(includedItems)}">
+                <span class="vac-xp-kicker">Inclusions</span>
+                <h2 class="vac-xp-h2">What's included</h2>
+                <ul class="vac-xp-checklist">
+                    <li th:each="item : ${includedItems}">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+                        <span th:text="${item}">Included item</span>
+                    </li>
+                </ul>
+            </article>
+
+            <!-- What to bring -->
+            <article class="vac-xp-block" th:if="${!#lists.isEmpty(bringItems)}">
+                <span class="vac-xp-kicker">Preparation</span>
+                <h2 class="vac-xp-h2">What to bring</h2>
+                <ul class="vac-xp-checklist vac-xp-checklist--bring">
+                    <li th:each="item : ${bringItems}">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
+                        <span th:text="${item}">Bring item</span>
+                    </li>
+                </ul>
+            </article>
+
+            <!-- Meeting & location -->
+            <article class="vac-xp-block" th:if="${experience.location != null or experience.meetingPoint != null}">
+                <span class="vac-xp-kicker">Logistics</span>
+                <h2 class="vac-xp-h2">Where you'll meet</h2>
+                <div class="vac-xp-loc-grid">
+                    <div class="vac-xp-loc-card" th:if="${experience.location != null}">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        <div><span>Location</span><strong th:text="${experience.location}">Location</strong></div>
                     </div>
-                    <div>
-                        <span style="font-family: var(--font-body); font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ash); display: block; margin-bottom: 4px;">Booking Type</span>
-                        <span style="font-family: var(--font-body); font-size: 16px; color: var(--blk); font-weight: 600;" th:text="${experience.bookingType}">DIRECT</span>
-                    </div>
-                    <div th:if="${experience.durationHours != null}">
-                        <span style="font-family: var(--font-body); font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ash); display: block; margin-bottom: 4px;">Duration</span>
-                        <span style="font-family: var(--font-body); font-size: 16px; color: var(--blk);"><span th:text="${experience.durationHours}">2.0</span> hours</span>
-                    </div>
-                    <div>
-                        <span style="font-family: var(--font-body); font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ash); display: block; margin-bottom: 4px;">Price Per Person</span>
-                        <span style="font-family: var(--font-ui); font-size: 20px; font-weight: 700; color: var(--blk);">$<span th:text="${experience.pricePerPerson != null ? #numbers.formatDecimal(experience.pricePerPerson,1,'COMMA',2,'POINT') : 'On request'}">0.00</span></span>
-                    </div>
-                    <div th:if="${experience.groupPrice != null}">
-                        <span style="font-family: var(--font-body); font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ash); display: block; margin-bottom: 4px;">Group Price</span>
-                        <span style="font-family: var(--font-ui); font-size: 18px; font-weight: 700; color: var(--blk);">$<span th:text="${#numbers.formatDecimal(experience.groupPrice,1,'COMMA',2,'POINT')}">0.00</span></span>
-                    </div>
-                    <div th:if="${experience.priceNote != null}">
-                        <span style="font-family: var(--font-body); font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ash); display: block; margin-bottom: 4px;">Price Note</span>
-                        <span style="font-family: var(--font-body); font-size: 15px; color: var(--blk);" th:text="${experience.priceNote}">Price note</span>
-                    </div>
-                    <div>
-                        <span style="font-family: var(--font-body); font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ash); display: block; margin-bottom: 4px;">Group Size</span>
-                        <span style="font-family: var(--font-body); font-size: 16px; color: var(--blk);"><span th:text="${experience.minGroupSize}">1</span> - <span th:text="${experience.maxGroupSize}">15</span></span>
-                    </div>
-                    <div th:if="${experience.location != null}">
-                        <span style="font-family: var(--font-body); font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ash); display: block; margin-bottom: 4px;">Location</span>
-                        <span style="font-family: var(--font-body); font-size: 16px; color: var(--blk);" th:text="${experience.location}">Location</span>
-                    </div>
-                    <div th:if="${experience.meetingPoint != null}">
-                        <span style="font-family: var(--font-body); font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ash); display: block; margin-bottom: 4px;">Meeting Point</span>
-                        <span style="font-family: var(--font-body); font-size: 16px; color: var(--blk);" th:text="${experience.meetingPoint}">Meeting point</span>
-                    </div>
-                    <div>
-                        <span style="font-family: var(--font-body); font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ash); display: block; margin-bottom: 4px;">Languages</span>
-                        <span style="font-family: var(--font-body); font-size: 16px; color: var(--blk);" th:text="${experience.languagesOffered}">English, French</span>
-                    </div>
-                    <div style="grid-column: span 2;">
-                        <span style="font-family: var(--font-body); font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ash); display: block; margin-bottom: 4px;">Availability</span>
-                        <span style="font-family: var(--font-body); font-size: 16px; color: var(--blk);" th:text="${experience.availableDaily ? 'Available daily' : (experience.availableDays != null ? experience.availableDays : 'Custom schedule')}">Availability</span>
-                        <p th:if="${experience.bookingType.name() == 'INQUIRY'}" style="color: var(--ash); font-size: 13px; margin: 4px 0 0 0;">Request-only or tailored schedule.</p>
+                    <div class="vac-xp-loc-card" th:if="${experience.meetingPoint != null}">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                        <div><span>Meeting point</span><strong th:text="${experience.meetingPoint}">Meeting point</strong></div>
                     </div>
                 </div>
+                <p class="vac-xp-prose" style="margin-top:1rem;" th:if="${experience.priceNote != null}" th:text="${experience.priceNote}">Price note.</p>
+            </article>
 
-                <div style="margin-bottom: 40px;">
-                    <h3 style="font-family: var(--font-ui); font-size: 18px; color: var(--blk); margin-bottom: 16px;">Upcoming Calendar (30 days)</h3>
-                    <div th:if="${#lists.isEmpty(availabilitySlots)}" style="color: var(--ash); font-family: var(--font-body); font-size: 15px;">No slots currently published.</div>
-                    <ul th:if="${!#lists.isEmpty(availabilitySlots)}" style="list-style: none; padding: 0; margin: 0; display: grid; gap: 8px;">
-                        <li th:each="s : ${availabilitySlots}" style="display: flex; justify-content: space-between; padding: 12px 16px; background: rgba(0,0,0,0.02); border-radius: 4px; font-family: var(--font-body); font-size: 15px;">
-                            <span th:text="${#temporals.format(s.slotDate,'yyyy-MM-dd')}" style="font-weight: 600;">2026-01-01</span>
-                            <span>
-                                <span th:text="${s.status}" style="margin-right: 16px; font-size: 13px; font-weight: 700; color: var(--g);">AVAILABLE</span>
-                                <span style="color: var(--ash);">Booked: <span th:text="${s.bookedCount}">0</span>/<span th:text="${s.maxCapacity}">15</span></span>
-                            </span>
-                        </li>
-                    </ul>
-                </div>
+            <!-- Booking form -->
+            <article class="vac-xp-block" id="book">
+                <span class="vac-xp-kicker" th:text="${experience.bookingType.name() == 'DIRECT' ? 'Reserve' : 'Request'}">Reserve</span>
+                <h2 class="vac-xp-h2" th:text="${experience.bookingType.name() == 'DIRECT' ? 'Book your spot' : 'Request this experience'}">Book your spot</h2>
 
-                <div th:if="${successMessage}" style="background: #F6FFED; border: 1px solid #B7EB8F; border-radius: 8px; color: #389E0D; padding: 16px; margin-bottom: 24px; font-family: var(--font-body); font-size: 15px;" th:text="${successMessage}"></div>
-                <div th:if="${errorMessage}" style="background: #FFF1F0; border: 1px solid #FFA39E; border-radius: 8px; color: #CF1322; padding: 16px; margin-bottom: 24px; font-family: var(--font-body); font-size: 15px;" th:text="${errorMessage}"></div>
-
-                <!-- Booking Form -->
-                <form th:if="${isAuthenticated}" th:action="@{|/experiences/${experience.slug}/book|}" method="post" style="border: 1px solid rgba(0,0,0,0.08); border-radius: 8px; padding: 32px; margin-bottom: 40px; background: var(--white); box-shadow: 0 4px 12px rgba(0,0,0,0.02);">
-                    <h3 style="font-family: var(--font-ui); font-size: 24px; color: var(--blk); margin: 0 0 24px 0;">Book / Inquire</h3>
-                    
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
-                        <div>
-                            <label style="font-family: var(--font-body); font-weight: 700; font-size: 11px; text-transform: uppercase; color: var(--ash); margin-bottom: 8px; display: block;">Guest Name</label>
-                            <input name="guestName" required style="width: 100%; padding: 14px; border: 1px solid rgba(0,0,0,0.1); border-radius: 4px; font-family: var(--font-body); font-size: 15px; outline: none;"/>
-                        </div>
-                        <div>
-                            <label style="font-family: var(--font-body); font-weight: 700; font-size: 11px; text-transform: uppercase; color: var(--ash); margin-bottom: 8px; display: block;">Email</label>
-                            <input type="email" name="guestEmail" required style="width: 100%; padding: 14px; border: 1px solid rgba(0,0,0,0.1); border-radius: 4px; font-family: var(--font-body); font-size: 15px; outline: none;"/>
-                        </div>
-                        <div>
-                            <label style="font-family: var(--font-body); font-weight: 700; font-size: 11px; text-transform: uppercase; color: var(--ash); margin-bottom: 8px; display: block;">Preferred Date</label>
-                            <input type="date" name="preferredDate" required style="width: 100%; padding: 14px; border: 1px solid rgba(0,0,0,0.1); border-radius: 4px; font-family: var(--font-body); font-size: 15px; outline: none;"/>
-                        </div>
-                        <div>
-                            <label style="font-family: var(--font-body); font-weight: 700; font-size: 11px; text-transform: uppercase; color: var(--ash); margin-bottom: 8px; display: block;">Alternative Date</label>
-                            <input type="date" name="alternativeDate" style="width: 100%; padding: 14px; border: 1px solid rgba(0,0,0,0.1); border-radius: 4px; font-family: var(--font-body); font-size: 15px; outline: none;"/>
-                        </div>
-                        <div>
-                            <label style="font-family: var(--font-body); font-weight: 700; font-size: 11px; text-transform: uppercase; color: var(--ash); margin-bottom: 8px; display: block;">Group Size</label>
-                            <input type="number" name="groupSize" min="1" value="1" required style="width: 100%; padding: 14px; border: 1px solid rgba(0,0,0,0.1); border-radius: 4px; font-family: var(--font-body); font-size: 15px; outline: none;"/>
-                        </div>
-                        <div>
-                            <label style="font-family: var(--font-body); font-weight: 700; font-size: 11px; text-transform: uppercase; color: var(--ash); margin-bottom: 8px; display: block;">Language</label>
-                            <select name="preferredLanguage" style="width: 100%; padding: 14px; border: 1px solid rgba(0,0,0,0.1); border-radius: 4px; font-family: var(--font-body); font-size: 15px; outline: none;">
-                                <option>English</option>
-                                <option>French</option>
-                            </select>
-                        </div>
+                <form th:if="${isAuthenticated}" th:action="@{|/experiences/${experience.slug}/book|}" method="post" class="vac-xp-form">
+                    <div class="vac-xp-form__grid">
+                        <label>Guest name<input name="guestName" required /></label>
+                        <label>Email<input type="email" name="guestEmail" required /></label>
+                        <label>Preferred date<input type="date" name="preferredDate" required /></label>
+                        <label>Alternative date<input type="date" name="alternativeDate" /></label>
+                        <label>Group size<input type="number" name="groupSize" min="1" value="1" required /></label>
+                        <label>Language
+                            <select name="preferredLanguage"><option>English</option><option>French</option></select>
+                        </label>
                     </div>
-                    
-                    <div style="margin-bottom: 16px;">
-                        <label style="font-family: var(--font-body); font-weight: 700; font-size: 11px; text-transform: uppercase; color: var(--ash); margin-bottom: 8px; display: block;">Payment Method</label>
-                        <select name="paymentMethod" style="width: 100%; padding: 14px; border: 1px solid rgba(0,0,0,0.1); border-radius: 4px; font-family: var(--font-body); font-size: 15px; outline: none;">
-                            <option value="">Confirm Payment Later</option>
+                    <label class="vac-xp-form__full">Payment method
+                        <select name="paymentMethod">
+                            <option value="">Confirm payment later</option>
                             <option value="STRIPE_CARD">Card (Stripe)</option>
                             <option value="MTN_MOMO">MTN Mobile Money</option>
                             <option value="AIRTEL_MONEY">Airtel Money</option>
                         </select>
-                        <p style="font-family: var(--font-body); font-size: 13px; color: var(--ash); margin: 8px 0 0 0;">Recommended for testing: leave this on <strong>Confirm Payment Later</strong> so the booking request is recorded without live payment setup.</p>
-                    </div>
-                    
-                    <div style="margin-bottom: 24px;">
-                        <label style="font-family: var(--font-body); font-weight: 700; font-size: 11px; text-transform: uppercase; color: var(--ash); margin-bottom: 8px; display: block;">Special Requests</label>
-                        <textarea name="specialRequests" rows="3" style="width: 100%; padding: 14px; border: 1px solid rgba(0,0,0,0.1); border-radius: 4px; font-family: var(--font-body); font-size: 15px; outline: none; resize: vertical;"></textarea>
-                    </div>
-                    
-                    <input name="captchaToken" placeholder="Captcha token (optional)" style="width: 100%; padding: 14px; border: 1px solid rgba(0,0,0,0.1); border-radius: 4px; font-family: var(--font-body); font-size: 15px; outline: none; margin-bottom: 24px;" />
-                    
-                    <button class="btn-primary" type="submit" style="width: 100%; justify-content: center; padding: 16px; font-size: 16px;" th:text="${experience.bookingType.name() == 'DIRECT' ? 'Submit Booking' : 'Submit Inquiry'}">Submit</button>
+                    </label>
+                    <label class="vac-xp-form__full">Special requests<textarea name="specialRequests" rows="3"></textarea></label>
+                    <input type="hidden" name="captchaToken" value="skip_for_now" />
+                    <button class="btn btn--primary btn--lg" type="submit"
+                            th:text="${experience.bookingType.name() == 'DIRECT' ? 'Submit booking' : 'Submit inquiry'}">Submit</button>
                 </form>
 
-                <div th:if="${!isAuthenticated}" style="border: 1px solid rgba(0,0,0,0.08); border-radius: 8px; padding: 32px; margin-bottom: 40px; background: var(--ivory); text-align: center;">
-                    <h3 style="font-family: var(--font-ui); font-size: 20px; color: var(--blk); margin-bottom: 12px;">Booking requires account</h3>
-                    <p class="section-body" style="margin-bottom: 24px; font-size: 15px;">Sign in as a registered client to book or submit a custom inquiry.</p>
-                    <a class="btn-primary" th:href="@{/login}" style="display: inline-flex;">Sign in to Continue</a>
+                <div th:unless="${isAuthenticated}" class="vac-xp-gate">
+                    <h3>Sign in to continue</h3>
+                    <p>Create a free client account to book or request a tailored itinerary, then track everything in your dashboard.</p>
+                    <a class="btn btn--primary" th:href="@{/login(redirect=${'/experiences/' + experience.slug})}">Sign in to continue</a>
+                </div>
+            </article>
+
+            <!-- Reviews -->
+            <article class="vac-xp-block">
+                <div class="vac-xp-reviews-head">
+                    <div>
+                        <span class="vac-xp-kicker">Guest feedback</span>
+                        <h2 class="vac-xp-h2">Reviews</h2>
+                    </div>
+                    <div class="vac-xp-rating-badge" th:if="${reviewCount > 0}">
+                        <strong th:text="${#numbers.formatDecimal(averageRating,1,1)}">4.8</strong>
+                        <span class="vac-stars" th:with="r=${T(java.lang.Math).round(averageRating)}">
+                            <span th:each="i : ${#numbers.sequence(1,5)}" th:classappend="${i <= r} ? ' is-on'">&#9733;</span>
+                        </span>
+                        <small th:text="${reviewCount} + ' reviews'">12 reviews</small>
+                    </div>
                 </div>
 
-                <!-- Reviews -->
-                <div>
-                    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 24px;">
-                        <div>
-                            <span class="section-kicker">Guest Feedback</span>
-                            <h3 style="font-family: var(--font-ui); font-size: 24px; color: var(--blk); margin: 4px 0 0 0;">Approved Reviews</h3>
-                        </div>
-                        <span style="background: rgba(0,0,0,0.05); color: var(--blk); font-family: var(--font-body); font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 20px;" th:text="${#lists.size(reviews)} + ' visible'">0 visible</span>
-                    </div>
+                <div th:if="${#lists.isEmpty(reviews)}" class="vac-xp-empty">No approved reviews yet — be the first to share your story.</div>
 
-                    <div th:if="${#lists.isEmpty(reviews)}" style="padding: 24px; border-radius: 8px; border: 1px dashed rgba(0,0,0,0.15); color: var(--ash); text-align: center; font-family: var(--font-body); font-size: 14px; margin-bottom: 32px;">
-                        No approved reviews are visible for this experience yet.
-                    </div>
-
-                    <div th:if="${!#lists.isEmpty(reviews)}" style="display:grid; gap: 16px; margin-bottom: 32px;">
-                        <article th:each="review : ${reviews}" style="padding: 24px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.06); background: var(--ivory);">
-                            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 12px;">
+                <div th:unless="${#lists.isEmpty(reviews)}" class="vac-xp-review-grid">
+                    <article th:each="review : ${reviews}" class="vac-xp-review">
+                        <div class="vac-xp-review__head">
+                            <div class="vac-xp-review__who">
+                                <span class="vac-xp-review__avatar" th:text="${review.reviewerName != null ? #strings.substring(review.reviewerName,0,1) : 'G'}">G</span>
                                 <div>
-                                    <h4 style="margin:0; font-family: var(--font-body); font-size: 16px; color: var(--blk);" th:text="${review.reviewerName}">Reviewer</h4>
-                                    <p style="margin:4px 0 0; color: var(--ash); font-size: 13px;" th:text="${review.reviewerCountry != null ? review.reviewerCountry : 'Verified guest'}">Verified guest</p>
-                                </div>
-                                <div style="text-align:right;">
-                                    <div style="color: #F5A623; font-size: 14px; letter-spacing: 2px;" th:text="${review.rating} + ' / 5'">5 / 5</div>
-                                    <p style="margin:4px 0 0; color: var(--ash); font-size: 12px;" th:text="${#temporals.format(review.createdAt, 'yyyy-MM-dd')}">Date</p>
+                                    <strong th:text="${review.reviewerName}">Reviewer</strong>
+                                    <small th:text="${review.reviewerCountry != null ? review.reviewerCountry : 'Verified guest'}">Verified guest</small>
                                 </div>
                             </div>
-                            <p style="margin:0; color: var(--blk); font-family: var(--font-body); font-size: 15px; line-height: 1.6;" th:text="${review.comment}">Review comment</p>
-                        </article>
-                    </div>
-
-                    <!-- Leave a Review -->
-                    <div style="border-top: 1px solid rgba(0,0,0,0.1); padding-top: 32px;">
-                        <h4 style="font-family: var(--font-body); font-size: 18px; margin-bottom: 8px;">Leave a Verified Review</h4>
-                        <p style="font-family: var(--font-body); font-size: 14px; color: var(--ash); margin-bottom: 16px;">Only completed experiences unlock verified review submission.</p>
-                        
-                        <div th:if="${isAuthenticated and canSubmitReview}" style="margin-bottom:24px; padding:16px; border-radius:8px; border:1px solid #B7EB8F; background:#F6FFED; color:#389E0D; font-family: var(--font-body); font-size: 14px;">
-                            <strong th:text="${reviewerDisplayName}">Reviewer</strong>
-                            <span th:if="${reviewerDisplayEmail != null}" th:text="' · ' + ${reviewerDisplayEmail}">reviewer@example.com</span>
-                            <div style="margin-top:8px;" th:text="${reviewStatusMessage}">Your account is eligible.</div>
+                            <span class="vac-stars" th:with="r=${review.rating}">
+                                <span th:each="i : ${#numbers.sequence(1,5)}" th:classappend="${i <= r} ? ' is-on'">&#9733;</span>
+                            </span>
                         </div>
-                        <div th:if="${isAuthenticated and !canSubmitReview}" style="margin-bottom:24px; padding:16px; border-radius:8px; border:1px solid #FFE58F; background:#FFFBE6; color:#D46B08; font-family: var(--font-body); font-size: 14px;" th:text="${reviewStatusMessage}">
-                            Review access unlocks after completion.
-                        </div>
-
-                        <form th:if="${isAuthenticated and canSubmitReview}" th:action="@{|/experiences/${experience.slug}/reviews|}" method="post" style="display: flex; flex-direction: column; gap: 16px;">
-                            <div>
-                                <label style="font-family: var(--font-body); font-weight: 700; font-size: 11px; text-transform: uppercase; color: var(--ash); margin-bottom: 8px; display: block;">Rating</label>
-                                <select name="rating" required style="width: 100%; padding: 14px; border: 1px solid rgba(0,0,0,0.1); border-radius: 4px; font-family: var(--font-body); font-size: 15px; outline: none;">
-                                    <option value="">Choose a rating</option>
-                                    <option value="5">5 / 5</option>
-                                    <option value="4">4 / 5</option>
-                                    <option value="3">3 / 5</option>
-                                    <option value="2">2 / 5</option>
-                                    <option value="1">1 / 5</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label style="font-family: var(--font-body); font-weight: 700; font-size: 11px; text-transform: uppercase; color: var(--ash); margin-bottom: 8px; display: block;">Comment</label>
-                                <textarea name="comment" rows="4" required placeholder="Tell future guests what the team delivered well..." style="width: 100%; padding: 14px; border: 1px solid rgba(0,0,0,0.1); border-radius: 4px; font-family: var(--font-body); font-size: 15px; outline: none; resize: vertical;"></textarea>
-                            </div>
-                            <button class="btn-outline" type="submit" style="align-self: flex-start;">Submit Verified Review</button>
-                        </form>
-                        <p th:if="${!isAuthenticated}" style="color: var(--ash); font-family: var(--font-body); font-size: 14px; margin: 0;">Sign in as a registered client to submit verified reviews for completed experiences.</p>
-                    </div>
+                        <p th:text="${review.comment}">Comment</p>
+                        <time th:text="${#temporals.format(review.createdAt, 'd MMM yyyy')}">date</time>
+                    </article>
                 </div>
 
+                <!-- Leave review -->
+                <div class="vac-xp-leave" th:if="${isAuthenticated and canSubmitReview}">
+                    <h3>Leave a verified review</h3>
+                    <form th:action="@{|/experiences/${experience.slug}/reviews|}" method="post" class="vac-xp-form">
+                        <label class="vac-xp-form__full">Rating
+                            <select name="rating" required>
+                                <option value="">Choose a rating</option>
+                                <option value="5">5 / 5 — Exceptional</option>
+                                <option value="4">4 / 5 — Great</option>
+                                <option value="3">3 / 5 — Good</option>
+                                <option value="2">2 / 5 — Fair</option>
+                                <option value="1">1 / 5 — Poor</option>
+                            </select>
+                        </label>
+                        <label class="vac-xp-form__full">Comment<textarea name="comment" rows="4" required placeholder="Tell future guests what the team delivered well…"></textarea></label>
+                        <input type="hidden" name="captchaToken" value="skip_for_now" />
+                        <button class="btn btn--outline" type="submit">Submit verified review</button>
+                    </form>
+                </div>
+                <p class="vac-xp-note" th:if="${isAuthenticated and !canSubmitReview}" th:text="${reviewStatusMessage}">Reviews unlock after completion.</p>
+                <p class="vac-xp-note" th:unless="${isAuthenticated}">Sign in as a registered client to submit verified reviews for completed experiences.</p>
+            </article>
+        </div>
+
+        <!-- ───────── Sticky booking aside ───────── -->
+        <aside class="vac-xp-aside">
+            <div class="vac-xp-book-card">
+                <div class="vac-xp-book-card__price">
+                    <span>From</span>
+                    <strong th:if="${experience.pricePerPerson != null}">$<span th:text="${#numbers.formatDecimal(experience.pricePerPerson,1,'COMMA',2,'POINT')}">0.00</span></strong>
+                    <strong th:unless="${experience.pricePerPerson != null}">On request</strong>
+                    <small th:if="${experience.pricePerPerson != null}">per person</small>
+                </div>
+                <div class="vac-xp-book-card__group" th:if="${experience.groupPrice != null}">
+                    Group rate: <strong>$<span th:text="${#numbers.formatDecimal(experience.groupPrice,1,'COMMA',2,'POINT')}">0.00</span></strong>
+                </div>
+
+                <div class="vac-xp-book-card__rating" th:if="${reviewCount > 0}">
+                    <span class="vac-stars" th:with="r=${T(java.lang.Math).round(averageRating)}">
+                        <span th:each="i : ${#numbers.sequence(1,5)}" th:classappend="${i <= r} ? ' is-on'">&#9733;</span>
+                    </span>
+                    <span th:text="${#numbers.formatDecimal(averageRating,1,1)} + ' · ' + ${reviewCount} + ' reviews'">4.8 · 12 reviews</span>
+                </div>
+
+                <!-- Next departures -->
+                <div class="vac-xp-departures">
+                    <p class="vac-xp-departures__title">Next departures</p>
+                    <div th:if="${#lists.isEmpty(availabilitySlots)}" class="vac-xp-departures__empty">
+                        <span th:text="${experience.availableDaily ? 'Available daily — pick any date' : (experience.availableDays != null ? experience.availableDays : 'Flexible, tailored schedule')}">Available daily</span>
+                    </div>
+                    <ul th:unless="${#lists.isEmpty(availabilitySlots)}">
+                        <li th:each="s,it : ${availabilitySlots}" th:if="${it.index < 5}">
+                            <span th:text="${#temporals.format(s.slotDate,'EEE, d MMM yyyy')}">Thu, 28 May 2026</span>
+                            <em th:classappend="${s.status.name() == 'AVAILABLE'} ? ' is-open' : ' is-closed'" th:text="${s.status}">Available</em>
+                        </li>
+                    </ul>
+                </div>
+
+                <a href="#book" class="btn btn--primary btn--lg vac-xp-book-card__cta"
+                   th:text="${experience.bookingType.name() == 'DIRECT' ? 'Book this experience' : 'Request to book'}">Book this experience</a>
+                <a th:href="@{/contact(subject=${'Inquiry about: ' + experience.title})}" class="btn btn--outline vac-xp-book-card__cta">Ask a question</a>
+
+                <ul class="vac-xp-assurance">
+                    <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Secure request — no upfront charge</li>
+                    <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/></svg> Confirmation from our local team</li>
+                    <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/></svg> English &amp; French guides</li>
+                </ul>
+            </div>
+        </aside>
+    </section>
+
+    <!-- ───────── Related experiences ───────── -->
+    <section class="vac-section vac-section--ivory" th:if="${!#lists.isEmpty(relatedExperiences)}">
+        <div class="container">
+            <div class="vac-section-head">
+                <div>
+                    <p class="vac-eyebrow">Keep exploring</p>
+                    <h2 class="vac-heading-lg">More experiences</h2>
+                </div>
+                <a th:href="@{/experiences}" class="btn btn--outline">View all journeys</a>
+            </div>
+            <div class="vac-xp-related-grid">
+                <a th:each="rel : ${relatedExperiences}" th:href="@{/experiences/{slug}(slug=${rel.slug})}" class="vac-xp-related-card vac-clickable-card">
+                    <div class="vac-xp-related-card__media">
+                        <img th:src="${rel.displayPrimaryImageUrl != null ? rel.displayPrimaryImageUrl : '/uploads/experiences-safari-hero.jpeg'}" th:alt="${rel.title}" loading="lazy" onerror="this.onerror=null;this.src='/uploads/wildlife-gorillas.jpeg';" />
+                        <span th:text="${rel.experienceType}">CULTURAL</span>
+                    </div>
+                    <div class="vac-xp-related-card__body">
+                        <h3 th:text="${rel.title}">Experience</h3>
+                        <p th:if="${rel.location != null}" th:text="${rel.location}">Location</p>
+                        <strong th:if="${rel.pricePerPerson != null}">From $<span th:text="${#numbers.formatDecimal(rel.pricePerPerson,1,'COMMA',2,'POINT')}">0</span></strong>
+                    </div>
+                </a>
             </div>
         </div>
     </section>

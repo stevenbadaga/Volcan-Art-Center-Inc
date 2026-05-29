@@ -118,6 +118,13 @@
             <version>${owasp-html-sanitizer.version}</version>
         </dependency>
 
+        <!-- TOTP two-factor authentication -->
+        <dependency>
+            <groupId>dev.samstevens.totp</groupId>
+            <artifactId>totp</artifactId>
+            <version>1.7.1</version>
+        </dependency>
+
         <!-- PDF generation (commercial invoices, donation receipts) -->
         <dependency>
             <groupId>com.itextpdf</groupId>

@@ -37,6 +37,12 @@ public class BlogPost {
     @Column(name = "cover_media_id")
     private Long coverMediaId;
 
+    @ElementCollection
+    @CollectionTable(name = "blog_post_images", joinColumns = @JoinColumn(name = "post_id"))
+    @Column(name = "image_url")
+    @Builder.Default
+    private List<String> additionalImages = new ArrayList<>();
+
     // Categorization
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
@@ -100,12 +106,18 @@ public class BlogPost {
     }
 
     public enum BlogCategory {
-        UPDATE,          // Company updates
-        EVENT,           // Cultural events & performances
-        STORY,           // Community impact stories
-        CULTURE,         // Rwandan culture articles
-        CONSERVATION,    // Environmental initiatives
-        TESTIMONIAL      // Visitor testimonials
+        UPDATE,
+        EVENT,
+        STORY,
+        CULTURE,
+        CONSERVATION,
+        TESTIMONIAL
+    }
+
+    @Transient
+    public String getAdditionalImagesText() {
+        List<String> images = additionalImages == null ? java.util.Collections.emptyList() : additionalImages;
+        return String.join(System.lineSeparator(), images);
     }
 
     @Transient

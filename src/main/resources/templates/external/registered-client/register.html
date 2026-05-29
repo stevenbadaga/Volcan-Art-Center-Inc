@@ -22,20 +22,24 @@
         </div>
         <div class="vac-client-register__form-wrap reveal">
             <div th:if="${successMessage}" class="vac-client-register__notice" th:text="${successMessage}"></div>
+            <div class="vac-auth-formhead">
+                <h2>Create your account</h2>
+                <p>It takes less than a minute. All fields marked with an asterisk are required.</p>
+            </div>
             <form th:action="@{/register}" method="post" class="vac-client-register__form">
                 <div class="form-row">
-                    <div class="form-group"><label class="form-label">FIRST NAME</label><input class="form-input" name="firstName" required /></div>
-                    <div class="form-group"><label class="form-label">LAST NAME</label><input class="form-input" name="lastName" required /></div>
+                    <div class="form-group"><label class="form-label">First name *</label><input class="form-input" name="firstName" placeholder="e.g. Aline" required /></div>
+                    <div class="form-group"><label class="form-label">Last name *</label><input class="form-input" name="lastName" placeholder="e.g. Uwimana" required /></div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group"><label class="form-label">EMAIL</label><input class="form-input" name="email" type="email" required /></div>
-                    <div class="form-group"><label class="form-label">PHONE</label><input class="form-input" name="phone" /></div>
+                    <div class="form-group"><label class="form-label">Email address *</label><input class="form-input" name="email" type="email" placeholder="you@example.com" required /></div>
+                    <div class="form-group"><label class="form-label">Phone</label><input class="form-input" name="phone" type="tel" placeholder="+250 7xx xxx xxx" /></div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group"><label class="form-label">COUNTRY</label><input class="form-input" name="country" value="Rwanda" /></div>
-                    <div class="form-group"><label class="form-label">PASSWORD</label><input class="form-input" name="password" type="password" minlength="8" required /></div>
+                    <div class="form-group"><label class="form-label">Country</label><input class="form-input" name="country" placeholder="Rwanda" value="Rwanda" /></div>
+                    <div class="form-group"><label class="form-label">Password *</label><input class="form-input" name="password" type="password" minlength="8" placeholder="Minimum 8 characters" required /><small class="vac-field-hint">Use at least 8 characters with a mix of letters and numbers.</small></div>
                 </div>
-                <button class="btn btn--primary" type="submit">CREATE CLIENT ACCOUNT</button>
+                <button class="btn btn--primary" type="submit">Create client account</button>
             </form>
             <p class="vac-client-register__sign-in">
                 Already have an account? <a th:href="@{/login}">SIGN IN</a>

@@ -42,8 +42,11 @@
 
     <div class="admin-page-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem; margin-top:1.5rem;">
         <div class="admin-page-header__info">
-            <h1 style="font-family:var(--font-display);">Executive Summary</h1>
-            <p style="color:var(--vac-muted);">Real-time metrics and department comparisons.</p>
+            <h1>Executive Summary</h1>
+            <div class="vac-live-row" style="margin-top:0.35rem;">
+                <span class="vac-live-badge">Live</span>
+                <span class="vac-live-meta" data-live-updated>Updated just now</span>
+            </div>
         </div>
         <div class="admin-page-header__actions">
             <button id="kpi-refresh" class="btn btn--outline btn--sm">↻ Refresh Data</button>
@@ -88,7 +91,8 @@
             <h3 style="font-family:var(--font-display); font-size:1.4rem; color:var(--vac-green-900); margin-bottom:0.5rem;">Department Volume</h3>
             <p style="color:var(--vac-muted); font-size:0.9rem; margin-bottom:1.5rem;">Transaction count by operational unit.</p>
             <div style="position:relative; height:300px; width:100%;">
-                <canvas id="departmentChart"></canvas>
+                <canvas id="departmentChart"
+                        th:attr="data-orders=${totalShippingOrders != null ? totalShippingOrders : 0},data-bookings=${totalBookings != null ? totalBookings : 0},data-donations=${totalDonations != null ? totalDonations : 0}"></canvas>
             </div>
         </div>
     </div>
@@ -265,8 +269,9 @@
 </main>
 
 <th:block layout:fragment="scripts">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script th:inline="javascript">
+/* Charts are rendered by /js/admin-charts.js (single source of truth).
+   This script only handles the live revenue KPI + auto-refresh. */
 (function () {
     const fmtMoney = (n) => '$' + (Number(n) || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
@@ -276,9 +281,7 @@
         const valEl = root.querySelector('.admin-kpi__value');
         if (!valEl) return;
         const prefix = root.getAttribute('data-prefix') || '';
-        valEl.textContent = prefix === '$'
-            ? fmtMoney(value)
-            : (Number(value) || 0).toLocaleString();
+        valEl.textContent = prefix === '$' ? fmtMoney(value) : (Number(value) || 0).toLocaleString();
     }
 
     async function loadKpis() {
@@ -290,95 +293,17 @@
             if (!res.ok) return;
             const json = await res.json();
             const d = json && json.data ? json.data : {};
-            setKpi('revenueCaptured', d.revenueCaptured);
+            if (d.revenueCaptured != null) setKpi('revenueCaptured', d.revenueCaptured);
         } catch (_) { }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
         loadKpis();
-        
-        // Initialize Chart.js
-        Chart.defaults.font.family = "'DM Sans', sans-serif";
-        Chart.defaults.color = '#5a6b5e';
-
-        // Revenue Trajectory Line Chart
-        const revCtx = document.getElementById('revenueChart');
-        if (revCtx) {
-            new Chart(revCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May'],
-                    datasets: [{
-                        label: 'Gross Revenue ($)',
-                        data: [12500, 15200, 18400, 16800, 22000, 28500],
-                        borderColor: '#00a651',
-                        backgroundColor: 'rgba(0, 166, 81, 0.1)',
-                        borderWidth: 3,
-                        pointBackgroundColor: '#fff',
-                        pointBorderColor: '#00a651',
-                        pointBorderWidth: 2,
-                        pointRadius: 4,
-                        fill: true,
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: { borderDash: [4, 4], color: '#eef2ee' },
-                            ticks: { callback: function(value) { return '$' + value / 1000 + 'k'; } }
-                        },
-                        x: { grid: { display: false } }
-                    }
-                }
-            });
-        }
-
-        // Department Volume Bar Chart
-        const deptCtx = document.getElementById('departmentChart');
-        if (deptCtx) {
-            const ordersCount = [[${totalShippingOrders != null ? totalShippingOrders : 0}]];
-            const bookingsCount = [[${totalBookings != null ? totalBookings : 0}]];
-            const donationsCount = [[${totalDonations != null ? totalDonations : 0}]];
-
-            new Chart(deptCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['Art Orders', 'Tour Bookings', 'Donations'],
-                    datasets: [{
-                        label: 'Transactions',
-                        data: [ordersCount, bookingsCount, donationsCount],
-                        backgroundColor: [
-                            'rgba(203, 168, 106, 0.9)', // vac-gold
-                            'rgba(0, 166, 81, 0.9)',   // vac-green
-                            'rgba(11, 14, 12, 0.9)'    // vac-ink
-                        ],
-                        borderRadius: 6,
-                        barPercentage: 0.6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: { borderDash: [4, 4], color: '#eef2ee' }
-                        },
-                        x: { grid: { display: false } }
-                    }
-                }
-            });
-        }
+        // Live auto-refresh of executive KPIs.
+        setInterval(loadKpis, 30000);
+        const refresh = document.getElementById('kpi-refresh');
+        if (refresh) refresh.addEventListener('click', loadKpis);
     });
-
-    const refresh = document.getElementById('kpi-refresh');
-    if (refresh) refresh.addEventListener('click', loadKpis);
 })();
 </script>
 </th:block>

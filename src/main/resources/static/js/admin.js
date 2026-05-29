@@ -147,7 +147,13 @@
 
     /* ── KPI counter animation for admin pages ── */
     document.querySelectorAll('.admin-kpi__value[data-count]').forEach(function (el) {
-        var target = parseInt(el.getAttribute('data-count'), 10);
+        // The numeric target may live in the data-count attribute OR in the
+        // server-rendered text content (data-count is often an empty flag).
+        var attr = el.getAttribute('data-count');
+        var raw = (attr && attr.trim() !== '') ? attr : el.textContent;
+        var target = parseInt(String(raw).replace(/[^0-9.\-]/g, ''), 10);
+        // Never overwrite with NaN — leave the server value as-is if unparseable.
+        if (!isFinite(target)) return;
         var suffix = el.getAttribute('data-suffix') || '';
         var prefix = el.getAttribute('data-prefix') || '';
         var duration = 1200;
@@ -163,6 +169,9 @@
         }
         requestAnimationFrame(update);
     });
+
+    /* KPI sparklines are rendered by vac-overhaul.js (initKpiSparklines),
+       which loads on both admin and public dashboards. */
 
     /* ── Admin notification bell polling ── */
     (function initAdminBellPolling() {

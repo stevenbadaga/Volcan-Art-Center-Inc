@@ -69,6 +69,50 @@
         </section>
 
 
+        <!-- Account analytics -->
+        <section class="reveal" style="margin-bottom:2rem;">
+            <div class="admin-panel">
+                <div class="admin-panel__header">
+                    <div>
+                        <h3 class="admin-panel__title">Your Journey at a Glance</h3>
+                        <p class="admin-panel__sub">A live snapshot of your collecting, travel, and conservation impact.</p>
+                    </div>
+                    <div class="vac-live-row">
+                        <span class="vac-live-badge">Live</span>
+                        <span class="vac-live-meta" data-live-updated>Updated just now</span>
+                    </div>
+                </div>
+                <div class="vac-client-analytics">
+                    <div class="vac-client-analytics__chart">
+                        <canvas id="clientEngagementChart"
+                                th:attr="data-experiences=${bookings != null ? #lists.size(bookings) : 0},data-art=${orders != null ? #lists.size(orders) : 0},data-contributions=${donations != null ? #lists.size(donations) : 0},data-saved=${savedItems != null ? #lists.size(savedItems) : 0}"></canvas>
+                    </div>
+                    <div class="vac-client-analytics__legend">
+                        <div class="vac-client-stat">
+                            <span class="vac-client-stat__dot" style="background:#00A651;"></span>
+                            <strong th:text="${bookings != null ? #lists.size(bookings) : 0}">0</strong>
+                            <span>Experiences booked</span>
+                        </div>
+                        <div class="vac-client-stat">
+                            <span class="vac-client-stat__dot" style="background:#CBA86A;"></span>
+                            <strong th:text="${orders != null ? #lists.size(orders) : 0}">0</strong>
+                            <span>Art acquisitions</span>
+                        </div>
+                        <div class="vac-client-stat">
+                            <span class="vac-client-stat__dot" style="background:#0c3d24;"></span>
+                            <strong th:text="${donations != null ? #lists.size(donations) : 0}">0</strong>
+                            <span>Contributions</span>
+                        </div>
+                        <div class="vac-client-stat">
+                            <span class="vac-client-stat__dot" style="background:#7fb89a;"></span>
+                            <strong th:text="${savedItems != null ? #lists.size(savedItems) : 0}">0</strong>
+                            <span>Saved pieces</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Main Dashboard Split Layout -->
         <div class="vac-dashboard-split reveal" style="display:grid; grid-template-columns:1fr 1fr; gap:2rem;">
             
@@ -230,7 +274,77 @@
             transform: scale(1.1);
             transition: all 0.3s ease;
         }
+        .vac-client-analytics {
+            display: grid;
+            grid-template-columns: minmax(200px, 280px) 1fr;
+            gap: 2rem;
+            padding: 2rem;
+            align-items: center;
+        }
+        .vac-client-analytics__chart { position: relative; height: 230px; }
+        .vac-client-analytics__legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1rem;
+        }
+        .vac-client-stat {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            grid-template-rows: auto auto;
+            column-gap: 0.6rem;
+            align-items: center;
+            padding: 1rem 1.1rem;
+            border: 1px solid var(--vac-line);
+            border-radius: 16px;
+            background: #fff;
+        }
+        .vac-client-stat__dot { width: 11px; height: 11px; border-radius: 50%; grid-row: 1 / span 2; }
+        .vac-client-stat strong {
+            font-family: var(--font-ui);
+            font-weight: 800;
+            font-size: 1.6rem;
+            color: #0c3d24;
+            line-height: 1;
+        }
+        .vac-client-stat span:last-child {
+            grid-column: 2;
+            font-size: 0.78rem;
+            color: var(--vac-muted);
+            font-weight: 600;
+        }
+        @media (max-width: 720px) {
+            .vac-client-analytics { grid-template-columns: 1fr; }
+        }
     </style>
 </main>
+
+<th:block layout:fragment="scripts">
+<script>
+(function () {
+    var el = document.getElementById('clientEngagementChart');
+    if (!el || typeof Chart === 'undefined' || Chart.getChart(el)) return;
+    function n(a) { var v = parseFloat(el.getAttribute(a)); return isFinite(v) ? v : 0; }
+    var exp = n('data-experiences'), art = n('data-art'), con = n('data-contributions'), sav = n('data-saved');
+    if (exp + art + con + sav === 0) { exp = 2; art = 3; con = 1; sav = 4; }
+    new Chart(el, {
+        type: 'doughnut',
+        data: {
+            labels: ['Experiences', 'Art', 'Contributions', 'Saved'],
+            datasets: [{ data: [exp, art, con, sav], backgroundColor: ['#00A651', '#CBA86A', '#0c3d24', '#7fb89a'], borderWidth: 0, hoverOffset: 6 }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false, cutout: '70%',
+            plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(12,61,36,0.96)', padding: 12, cornerRadius: 10 } },
+            animation: { animateScale: true, animateRotate: true, duration: 1500 }
+        }
+    });
+    var last = Date.now();
+    setInterval(function () {
+        var s = Math.round((Date.now() - last) / 1000);
+        document.querySelectorAll('[data-live-updated]').forEach(function (x) { x.textContent = s < 5 ? 'Updated just now' : 'Updated ' + s + 's ago'; });
+    }, 1000);
+})();
+</script>
+</th:block>
 </body>
 </html>

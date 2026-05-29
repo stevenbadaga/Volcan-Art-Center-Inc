@@ -10,72 +10,95 @@
 <body>
 <main layout:fragment="content">
     <section class="auth-shell vac-auth-shell">
-        <div class="auth-card vac-auth-card reveal">
-            <span class="eyebrow vac-auth-eyebrow">Volcano Arts Center · Secure Access</span>
-            <h1>Welcome back.</h1>
-            <p class="auth-card__sub">Sign in to continue your art collection, experiences, and inbox conversations with the Volcano Arts team.</p>
+        <div class="vac-auth-layout reveal">
+            <aside class="vac-auth-visual" aria-hidden="true">
+                <div class="vac-auth-visual__media">
+                    <img class="vac-auth-visual__slide vac-auth-visual__slide--one" src="/uploads/homepage-bg1.jpeg" alt="" />
+                    <img class="vac-auth-visual__slide vac-auth-visual__slide--two" src="/uploads/arts page 4.jpg" alt="" />
+                    <img class="vac-auth-visual__slide vac-auth-visual__slide--three" src="/uploads/conservation3.jpg" alt="" />
+                    <div class="vac-auth-visual__veil"></div>
+                </div>
+                <div class="vac-auth-visual__copy">
+                    <span>Member Access</span>
+                    <h2>Collect art, book experiences, and connect with the team in one premium workspace.</h2>
+                    <ul>
+                        <li>Personal art cart and saved collections</li>
+                        <li>Fast conversation inbox with admins</li>
+                        <li>Conservation and trip updates in real time</li>
+                    </ul>
+                </div>
+            </aside>
 
-            <div th:if="${param.error}" class="vac-auth-alert vac-auth-alert--error">
-                Invalid email or password. Please try again.
-            </div>
+            <div class="auth-card vac-auth-card">
+                <span class="eyebrow vac-auth-eyebrow">Volcano Arts Center · Secure Access</span>
+                <h1>Welcome back.</h1>
+                <p class="auth-card__sub">Sign in to continue your art collection, experiences, and inbox conversations with the Volcano Arts team.</p>
 
-            <div th:if="${param.redirect}" class="vac-auth-alert vac-auth-alert--success">
-                Sign in to continue — you'll return to your previous page after login.
-            </div>
-
-            <div th:if="${param.logout}" class="vac-auth-alert vac-auth-alert--success">
-                You have been signed out.
-            </div>
-
-            <a th:if="${googleOauthEnabled}"
-               th:href="${loginRedirect != null} ? @{/oauth2/authorization/google(redirect=${loginRedirect})} : @{/oauth2/authorization/google}"
-               class="vac-oauth-btn">
-                <svg viewBox="0 0 48 48" width="18" height="18" aria-hidden="true">
-                    <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303C33.657 32.657 29.187 36 24 36c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.963 3.037l5.657-5.657C34.046 6.053 29.27 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
-                    <path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 16.108 19.022 12 24 12c3.059 0 5.842 1.154 7.963 3.037l5.657-5.657C34.046 6.053 29.27 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/>
-                    <path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.193l-6.19-5.238C29.143 35.091 26.715 36 24 36c-5.165 0-9.626-3.327-11.288-7.946l-6.522 5.025C9.504 39.556 16.688 44 24 44z"/>
-                    <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-.79 2.237-2.231 4.166-4.084 5.569l.003-.002 6.19 5.238C36.971 39.245 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/>
-                </svg>
-                <span>Continue with Google</span>
-            </a>
-
-            <div th:unless="${googleOauthEnabled}" class="vac-auth-hint">
-                Google sign in will appear once OAuth credentials are configured in backend environment variables.
-            </div>
-
-            <div class="vac-auth-divider"><span>or sign in with email</span></div>
-
-            <form th:action="@{/login}" method="post" class="vac-auth-form">
-                <input th:if="${loginRedirect != null}" type="hidden" name="redirect" th:value="${loginRedirect}" />
-                <div class="field">
-                    <label class="form-label" for="username">Email</label>
-                    <input class="form-input" type="text" id="username" name="username"
-                           placeholder="you@volcanoartscenter.rw" required autofocus />
+                <div th:if="${param.error}" class="vac-auth-alert vac-auth-alert--error">
+                    Invalid email or password. Please try again.
                 </div>
 
-                <div class="field">
-                    <label class="form-label" for="password">Password</label>
-                    <input class="form-input" type="password" id="password" name="password"
-                           placeholder="Enter your password" required />
+                <div th:if="${param.redirect}" class="vac-auth-alert vac-auth-alert--success">
+                    Sign in to continue — you'll return to your previous page after login.
                 </div>
 
-                <button type="submit" class="btn btn--primary vac-auth-submit">
-                    Sign In
-                </button>
-            </form>
-
-            <div class="vac-signup-options">
-                <p class="vac-signup-options__title">NEW HERE? CREATE AN ACCOUNT</p>
-                <div class="vac-signup-options__links">
-                    <a th:href="@{/register}">Client Account</a>
-                    <a th:href="@{/tour-operators/register}">Tour Operator</a>
-                    <a th:href="@{/talent/register}">Talent Applicant</a>
+                <div th:if="${param.logout}" class="vac-auth-alert vac-auth-alert--success">
+                    You have been signed out.
                 </div>
+
+                <a th:if="${googleOauthEnabled}"
+                   th:href="${loginRedirect != null} ? @{/oauth2/authorization/google(redirect=${loginRedirect})} : @{/oauth2/authorization/google}"
+                   class="vac-oauth-btn">
+                    <svg viewBox="0 0 48 48" width="18" height="18" aria-hidden="true">
+                        <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303C33.657 32.657 29.187 36 24 36c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.963 3.037l5.657-5.657C34.046 6.053 29.27 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
+                        <path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 16.108 19.022 12 24 12c3.059 0 5.842 1.154 7.963 3.037l5.657-5.657C34.046 6.053 29.27 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/>
+                        <path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.193l-6.19-5.238C29.143 35.091 26.715 36 24 36c-5.165 0-9.626-3.327-11.288-7.946l-6.522 5.025C9.504 39.556 16.688 44 24 44z"/>
+                        <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-.79 2.237-2.231 4.166-4.084 5.569l.003-.002 6.19 5.238C36.971 39.245 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/>
+                    </svg>
+                    <span>Continue with Google</span>
+                </a>
+
+                <div th:unless="${googleOauthEnabled}" class="vac-auth-hint">
+                    Google sign in will appear once OAuth credentials are configured in backend environment variables.
+                </div>
+
+                <div class="vac-auth-divider"><span>or sign in with email</span></div>
+
+                <form th:action="@{/login}" method="post" class="vac-auth-form">
+                    <input th:if="${loginRedirect != null}" type="hidden" name="redirect" th:value="${loginRedirect}" />
+                    <div class="field">
+                        <label class="form-label" for="username">Email</label>
+                        <input class="form-input" type="text" id="username" name="username"
+                               placeholder="you@volcanoartscenter.rw" required autofocus />
+                    </div>
+
+                    <div class="field">
+                        <div class="vac-auth-label-row">
+                            <label class="form-label" for="password">Password</label>
+                            <a class="vac-auth-forgot" th:href="@{/forgot-password}">Forgot password?</a>
+                        </div>
+                        <input class="form-input" type="password" id="password" name="password"
+                               placeholder="Enter your password" required />
+                    </div>
+
+                    <button type="submit" class="btn btn--primary vac-auth-submit">
+                        Sign In
+                    </button>
+                </form>
+
+                <div class="vac-signup-options">
+                    <p class="vac-signup-options__title">NEW HERE? CREATE AN ACCOUNT</p>
+                    <div class="vac-signup-options__links">
+                        <a th:href="@{/register}">Client Account</a>
+                        <a th:href="@{/tour-operators/register}">Tour Operator</a>
+                        <a th:href="@{/talent/register}">Talent Applicant</a>
+                    </div>
+                </div>
+
+                <p class="vac-auth-backlink">
+                    <a th:href="@{/}">← Return to website</a>
+                </p>
             </div>
-
-            <p class="vac-auth-backlink">
-                <a th:href="@{/}">← Return to website</a>
-            </p>
         </div>
     </section>
 </main>

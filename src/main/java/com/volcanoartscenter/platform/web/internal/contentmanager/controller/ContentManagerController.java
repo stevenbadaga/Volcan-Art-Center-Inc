@@ -313,6 +313,8 @@ public class ContentManagerController {
                                         @RequestParam(defaultValue = "false") Boolean published,
                                         @RequestParam(required = false) String featuredImageUrl,
                                         @RequestParam(value = "imageFile", required = false) org.springframework.web.multipart.MultipartFile imageFile,
+                                        @RequestParam(value = "additionalImageFiles", required = false) List<org.springframework.web.multipart.MultipartFile> additionalImageFiles,
+                                        @RequestParam(required = false) String additionalImageUrls,
                                         @RequestParam(required = false) Long coverMediaId,
                                         @RequestParam(defaultValue = "false") Boolean highlighted,
                                         @RequestParam(required = false) String metaTitle,
@@ -323,7 +325,8 @@ public class ContentManagerController {
             if (imageFile != null && !imageFile.isEmpty()) {
                 finalImageUrl = handleFileUpload(imageFile, "Blog Featured Image");
             }
-            contentManagerService.createBlogPost(title, slug, excerpt, content, category, published, finalImageUrl, coverMediaId, highlighted, metaTitle, metaDescription);
+            List<String> galleryUrls = collectAdditionalImageUrls(additionalImageUrls, additionalImageFiles, finalImageUrl, "Blog Gallery Image");
+            contentManagerService.createBlogPost(title, slug, excerpt, content, category, published, finalImageUrl, coverMediaId, highlighted, metaTitle, metaDescription, galleryUrls);
             redirectAttributes.addFlashAttribute("successMessage", "Blog post created.");
         } catch (Exception ex) {
             redirectAttributes.addFlashAttribute("successMessage", ex.getMessage());
@@ -340,6 +343,8 @@ public class ContentManagerController {
                                          @RequestParam(defaultValue = "false") Boolean published,
                                          @RequestParam(required = false) String featuredImageUrl,
                                          @RequestParam(value = "imageFile", required = false) org.springframework.web.multipart.MultipartFile imageFile,
+                                         @RequestParam(value = "additionalImageFiles", required = false) List<org.springframework.web.multipart.MultipartFile> additionalImageFiles,
+                                         @RequestParam(required = false) String additionalImageUrls,
                                          @RequestParam(required = false) Long coverMediaId,
                                          @RequestParam(defaultValue = "false") Boolean highlighted,
                                          @RequestParam(required = false) String metaTitle,
@@ -350,7 +355,12 @@ public class ContentManagerController {
             if (imageFile != null && !imageFile.isEmpty()) {
                 finalImageUrl = handleFileUpload(imageFile, "Blog Featured Image");
             }
-            contentManagerService.updateBlogPost(id, title, excerpt, content, category, published, coverMediaId, highlighted, finalImageUrl, metaTitle, metaDescription);
+            List<String> galleryUrls = null;
+            if ((additionalImageUrls != null && !additionalImageUrls.isBlank())
+                    || (additionalImageFiles != null && additionalImageFiles.stream().anyMatch(f -> f != null && !f.isEmpty()))) {
+                galleryUrls = collectAdditionalImageUrls(additionalImageUrls, additionalImageFiles, finalImageUrl, "Blog Gallery Image");
+            }
+            contentManagerService.updateBlogPost(id, title, excerpt, content, category, published, coverMediaId, highlighted, finalImageUrl, metaTitle, metaDescription, galleryUrls);
             redirectAttributes.addFlashAttribute("successMessage", "Blog post updated.");
         } catch (Exception ex) {
             redirectAttributes.addFlashAttribute("successMessage", ex.getMessage());
