@@ -23,10 +23,14 @@ public class DataInitializer {
     private final ExperienceRepository experienceRepository;
     private final BlogPostRepository blogPostRepository;
     private final ReviewRepository reviewRepository;
+    private final ProductCollectionRepository productCollectionRepository;
+    private final TestimonialRepository testimonialRepository;
+    private final DonationCampaignRepository donationCampaignRepository;
 
     @Bean
     CommandLineRunner seedPlatformData(PasswordEncoder passwordEncoder) {
         return args -> {
+            // ... (Roles and Users seeding remains the same)
             Role superAdminRole = roleRepository.findByName("SUPER_ADMIN")
                     .orElseGet(() -> roleRepository.save(Role.builder()
                             .name("SUPER_ADMIN")
@@ -70,6 +74,16 @@ public class DataInitializer {
             createOrUpdateSeedUser("operator1@volcanoartscenter.rw", "Tour", "Operator",
                     Set.of(tourOperatorRole), "TourOperator!2026", passwordEncoder);
 
+            if (productCollectionRepository.count() == 0) {
+                productCollectionRepository.save(ProductCollection.builder()
+                        .name("Signature Masterpieces")
+                        .slug("signature-masterpieces")
+                        .description("Hand-picked premium artworks from our most celebrated local artists.")
+                        .displayOrder(1)
+                        .active(true)
+                        .build());
+            }
+
             ProductCategory visual = category("visual-arts", "Visual Arts Collection",
                     "Original Rwandan artworks including paintings, drawings, and sculptures.", 1);
             ProductCategory crafts = category("handicrafts", "Handicrafts & Cultural Crafts",
@@ -78,7 +92,7 @@ public class DataInitializer {
                     "Immersive cultural tourism experiences and curated programs.", 3);
 
             if (productRepository.count() == 0) {
-                productRepository.save(Product.builder()
+                Product p1 = productRepository.save(Product.builder()
                         .name("Musanze Sunrise Painting")
                         .slug("musanze-sunrise-painting")
                         .description("One-of-a-kind painting inspired by the mountain sunrise near Volcanoes National Park.")
@@ -129,6 +143,11 @@ public class DataInitializer {
                         .category(cultural)
                         .shippable(false)
                         .build());
+
+                productCollectionRepository.findBySlug("signature-masterpieces").ifPresent(coll -> {
+                    p1.setCollection(coll);
+                    productRepository.save(p1);
+                });
             }
 
             if (experienceRepository.count() == 0) {
@@ -224,8 +243,43 @@ public class DataInitializer {
                         .build());
             }
 
+            if (testimonialRepository.count() == 0) {
+                testimonialRepository.save(Testimonial.builder()
+                        .authorName("Sophie Martin")
+                        .authorCountry("France")
+                        .authorTitle("Eco-Traveler")
+                        .message("The traditional dance performance was breathtaking. A truly authentic connection with Rwandan culture.")
+                        .rating(5)
+                        .published(true)
+                        .featured(true)
+                        .build());
+                testimonialRepository.save(Testimonial.builder()
+                        .authorName("James Wilson")
+                        .authorCountry("USA")
+                        .authorTitle("Art Collector")
+                        .message("The quality of the paintings and the stories behind them are remarkable. Fast shipping too!")
+                        .rating(5)
+                        .published(true)
+                        .featured(true)
+                        .build());
+            }
+
+            if (donationCampaignRepository.count() == 0) {
+                donationCampaignRepository.save(DonationCampaign.builder()
+                        .name("Community Reforestation Initiative")
+                        .description("Supporting local families to plant indigenous trees in the Volcanoes National Park buffer zone.")
+                        .impactStatement("$10 plants 3 trees and supports a local nursery worker.")
+                        .impactTiers("{\"10\":\"Plants 3 trees\",\"50\":\"Funds a nursery for a week\",\"100\":\"Reforests a small plot\"}")
+                        .goalAmount(new BigDecimal("5000.00"))
+                        .raisedAmount(new BigDecimal("1250.00"))
+                        .donorCount(42)
+                        .active(true)
+                        .imageUrl("/uploads/conservation.png")
+                        .build());
+            }
+
             if (reviewRepository.count() == 0 && !productRepository.findByAvailableTrueOrderByFeaturedDescNameAsc().isEmpty()) {
-                Product sampleProduct = productRepository.findByAvailableTrueOrderByFeaturedDescNameAsc().getFirst();
+                Product sampleProduct = productRepository.findByAvailableTrueOrderByFeaturedDescNameAsc().get(0);
                 reviewRepository.save(Review.builder()
                         .reviewerName("Sophie M.")
                         .reviewerEmail("sophie@example.com")

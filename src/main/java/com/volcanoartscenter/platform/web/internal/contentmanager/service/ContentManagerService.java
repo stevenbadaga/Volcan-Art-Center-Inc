@@ -218,7 +218,8 @@ public class ContentManagerService {
     }
     public void deleteCollection(Long id) { productCollectionRepository.deleteById(id); }
 
-    public Object listBlogPosts(String q, BlogPost.BlogCategory category) {
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public List<BlogPost> listBlogPosts(String q, BlogPost.BlogCategory category) {
         return blogPostRepository.searchForCms(q, category);
     }
     public BlogPost createBlogPost(String title, String slug, String excerpt, String content,
@@ -251,7 +252,7 @@ public class ContentManagerService {
                 .publishedAt(publish ? java.time.LocalDateTime.now() : null)
                 .build();
         if (additionalImageUrls != null && !additionalImageUrls.isEmpty()) {
-            post.setAdditionalImages(new ArrayList<>(additionalImageUrls));
+            post.setAdditionalImages(new java.util.LinkedHashSet<>(additionalImageUrls));
         }
         return blogPostRepository.save(post);
     }
@@ -275,7 +276,7 @@ public class ContentManagerService {
         post.setMetaTitle(metaTitle);
         post.setMetaDescription(metaDescription);
         if (additionalImageUrls != null) {
-            post.setAdditionalImages(new ArrayList<>(additionalImageUrls));
+            post.setAdditionalImages(new java.util.LinkedHashSet<>(additionalImageUrls));
         }
         return blogPostRepository.save(post);
     }

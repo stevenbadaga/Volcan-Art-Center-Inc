@@ -1,66 +1,265 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin-base}">
-<head><title>Blog Posts</title></head>
+<head>
+    <title>Blog & Stories Management</title>
+    <style>
+        .blog-search-bar {
+            display: flex;
+            gap: 1rem;
+            background: var(--vac-canvas);
+            padding: 1.25rem;
+            border-radius: var(--vac-radius-sm);
+            margin-bottom: 2rem;
+            border: 1px solid var(--vac-line);
+            align-items: flex-end;
+        }
+        .premium-blog-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        .edit-row-container {
+            padding: 2rem;
+            background: var(--vac-mint);
+            border-top: 1px solid var(--vac-line);
+            border-bottom: 1px solid var(--vac-line);
+        }
+        .save-button-premium {
+            background: var(--vac-gold);
+            color: var(--vac-ink);
+            font-weight: 800;
+            padding: 0.75rem 2rem;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.85rem;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+        .save-button-premium:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+            filter: brightness(1.1);
+        }
+    </style>
+</head>
 <body>
-<th:block layout:fragment="breadcrumb"><a th:href="@{/admin/dashboard}">Admin</a><span class="sep">›</span><span>Blog Posts</span></th:block>
+
+<th:block layout:fragment="breadcrumb">
+    <a th:href="@{/admin/dashboard}">Admin</a>
+    <span class="sep">›</span>
+    <span>Blog Posts</span>
+</th:block>
+
 <main layout:fragment="content">
-    <div class="admin-page-header">
-        <div class="admin-page-header__info"><h1>Blog Posts</h1><p>Manage conservation stories, updates, and cultural articles.</p></div>
-        <div class="admin-page-header__actions"><button class="btn btn--primary btn--sm" onclick="document.getElementById('create-blog').style.display=document.getElementById('create-blog').style.display==='none'?'block':'none'">+ New Post</button></div>
+    <div class="admin-page-header" style="margin-bottom: 2.5rem;">
+        <div class="admin-page-header__info">
+            <h1 style="font-family: var(--font-display); font-size: 2.5rem; color: var(--vac-green-900);">Blog & Stories</h1>
+            <p style="color: var(--vac-muted); font-size: 1.1rem;">Craft conservation updates, cultural stories, and community news.</p>
+        </div>
+        <div class="admin-page-header__actions">
+            <button class="btn btn--primary" onclick="document.getElementById('create-blog').style.display=document.getElementById('create-blog').style.display==='none'?'block':'none'">
+                <i data-lucide="plus-circle" style="width:18px; height:18px; margin-right:8px;"></i>
+                Create New Post
+            </button>
+        </div>
     </div>
-    <div class="admin-card" id="create-blog" style="display:none;margin-bottom:1.5rem;">
-        <div class="admin-card__header"><h3>Create Blog Post</h3></div>
-        <div class="admin-card__body">
+
+    <!-- Search & Filter Bar -->
+    <form th:action="@{/admin/content/blog-posts}" method="get" class="blog-search-bar reveal">
+        <div style="flex: 1;">
+            <label class="form-label">Search Posts</label>
+            <input type="text" name="q" th:value="${q}" class="form-input" placeholder="Search by title or excerpt..." />
+        </div>
+        <div style="width: 200px;">
+            <label class="form-label">Category</label>
+            <select name="category" class="form-select">
+                <option value="">All Categories</option>
+                <option th:each="c : ${blogCategories}" th:value="${c}" th:text="${c}" th:selected="${c == selectedCategory}">Category</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn--outline" style="height: 42px;">Filter</button>
+        <a th:href="@{/admin/content/blog-posts}" class="btn btn--ghost" style="height: 42px; display: flex; align-items: center;" th:if="${q != null or selectedCategory != null}">Clear</a>
+    </form>
+
+    <!-- Create Post Form (Premium Styled) -->
+    <div class="admin-card reveal" id="create-blog" style="display:none; margin-bottom:3rem; border: 2px solid var(--vac-gold);">
+        <div class="admin-card__header" style="background: var(--vac-gold); color: var(--vac-ink);">
+            <h3 style="margin:0; font-weight:800; text-transform:uppercase; letter-spacing:1px;">New Blog Masterpiece</h3>
+        </div>
+        <div class="admin-card__body" style="padding: 2.5rem;">
             <form th:action="@{/admin/content/blog-posts}" method="post" enctype="multipart/form-data" class="modal-form">
-                <div class="form-row"><div class="form-group"><label class="form-label">Title</label><input class="form-input" name="title" required /></div><div class="form-group"><label class="form-label">Slug</label><input class="form-input" name="slug" required /></div></div>
-                <div class="form-row"><div class="form-group"><label class="form-label">Category</label><select class="form-select" name="category"><option th:each="c : ${blogCategories}" th:value="${c}" th:text="${c}">CAT</option></select></div><div class="form-group"><label class="form-label">Featured Image (from device)</label><input type="file" class="form-input" name="imageFile" accept="image/*" /></div></div>
-                <div class="form-row"><div class="form-group"><label class="form-label">Or Image URL</label><input class="form-input" name="featuredImageUrl" placeholder="/uploads/example.jpg" /></div></div>
-                <div class="form-row--full"><div class="form-group"><label class="form-label">Excerpt</label><textarea class="form-input" name="excerpt" rows="2" placeholder="Brief summary..."></textarea></div></div>
-                <div class="form-row--full"><div class="form-group"><label class="form-label">Content</label><textarea class="form-input" name="content" rows="6" placeholder="Full article content..."></textarea></div></div>
-                <div class="form-row"><div class="form-group"><label class="form-label">Additional gallery images</label><input type="file" class="form-input" name="additionalImageFiles" accept="image/*" multiple /></div></div>
-                <div class="form-row--full"><div class="form-group"><label class="form-label">Or gallery image URLs (one per line)</label><textarea class="form-input" name="additionalImageUrls" rows="3" placeholder="/uploads/story-2.jpg&#10;/uploads/story-3.jpg"></textarea></div></div>
-                <div class="form-row"><div class="form-group"><label class="form-label">Meta Title</label><input class="form-input" name="metaTitle" /></div><div class="form-group"><label class="form-label">Meta Description</label><input class="form-input" name="metaDescription" /></div></div>
-                <div style="display:flex;gap:1rem;"><label><input type="checkbox" name="published" /> Published</label><label><input type="checkbox" name="highlighted" /> Highlighted</label></div>
-                <div class="form-actions"><button type="button" class="btn btn--outline btn--sm" onclick="document.getElementById('create-blog').style.display='none'">Cancel</button><button type="submit" class="btn btn--primary btn--sm">Create Post</button></div>
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Title *</label><input class="form-input" name="title" required placeholder="Catchy headline..." /></div>
+                    <div class="form-group"><label class="form-label">Slug *</label><input class="form-input" name="slug" required placeholder="url-friendly-slug" /></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Category</label>
+                        <select class="form-select" name="category">
+                            <option th:each="c : ${blogCategories}" th:value="${c}" th:text="${c}">CAT</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Featured Image</label>
+                        <input type="file" class="form-input" name="imageFile" accept="image/*" />
+                    </div>
+                </div>
+                <div class="form-row--full">
+                    <div class="form-group"><label class="form-label">Excerpt (Short Summary)</label><textarea class="form-input" name="excerpt" rows="2" placeholder="Appears in blog listings..."></textarea></div>
+                </div>
+                <div class="form-row--full">
+                    <div class="form-group"><label class="form-label">Full Content (HTML/Rich Text supported)</label><textarea class="form-input" name="content" rows="10" placeholder="Tell the story..."></textarea></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Additional Gallery Images</label><input type="file" class="form-input" name="additionalImageFiles" accept="image/*" multiple /></div>
+                    <div class="form-group"><label class="form-label">Meta Title (SEO)</label><input class="form-input" name="metaTitle" placeholder="SEO Title" /></div>
+                </div>
+                <div style="display:flex; gap:2rem; margin: 1.5rem 0; padding: 1rem; background: var(--vac-canvas); border-radius: 8px;">
+                    <label style="display:flex; align-items:center; gap:0.5rem; font-weight:700; cursor:pointer;"><input type="checkbox" name="published" style="width:18px; height:18px;" /> Publish Immediately</label>
+                    <label style="display:flex; align-items:center; gap:0.5rem; font-weight:700; cursor:pointer;"><input type="checkbox" name="highlighted" style="width:18px; height:18px;" /> Highlight on Home</label>
+                </div>
+                <div class="form-actions" style="margin-top:2rem;">
+                    <button type="button" class="btn btn--outline" onclick="document.getElementById('create-blog').style.display='none'">Cancel</button>
+                    <button type="submit" class="save-button-premium">Create Post</button>
+                </div>
             </form>
         </div>
     </div>
-    <div class="admin-card">
-        <div class="admin-card__header"><h3>All Posts</h3><span class="chip chip--info" th:text="${#lists.size(items)} + ' posts'">0</span></div>
-        <div class="admin-card__body--flush"><div class="admin-table-wrap">
-            <table class="admin-table"><thead><tr><th>Title</th><th>Category</th><th>Status</th><th>Highlighted</th><th>Created</th><th>Actions</th></tr></thead>
-            <tbody>
-            <tr th:each="i : ${items}">
-                <td><div class="cell-primary" th:text="${i.title}">Title</div><div style="font-size:.72rem;color:var(--color-gray-500);" th:text="${i.slug}">slug</div></td>
-                <td><span class="chip chip--primary" th:text="${i.category}">UPDATE</span></td>
-                <td><span class="chip" th:data-status="${i.published ? 'PUBLISHED' : 'DRAFT'}" th:text="${i.published ? 'Published' : 'Draft'}">Draft</span></td>
-                <td th:text="${i.highlighted ? '⭐ Yes' : '-'}">-</td>
-                <td th:text="${i.createdAt}">2026-01-01</td>
-                <td><div style="display:flex;gap:.35rem;"><button class="btn btn--outline btn--xs" th:onclick="'document.getElementById(\'edit-blog-'+${i.id}+'\').style.display=document.getElementById(\'edit-blog-'+${i.id}+'\').style.display===\'none\'?\'table-row\':\'none\''">Edit</button><form th:action="@{|/admin/content/blog-posts/${i.id}/delete|}" method="post" style="display:inline;"><button class="btn btn--ghost btn--xs" type="submit" onclick="return confirm('Delete?')">Delete</button></form></div></td>
-            </tr>
-            <tr th:each="i : ${items}" th:id="'edit-blog-'+${i.id}" style="display:none;background:rgba(0,162,89,.03);">
-                <td colspan="6"><form th:action="@{|/admin/content/blog-posts/${i.id}/update|}" method="post" enctype="multipart/form-data" class="modal-form" style="padding:.5rem 0;">
-                    <div class="form-row"><div class="form-group"><label class="form-label">Title</label><input class="form-input" name="title" th:value="${i.title}" required /></div><div class="form-group"><label class="form-label">Category</label><select class="form-select" name="category"><option th:each="c : ${blogCategories}" th:value="${c}" th:text="${c}" th:selected="${c == i.category}">CAT</option></select></div></div>
-                    <div class="form-row--full"><div class="form-group"><label class="form-label">Excerpt</label><textarea class="form-input" name="excerpt" rows="2" th:text="${i.excerpt}"></textarea></div></div>
-                    <div class="form-row--full"><div class="form-group"><label class="form-label">Content</label><textarea class="form-input" name="content" rows="4" th:text="${i.content}"></textarea></div></div>
-                    <div class="form-row"><div class="form-group"><label class="form-label">Add gallery images</label><input type="file" class="form-input" name="additionalImageFiles" accept="image/*" multiple /></div></div>
-                    <div class="form-row--full"><div class="form-group"><label class="form-label">Gallery URLs (one per line — include existing to keep)</label><textarea class="form-input" name="additionalImageUrls" rows="3" th:text="${i.additionalImagesText}"></textarea></div></div>
-                    <div class="form-row">
-                        <div class="form-group"><label class="form-label">Upload New Image</label><input type="file" class="form-input" name="imageFile" accept="image/*" /></div>
-                        <div class="form-group"><label class="form-label">Or Image URL</label><input class="form-input" name="featuredImageUrl" th:value="${i.featuredImageUrl}" /></div>
-                    </div>
-                    <div class="form-row" th:if="${i.featuredImageUrl != null or i.displayFeaturedImageUrl != null}">
-                        <div class="form-group"><label class="form-label">Current Image</label><img th:src="${i.displayFeaturedImageUrl != null ? i.displayFeaturedImageUrl : i.featuredImageUrl}" alt="Current featured image" style="max-width:180px;border-radius:8px;" /></div>
-                    </div>
-                    <div class="form-row"><div class="form-group"><label class="form-label">Meta Title</label><input class="form-input" name="metaTitle" th:value="${i.metaTitle}" /></div></div>
-                    <div style="display:flex;gap:1rem;"><label><input type="checkbox" name="published" th:checked="${i.published}" /> Published</label><label><input type="checkbox" name="highlighted" th:checked="${i.highlighted}" /> Highlighted</label></div>
-                    <div class="form-actions"><button type="submit" class="btn btn--primary btn--xs">Save</button></div>
-                </form></td>
-            </tr>
-            <tr th:if="${#lists.isEmpty(items)}"><td colspan="6" class="admin-empty"><div class="admin-empty__icon">📝</div><div class="admin-empty__text">No blog posts yet</div></td></tr>
-            </tbody></table>
-        </div></div>
+
+    <!-- Posts Table -->
+    <div class="admin-card reveal" style="animation-delay: 0.1s;">
+        <div class="admin-card__header">
+            <h3 style="font-family: var(--font-display); font-size: 1.4rem;">All Publications</h3>
+            <span class="chip chip--info" th:text="${#lists.size(items)} + ' total posts'">0</span>
+        </div>
+        <div class="admin-card__body--flush">
+            <div class="admin-table-wrap">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Preview</th>
+                            <th>Title & Slug</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                            <th>Meta</th>
+                            <th style="text-align:right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <th:block th:each="i : ${items}">
+                            <tr>
+                                <td style="width: 80px;">
+                                    <img th:src="${i.displayFeaturedImageUrl != null ? i.displayFeaturedImageUrl : '/uploads/volcano.jpg'}" 
+                                         style="width:60px; height:60px; object-fit:cover; border-radius:8px; border:1px solid var(--vac-line);" />
+                                </td>
+                                <td>
+                                    <div class="cell-primary" th:text="${i.title}" style="font-weight:700; color:var(--vac-ink);">Title</div>
+                                    <code style="font-size:0.7rem; color:var(--vac-muted);" th:text="${i.slug}">slug</code>
+                                </td>
+                                <td><span class="chip chip--primary" th:text="${i.category}">UPDATE</span></td>
+                                <td>
+                                    <span th:if="${i.published}" class="chip chip--success">Published</span>
+                                    <span th:unless="${i.published}" class="chip chip--warning">Draft</span>
+                                </td>
+                                <td>
+                                    <div style="font-size:0.75rem; color:var(--vac-muted);">
+                                        <div th:if="${i.highlighted}">⭐ Featured</div>
+                                        <div th:text="${#temporals.format(i.createdAt, 'MMM d, yyyy')}">Date</div>
+                                    </div>
+                                </td>
+                                <td style="text-align:right;">
+                                    <div style="display:flex; gap:0.5rem; justify-content:flex-end;">
+                                        <button class="btn btn--outline btn--xs" 
+                                                th:onclick="'document.getElementById(\'edit-blog-'+${i.id}+'\').style.display=document.getElementById(\'edit-blog-'+${i.id}+'\').style.display===\'none\'?\'table-row\':\'none\''">
+                                            Edit
+                                        </button>
+                                        <form th:action="@{|/admin/content/blog-posts/${i.id}/delete|}" method="post" onsubmit="return confirm('Archive this story permanently?')">
+                                            <button class="btn btn--ghost btn--xs" type="submit" style="color:#e74c3c;">Delete</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <!-- Inline Edit Row (Improved & Fixed) -->
+                            <tr th:id="'edit-blog-'+${i.id}" style="display:none; background:var(--vac-mint);">
+                                <td colspan="6">
+                                    <div class="edit-row-container">
+                                        <h4 style="margin:0 0 1.5rem; font-family:var(--font-display); color:var(--vac-green-900); font-size:1.2rem;">Editing: <span th:text="${i.title}">Post</span></h4>
+                                        <form th:action="@{|/admin/content/blog-posts/${i.id}/update|}" method="post" enctype="multipart/form-data">
+                                            <div class="form-row">
+                                                <div class="form-group"><label class="form-label">Post Title</label><input class="form-input" name="title" th:value="${i.title}" required /></div>
+                                                <div class="form-group">
+                                                    <label class="form-label">Category</label>
+                                                    <select class="form-select" name="category">
+                                                        <option th:each="c : ${blogCategories}" th:value="${c}" th:text="${c}" th:selected="${c == i.category}">CAT</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-row--full">
+                                                <div class="form-group"><label class="form-label">Excerpt</label><textarea class="form-input" name="excerpt" rows="2" th:text="${i.excerpt}"></textarea></div>
+                                            </div>
+                                            <div class="form-row--full">
+                                                <div class="form-group"><label class="form-label">Content</label><textarea class="form-input" name="content" rows="8" th:text="${i.content}"></textarea></div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="form-group">
+                                                    <label class="form-label">Update Featured Image</label>
+                                                    <input type="file" class="form-input" name="imageFile" accept="image/*" />
+                                                    <small style="color:var(--vac-muted);">Leave empty to keep current</small>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="form-label">Or External Image URL</label>
+                                                    <input class="form-input" name="featuredImageUrl" th:value="${i.featuredImageUrl}" />
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="form-group"><label class="form-label">Add More Gallery Images</label><input type="file" class="form-input" name="additionalImageFiles" accept="image/*" multiple /></div>
+                                                <div class="form-group"><label class="form-label">Gallery URLs (one per line)</label><textarea class="form-input" name="additionalImageUrls" rows="3" th:text="${i.additionalImagesText}"></textarea></div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="form-group"><label class="form-label">Meta Title</label><input class="form-input" name="metaTitle" th:value="${i.metaTitle}" /></div>
+                                                <div class="form-group"><label class="form-label">Meta Description</label><textarea class="form-input" name="metaDescription" rows="2" th:text="${i.metaDescription}"></textarea></div>
+                                            </div>
+                                            <div style="display:flex; gap:2rem; margin-top:1.5rem; padding:1.25rem; background:#fff; border-radius:8px; border:1px solid var(--vac-line);">
+                                                <label style="display:flex; align-items:center; gap:0.5rem; font-weight:700; cursor:pointer;"><input type="checkbox" name="published" th:checked="${i.published}" style="width:18px; height:18px;" /> Published</label>
+                                                <label style="display:flex; align-items:center; gap:0.5rem; font-weight:700; cursor:pointer;"><input type="checkbox" name="highlighted" th:checked="${i.highlighted}" style="width:18px; height:18px;" /> Highlighted</label>
+                                            </div>
+                                            
+                                            <!-- THE MISSING SAVE BUTTON - NOW PREMIUM AND PROMINENT -->
+                                            <div style="display:flex; justify-content:flex-end; gap:1rem; margin-top:2.5rem; border-top:1px solid var(--vac-line); padding-top:1.5rem;">
+                                                <button type="button" class="btn btn--outline" th:onclick="'document.getElementById(\'edit-blog-'+${i.id}+'\').style.display=\'none\''">Cancel</button>
+                                                <button type="submit" class="save-button-premium">Save Changes</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        </th:block>
+                        <tr th:if="${#lists.isEmpty(items)}">
+                            <td colspan="6" class="admin-empty" style="padding:5rem 0;">
+                                <div class="admin-empty__icon" style="font-size:4rem; margin-bottom:1rem;">✍️</div>
+                                <div class="admin-empty__text" style="font-size:1.2rem; font-weight:700;">No blog posts found matching your criteria.</div>
+                                <button class="btn btn--primary btn--sm" style="margin-top:1rem;" onclick="document.getElementById('create-blog').style.display='block'">Start Writing</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </main>
+
+<th:block layout:fragment="scripts">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Any specific JS for blog management
+        });
+    </script>
+</th:block>
 </body>
 </html>

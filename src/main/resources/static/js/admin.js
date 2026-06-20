@@ -11,6 +11,13 @@
     const main = document.getElementById('admin-main');
     const sidebarToggle = document.getElementById('sidebar-toggle');
     const sidebarClose = document.getElementById('sidebar-close');
+    const mobileBreakpoint = 1024;
+
+    function syncMobileSidebarState() {
+        if (!document.body) return;
+        var isMobileOpen = !!(sidebar && sidebar.classList.contains('mobile-open') && window.innerWidth <= mobileBreakpoint);
+        document.body.classList.toggle('admin-mobile-nav-open', isMobileOpen);
+    }
 
     function toggleSidebar() {
         if (sidebar) sidebar.classList.toggle('collapsed');
@@ -22,12 +29,14 @@
 
     function closeSidebarMobile() {
         if (sidebar) sidebar.classList.remove('mobile-open');
+        syncMobileSidebarState();
     }
 
     if (sidebarToggle) {
         sidebarToggle.addEventListener('click', function () {
-            if (window.innerWidth <= 1024) {
+            if (window.innerWidth <= mobileBreakpoint) {
                 sidebar.classList.toggle('mobile-open');
+                syncMobileSidebarState();
             } else {
                 toggleSidebar();
             }
@@ -41,11 +50,76 @@
     // Restore sidebar state
     try {
         var sidebarState = localStorage.getItem('vac-sidebar');
-        if (sidebarState === 'collapsed' && sidebar && window.innerWidth > 1024) {
+        if (sidebarState === 'collapsed' && sidebar && window.innerWidth > mobileBreakpoint) {
             sidebar.classList.add('collapsed');
             if (main) main.classList.add('sidebar-collapsed');
         }
     } catch (e) { /* ignore */ }
+
+    window.addEventListener('resize', function () {
+        if (!sidebar) return;
+        if (window.innerWidth > mobileBreakpoint) {
+            sidebar.classList.remove('mobile-open');
+        }
+        syncMobileSidebarState();
+    });
+
+    document.addEventListener('click', function (event) {
+        if (window.innerWidth > mobileBreakpoint || !sidebar || !sidebar.classList.contains('mobile-open')) return;
+        if (sidebar.contains(event.target) || (sidebarToggle && sidebarToggle.contains(event.target))) return;
+        closeSidebarMobile();
+    });
+
+    syncMobileSidebarState();
+
+    /* ── Admin Theme Toggle ── */
+    const themeToggle = document.getElementById('admin-theme-toggle');
+    const themeIcon = document.getElementById('admin-theme-icon');
+    const themeStorageKey = 'vac-admin-theme';
+
+    function currentTheme() {
+        return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+    }
+
+    function themeIconSvg(theme) {
+        if (theme === 'dark') {
+            return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.5"></circle><path d="M12 2.5v2.5"></path><path d="M12 19v2.5"></path><path d="m4.93 4.93 1.77 1.77"></path><path d="m17.3 17.3 1.77 1.77"></path><path d="M2.5 12H5"></path><path d="M19 12h2.5"></path><path d="m4.93 19.07 1.77-1.77"></path><path d="m17.3 6.7 1.77-1.77"></path></svg>';
+        }
+
+        return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A8.9 8.9 0 1 1 11.2 3a7.1 7.1 0 0 0 9.8 9.8Z"></path></svg>';
+    }
+
+    function syncThemeToggle(theme) {
+        if (themeIcon) {
+            themeIcon.innerHTML = themeIconSvg(theme);
+        }
+
+        if (themeToggle) {
+            var nextTheme = theme === 'dark' ? 'light' : 'dark';
+            var label = nextTheme === 'dark' ? 'Switch to dark theme' : 'Switch to light theme';
+            themeToggle.setAttribute('aria-label', label);
+            themeToggle.setAttribute('title', label);
+        }
+    }
+
+    function applyAdminTheme(theme) {
+        var resolved = theme === 'light' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', resolved);
+        document.documentElement.setAttribute('data-user-preference', resolved);
+        syncThemeToggle(resolved);
+        try {
+            localStorage.setItem(themeStorageKey, resolved);
+        } catch (e) { /* ignore */ }
+        window.dispatchEvent(new CustomEvent('vac:theme-changed', { detail: { theme: resolved } }));
+    }
+
+    syncThemeToggle(currentTheme());
+
+    if (themeToggle) {
+        themeToggle.addEventListener('click', function () {
+            applyAdminTheme(currentTheme() === 'dark' ? 'light' : 'dark');
+        });
+    }
 
     /* ── Modal System ── */
     window.openModal = function (title, bodyHtml) {
@@ -70,6 +144,7 @@
 
     // Close modal on Escape
     document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeSidebarMobile();
         if (e.key === 'Escape') closeModal();
     });
 

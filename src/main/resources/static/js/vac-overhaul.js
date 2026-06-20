@@ -220,7 +220,7 @@
         btn.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>';
         btn.style.position = 'fixed';
         btn.style.right = '24px';
-        btn.style.bottom = '24px';
+        btn.style.bottom = '90px';
         btn.style.zIndex = '260';
         btn.style.opacity = '0';
         btn.style.pointerEvents = 'none';
@@ -394,6 +394,10 @@
             items.forEach(function (el) {
                 if (except && el === except) return;
                 el.classList.remove('is-open');
+                var toggle = el.querySelector('.nav-mega__mobile-toggle');
+                if (toggle) {
+                    toggle.setAttribute('aria-expanded', 'false');
+                }
             });
         }
 
@@ -407,25 +411,69 @@
             };
 
             var closeSoon = function () {
+                if (window.innerWidth <= 980) return;
                 var timer = window.setTimeout(function () {
                     item.classList.remove('is-open');
-                }, 130);
+                }, 200);
                 closeTimers.set(item, timer);
             };
 
+            // Mouse events for desktop
             item.addEventListener('mouseenter', open);
             item.addEventListener('mouseleave', closeSoon);
+
+            // Focus events for keyboard accessibility
             item.addEventListener('focusin', open);
             item.addEventListener('focusout', function (event) {
                 if (item.contains(event.relatedTarget)) return;
                 item.classList.remove('is-open');
             });
+
+            // Click event for mobile toggling (for backup/fallback consistency)
+            var mobileToggle = item.querySelector('.nav-mega__mobile-toggle');
+            if (mobileToggle) {
+                mobileToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var isOpen = item.classList.contains('is-open');
+                    if (isOpen) {
+                        item.classList.remove('is-open');
+                        this.setAttribute('aria-expanded', 'false');
+                    } else {
+                        closeAll();
+                        item.classList.add('is-open');
+                        this.setAttribute('aria-expanded', 'true');
+                    }
+                });
+            }
         });
 
+        // Close on clicking outside the mega menus
+        document.addEventListener('click', function (e) {
+            var insideMega = false;
+            items.forEach(function (el) {
+                if (el.contains(e.target)) {
+                    insideMega = true;
+                }
+            });
+            if (!insideMega) {
+                closeAll();
+            }
+        });
+
+        // Close on Escape key press
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') {
                 closeAll();
             }
+        });
+
+        // Close on clicking dropdown links
+        var dropdownLinks = document.querySelectorAll('.nav-mega a');
+        dropdownLinks.forEach(function (link) {
+            link.addEventListener('click', function () {
+                closeAll();
+            });
         });
     }
 
@@ -501,21 +549,291 @@
         });
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
-        initNavScroll();
-        initNavMegaMenu();
-        markRevealTargets();
-        initReveal();
-        initHeroParallax();
-        initBackToTop();
-        initClickableCards();
-        initMagneticMedia();
-        initLiveCharts();
-        initCountUp();
-        initCarousels();
-        initHeroRotation();
-        initCinematicHeroSlides();
-        initCinematicParallax();
-        initKpiSparklines();
+    function initThemeSystem() {
+        var themeToggle = document.getElementById('theme-toggle');
+        var themeMenu = document.getElementById('theme-menu');
+        var themeOptions = $$('.theme-option');
+
+        if (!themeToggle || !themeMenu) return;
+
+        function applyTheme(value) {
+            var resolvedTheme = value;
+            if (value === 'system') {
+                resolvedTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            
+            document.documentElement.setAttribute('data-theme', resolvedTheme);
+            document.documentElement.setAttribute('data-user-preference', value);
+            localStorage.setItem('vac-theme', value);
+
+            // Update active state in menu
+            themeOptions.forEach(function (opt) {
+                opt.classList.toggle('is-active', opt.getAttribute('data-theme-value') === value);
+            });
+
+            // Close menu
+            themeMenu.classList.remove('is-open');
+            themeToggle.setAttribute('aria-expanded', 'false');
+
+            // Dispatch event for theme-aware elements (e.g. admin charts)
+            window.dispatchEvent(new CustomEvent('vac:theme-changed', { detail: { theme: resolvedTheme } }));
+        }
+
+        themeToggle.addEventListener('click', function (e) {
+            e.stopPropagation();
+            var isOpen = themeMenu.classList.contains('is-open');
+            themeMenu.classList.toggle('is-open', !isOpen);
+            themeToggle.setAttribute('aria-expanded', !isOpen);
+        });
+
+        themeOptions.forEach(function (opt) {
+            opt.addEventListener('click', function (e) {
+                e.stopPropagation();
+                var value = opt.getAttribute('data-theme-value');
+                applyTheme(value);
+            });
+        });
+
+        document.addEventListener('click', function () {
+            themeMenu.classList.remove('is-open');
+            themeToggle.setAttribute('aria-expanded', 'false');
+        });
+
+        // Sync initial state
+        var savedTheme = localStorage.getItem('vac-theme') || 'system';
+        themeOptions.forEach(function (opt) {
+            opt.classList.toggle('is-active', opt.getAttribute('data-theme-value') === savedTheme);
+        });
+
+        // Listen for system theme changes if in system mode
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
+            if (localStorage.getItem('vac-theme') === 'system' || !localStorage.getItem('vac-theme')) {
+                var resolvedTheme = e.matches ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-theme', resolvedTheme);
+                window.dispatchEvent(new CustomEvent('vac:theme-changed', { detail: { theme: resolvedTheme } }));
+            }
+        });
+    }
+function initShopMegaSlider() {
+    var slider = document.getElementById('shop-mega-slider');
+    if (!slider) return;
+
+    var slides = Array.from(slider.querySelectorAll('.nav-mega__slide'));
+    var dots = Array.from(slider.querySelectorAll('.nav-mega__slider-dots span'));
+    if (slides.length <= 1) return;
+
+    var currentIdx = 0;
+    var interval;
+
+    function showSlide(idx) {
+        slides.forEach(function(s, i) {
+            s.classList.toggle('active', i === idx);
+        });
+        dots.forEach(function(d, i) {
+            d.classList.toggle('active', i === idx);
+        });
+        currentIdx = idx;
+    }
+
+    function startRotation() {
+        stopRotation();
+        interval = setInterval(function() {
+            var next = (currentIdx + 1) % slides.length;
+            showSlide(next);
+        }, 5000);
+    }
+
+    function stopRotation() {
+        if (interval) clearInterval(interval);
+    }
+
+    // Parent hover state in base.html logic handles visibility, 
+    // but we start/stop timer based on mega menu hover for performance.
+    slider.addEventListener('mouseenter', stopRotation);
+    slider.addEventListener('mouseleave', startRotation);
+
+    startRotation();
+}
+
+function initChatPanelBehavior() {
+    var panel = document.getElementById('chat-panel');
+    var fab = document.getElementById('chat-fab');
+    var openChatLinks = document.querySelectorAll('[data-open-chat]');
+    
+    if (!panel) return;
+
+    function closeChat() {
+        panel.classList.remove('is-open');
+    }
+
+    // Close when clicking outside chat panel and not on trigger elements
+    document.addEventListener('click', function (e) {
+        if (panel.classList.contains('is-open')) {
+            var clickedTrigger = false;
+            if (fab && fab.contains(e.target)) clickedTrigger = true;
+            openChatLinks.forEach(function (link) {
+                if (link.contains(e.target)) clickedTrigger = true;
+            });
+            
+            if (!panel.contains(e.target) && !clickedTrigger) {
+                closeChat();
+            }
+        }
     });
+
+    // Close on Escape key
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            closeChat();
+        }
+    });
+
+    // Close when clicking other buttons/dropdowns in the navbar
+    var navControls = document.querySelectorAll('.nav-link, .nav-icon-btn, .logo--brand, .dropdown-menu button');
+    navControls.forEach(function (el) {
+        var isOpenChatTrigger = el.hasAttribute('data-open-chat') || el.id === 'chat-fab';
+        if (!isOpenChatTrigger) {
+            el.addEventListener('click', function () {
+                closeChat();
+            });
+        }
+    });
+
+    // Close cart drawer when chat panel triggers are clicked
+    var chatTriggers = document.querySelectorAll('[data-open-chat], #chat-fab');
+    chatTriggers.forEach(function (el) {
+        el.addEventListener('click', function () {
+            var cartDrawer = document.getElementById('cart-drawer');
+            var cartOverlay = document.getElementById('cart-overlay');
+            if (cartDrawer) {
+                cartDrawer.classList.remove('is-open');
+                cartDrawer.setAttribute('aria-hidden', 'true');
+            }
+            if (cartOverlay) {
+                cartOverlay.classList.remove('is-open');
+            }
+            document.body.style.overflow = '';
+        });
+    });
+
+    // Close chat when cart is opened
+    var cartTriggers = document.querySelectorAll('[data-cart-open]');
+    cartTriggers.forEach(function (el) {
+        el.addEventListener('click', function () {
+            closeChat();
+        });
+    });
+}
+
+function initAdminSearch() {
+    var searchInput = document.getElementById('admin-search');
+    if (!searchInput) return;
+
+    searchInput.addEventListener('input', function () {
+        var query = searchInput.value.trim().toLowerCase();
+        
+        var selectors = [
+            { container: '.vac-admin-table', items: '.vac-admin-table__row' },
+            { container: '.vac-admin-campaign-grid', items: '.vac-admin-campaign-teaser' },
+            { container: '.vac-admin-feed', items: '.vac-admin-feed__item' },
+            { container: '.vac-admin-queue-list', items: '.vac-admin-queue' },
+            { container: '.admin-table tbody', items: 'tr' }
+        ];
+
+        selectors.forEach(function (sel) {
+            var containers = Array.from(document.querySelectorAll(sel.container));
+            containers.forEach(function (container) {
+                var items = Array.from(container.querySelectorAll(sel.items));
+                
+                items = items.filter(function (item) {
+                    return !item.classList.contains('vac-search-empty-state');
+                });
+
+                if (items.length === 0) return;
+
+                var visibleCount = 0;
+                items.forEach(function (item) {
+                    var text = item.textContent.toLowerCase();
+                    if (query === '' || text.indexOf(query) !== -1) {
+                        item.style.display = '';
+                        visibleCount++;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+
+                var emptyState = container.querySelector('.vac-search-empty-state');
+                if (visibleCount === 0) {
+                    if (!emptyState) {
+                        if (container.tagName === 'TBODY') {
+                            var colSpan = 8;
+                            var table = container.closest('table');
+                            if (table) {
+                                var ths = table.querySelectorAll('thead th');
+                                if (ths.length > 0) colSpan = ths.length;
+                            }
+                            emptyState = document.createElement('tr');
+                            emptyState.className = 'vac-search-empty-state';
+                            var td = document.createElement('td');
+                            td.colSpan = colSpan;
+                            td.style.textAlign = 'center';
+                            td.style.padding = '2rem';
+                            td.style.color = 'var(--vac-muted)';
+                            td.style.fontSize = '0.9rem';
+                            td.textContent = 'No results found';
+                            emptyState.appendChild(td);
+                            container.appendChild(emptyState);
+                        } else {
+                            emptyState = document.createElement('div');
+                            emptyState.className = 'vac-search-empty-state vac-admin-empty-state';
+                            emptyState.style.padding = '2rem';
+                            emptyState.style.textAlign = 'center';
+                            emptyState.style.color = 'var(--vac-muted)';
+                            emptyState.style.border = '1px dashed var(--vac-line)';
+                            emptyState.style.borderRadius = 'var(--vac-radius-sm)';
+                            emptyState.style.fontSize = '0.9rem';
+                            emptyState.textContent = 'No results found';
+                            container.appendChild(emptyState);
+                        }
+                    }
+                    emptyState.style.display = '';
+                } else {
+                    if (emptyState) {
+                        emptyState.style.display = 'none';
+                    }
+                }
+            });
+        });
+    });
+
+    searchInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            searchInput.value = '';
+            searchInput.dispatchEvent(new Event('input'));
+            searchInput.blur();
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    initNavScroll();
+    initNavMegaMenu();
+    initShopMegaSlider();
+    initThemeSystem();
+    initChatPanelBehavior();
+    markRevealTargets();
+    initReveal();
+    initHeroParallax();
+    initBackToTop();
+    initClickableCards();
+    initMagneticMedia();
+    initLiveCharts();
+    initCountUp();
+    initCarousels();
+    initHeroRotation();
+    initCinematicHeroSlides();
+    initCinematicParallax();
+    initKpiSparklines();
+    initAdminSearch();
+});
 })();

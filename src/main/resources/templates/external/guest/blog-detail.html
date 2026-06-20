@@ -2,7 +2,18 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/base}">
-<head><title>Blog Post</title></head>
+<head>
+    <title th:text="${post.title + ' | Volcano Arts Center'}">Blog Post | Volcano Arts Center</title>
+    <th:block layout:fragment="meta">
+        <meta name="description" th:content="${post.excerpt != null ? post.excerpt : 'Read this article from Volcano Arts Center.'}" />
+        <meta property="og:title" th:content="${post.title + ' | Volcano Arts Center'}" />
+        <meta property="og:description" th:content="${post.excerpt != null ? post.excerpt : 'Read this article from Volcano Arts Center.'}" />
+        <meta property="og:image" th:content="${post.displayFeaturedImageUrl != null ? post.displayFeaturedImageUrl : '/uploads/7881368095630241.jpeg'}" />
+        <meta name="twitter:title" th:content="${post.title + ' | Volcano Arts Center'}" />
+        <meta name="twitter:description" th:content="${post.excerpt != null ? post.excerpt : 'Read this article from Volcano Arts Center.'}" />
+        <meta name="twitter:image" th:content="${post.displayFeaturedImageUrl != null ? post.displayFeaturedImageUrl : '/uploads/7881368095630241.jpeg'}" />
+    </th:block>
+</head>
 <body>
 <main layout:fragment="content" class="vac-post"
       th:with="readMin=${post.content != null ? T(java.lang.Math).max(1, #strings.length(post.content) / 900) : 1}">
@@ -10,8 +21,8 @@
     <!-- Hero -->
     <section class="vac-post-hero reveal">
         <img class="vac-post-hero__img"
-             th:src="${post.displayFeaturedImageUrl != null ? post.displayFeaturedImageUrl : '/uploads/conservation.png'}"
-             alt="Article cover" loading="eager" onerror="this.onerror=null;this.src='/uploads/conservation3.jpg';" />
+             th:src="${post.displayFeaturedImageUrl != null ? post.displayFeaturedImageUrl : '/uploads/7881368095630241.jpeg'}"
+             alt="Article cover" loading="eager" onerror="this.onerror=null;this.src='/uploads/64457838418348827.jpeg';" />
         <div class="vac-post-hero__veil"></div>
         <div class="container vac-post-hero__inner">
             <nav class="vac-xp-crumb">
@@ -44,7 +55,7 @@
             </div>
 
             <!-- Body -->
-            <div class="vac-post-prose" th:text="${post.content}">Content</div>
+            <div class="vac-post-prose" th:utext="${post.content}">Content</div>
 
             <!-- Gallery -->
             <div class="vac-post-gallery" th:if="${!#lists.isEmpty(post.additionalImages)}">
@@ -92,7 +103,7 @@
             <div class="vac-xp-related-grid">
                 <a th:each="p,iter : ${relatedPosts}" th:href="@{|/blog/${p.slug}|}" class="vac-xp-related-card vac-clickable-card">
                     <div class="vac-xp-related-card__media">
-                        <img th:src="${p.displayFeaturedImageUrl != null ? p.displayFeaturedImageUrl : (iter.index % 3 == 0 ? '/uploads/conservation.png' : iter.index % 3 == 1 ? '/uploads/conservation2.png' : '/uploads/conservation3.jpg')}" th:alt="${p.title}" loading="lazy" />
+                        <img th:src="${p.displayFeaturedImageUrl != null ? p.displayFeaturedImageUrl : (iter.index % 3 == 0 ? '/uploads/7881368095630241.jpeg' : (iter.index % 3 == 1 ? '/uploads/Start up home page.jpeg' : '/uploads/Art.jpeg'))}" th:alt="${p.title}" loading="lazy" />
                         <span th:text="${p.category != null ? p.category.name() : 'STORY'}">STORY</span>
                     </div>
                     <div class="vac-xp-related-card__body">

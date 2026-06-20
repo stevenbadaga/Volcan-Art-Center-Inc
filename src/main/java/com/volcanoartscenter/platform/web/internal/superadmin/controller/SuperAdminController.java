@@ -42,6 +42,9 @@ public class SuperAdminController {
     private final SuperAdminService superAdminService;
     private final PasswordEncoder passwordEncoder;
     private final DonationCampaignRepository donationCampaignRepository;
+    private final com.volcanoartscenter.platform.shared.repository.ReviewRepository reviewRepository;
+    private final com.volcanoartscenter.platform.shared.repository.ProductCategoryRepository productCategoryRepository;
+    private final com.volcanoartscenter.platform.shared.repository.ProductCollectionRepository productCollectionRepository;
 
     // ── Dashboard Overview ──
     @GetMapping("/admin/dashboard")
@@ -59,7 +62,39 @@ public class SuperAdminController {
         model.addAttribute("latestBookings", superAdminService.latestBookings());
         model.addAttribute("auditEvents", superAdminService.latestAuditEvents());
         model.addAttribute("campaigns", donationCampaignRepository.findAll());
+        model.addAttribute("pendingReviewsCount", reviewRepository.findAll().stream().filter(r -> !Boolean.TRUE.equals(r.getApproved())).count());
+        model.addAttribute("totalCategories", productCategoryRepository.count());
+        model.addAttribute("totalCollections", productCollectionRepository.count());
         return "internal/super-admin/dashboard";
+    }
+
+    // ── Review Moderation ──
+    @GetMapping("/admin/reviews")
+    public String reviewsPage(Model model) {
+        var reviews = reviewRepository.findAll().stream()
+                .sorted(java.util.Comparator.comparing(com.volcanoartscenter.platform.shared.model.Review::getCreatedAt, java.util.Comparator.reverseOrder()))
+                .toList();
+        model.addAttribute("pageTitle", "Review Moderation");
+        model.addAttribute("adminPage", "reviews");
+        model.addAttribute("reviews", reviews);
+        return "internal/super-admin/reviews";
+    }
+
+    @PostMapping("/admin/reviews/{id}/approve")
+    public String approveReview(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        var review = reviewRepository.findById(id).orElseThrow();
+        review.setApproved(true);
+        review.setApprovedAt(java.time.LocalDateTime.now());
+        reviewRepository.save(review);
+        redirectAttributes.addFlashAttribute("successMessage", "Review approved.");
+        return "redirect:/admin/reviews";
+    }
+
+    @PostMapping("/admin/reviews/{id}/delete")
+    public String deleteReview(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        reviewRepository.deleteById(id);
+        redirectAttributes.addFlashAttribute("successMessage", "Review deleted.");
+        return "redirect:/admin/reviews";
     }
 
     // ── Staff & Accounts ──
@@ -155,6 +190,17 @@ public class SuperAdminController {
         String actor = authentication == null ? "system" : authentication.getName();
         superAdminService.deactivateStaff(id, actor);
         redirectAttributes.addFlashAttribute("successMessage", "Account deactivated.");
+        return "redirect:/admin/users?tab=" + normalizeUsersTab(tab);
+    }
+
+    @PostMapping("/admin/users/{id}/activate")
+    public String activateStaff(@PathVariable Long id,
+                                  @RequestParam(defaultValue = "all") String tab,
+                                  Authentication authentication,
+                                  RedirectAttributes redirectAttributes) {
+        String actor = authentication == null ? "system" : authentication.getName();
+        superAdminService.activateStaff(id, actor);
+        redirectAttributes.addFlashAttribute("successMessage", "Account activated.");
         return "redirect:/admin/users?tab=" + normalizeUsersTab(tab);
     }
 

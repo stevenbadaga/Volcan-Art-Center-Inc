@@ -215,11 +215,18 @@ public class TourOperatorService {
     }
 
     private String channelOrDefault(String channel) {
-        String normalized = normalize(channel);
+        String normalized = normalizeChannel(channel);
         if ("WHATSAPP".equals(normalized)) {
             return "WHATSAPP";
         }
         return "EMAIL";
+    }
+
+    private String normalizeChannel(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+        return value.trim().toUpperCase(Locale.ROOT);
     }
 
     private String normalize(String value) {

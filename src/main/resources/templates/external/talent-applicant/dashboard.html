@@ -1,311 +1,413 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}">
-<head><title>Talent Dashboard — Volcano Arts Center</title></head>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/talent-base}">
+<head>
+    <title>My Console — Volcano Arts Talent</title>
+    <th:block layout:fragment="styles"></th:block>
+</head>
 <body>
-<main layout:fragment="content" style="background:var(--vac-canvas); padding-bottom:6rem;">
+<main layout:fragment="content"
+      class="vac-dashboard-shell vac-client-dashboard"
+      th:with="appCount=${applications != null ? #lists.size(applications) : 0},
+               portfolioCount=${portfolioItems != null ? #lists.size(portfolioItems) : 0}">
 
-    <!-- ── Cinematic Hero ── -->
-    <section class="vac-role-hero vac-role-hero--admin reveal" style="min-height:56vh; align-items:flex-end;">
-        <img src="/uploads/talent and media.jpg" alt="Volcano Arts talent program" loading="eager"
-             onerror="this.onerror=null;this.src='/uploads/media and dance.jpg';" />
-        <div class="vac-role-hero__overlay" style="background:linear-gradient(165deg, rgba(0,33,19,0.25) 0%, rgba(0,15,8,0.95) 100%);"></div>
-        <div class="vac-role-hero__content" style="width:100%; max-width:1300px; margin:0 auto; padding:3rem 2rem;">
-            <p class="vac-role-hero__kicker">Talent Console &bull; Creative Growth &bull; Community Impact</p>
-            <h1 class="vac-role-hero__title" style="font-size:clamp(2.6rem,7vw,6rem);">TALENT<br><span style="color:var(--vac-gold);">DASHBOARD</span></h1>
-            <p class="vac-role-hero__desc" style="max-width:520px; margin-top:0.75rem;">Showcase your skills, submit applications, and track your creative journey with Volcano Arts.</p>
-            <!-- Hero stat strip -->
-            <div class="vac-client-hero-strip">
-                <div class="vac-client-hero-strip__stat">
-                    <strong th:text="${applications != null ? #lists.size(applications) : 0}">0</strong>
-                    <span>Applications</span>
+    <div class="vac-client-dashboard__stage" style="padding-top: 2rem;">
+        <div th:if="${successMessage}" class="dash-flash dash-flash--ok" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="dash-flash dash-flash--error" style="background:rgba(220,53,69,0.1); color:#dc3545; border:1px solid rgba(220,53,69,0.2);" th:text="${errorMessage}"></div>
+
+        <!-- Dashboard Header -->
+        <div class="vac-client-dashboard__header">
+            <div class="admin-page-header__info">
+                <p class="vac-client-dashboard__eyebrow">Applicant Workspace</p>
+                <h1 th:text="'Welcome back, ' + ${user.firstName}">Welcome back, Applicant</h1>
+                <div class="vac-client-status-row">
+                    <span class="vac-live-badge">Live console</span>
+                    <span class="vac-client-status-chip"
+                          th:if="${latestApplication != null}"
+                          th:text="${latestApplication.status}">Pending review</span>
+                    <span class="vac-client-status-chip" th:if="${latestApplication == null}">New member</span>
+                    <span class="vac-client-status-chip"
+                          th:if="${user.country != null and !#strings.isEmpty(user.country)}"
+                          th:text="${user.country}">Rwanda</span>
                 </div>
-                <div class="vac-client-hero-strip__stat">
-                    <strong th:text="${latestApplication != null ? latestApplication.status : 'NONE'}">NONE</strong>
-                    <span>Latest Status</span>
-                </div>
+            </div>
+            <div class="vac-client-dashboard__header-actions">
+                <a href="#portfolio" onclick="switchTab('portfolio'); return false;" class="btn btn--primary btn--sm">
+                    <i data-lucide="upload"></i>
+                    Upload Work
+                </a>
+                <a href="#applications" onclick="switchTab('applications'); return false;" class="btn btn--outline btn--sm">
+                    <i data-lucide="plus"></i>
+                    Apply Now
+                </a>
             </div>
         </div>
-    </section>
 
-    <div class="container" style="max-width:1300px; margin-top:-40px; position:relative; z-index:10;">
+        <div class="vac-client-dashboard__body">
+            <section class="vac-client-dashboard__main">
+                <div class="dash-main">
 
-        <div th:if="${successMessage}"
-             style="background:rgba(0,166,81,0.08); border:1px solid rgba(0,166,81,0.3); border-radius:14px; color:var(--vac-green-700); padding:1.2rem 1.5rem; margin-bottom:2rem; font-weight:600; font-family:var(--font-body);"
-             th:text="${successMessage}"></div>
+                    <!-- TAB: OVERVIEW -->
+                    <div id="tab-overview" class="dash-pane is-active">
+                        <div class="admin-kpi-grid vac-client-summary-grid">
+                            <article class="admin-kpi">
+                                <div class="admin-kpi__label">Applications</div>
+                                <div class="admin-kpi__value" th:text="${appCount}">0</div>
+                            </article>
+                            <article class="admin-kpi">
+                                <div class="admin-kpi__label">Portfolio Pieces</div>
+                                <div class="admin-kpi__value" th:text="${portfolioCount}">0</div>
+                            </article>
+                            <article class="admin-kpi">
+                                <div class="admin-kpi__label">Recent Status</div>
+                                <div class="admin-kpi__value" style="font-size:1.1rem; text-transform:uppercase; letter-spacing:1px;"
+                                     th:text="${latestApplication != null ? latestApplication.status : 'N/A'}">PENDING</div>
+                            </article>
+                        </div>
 
-        <!-- Quick Actions Row -->
-        <section class="reveal" style="margin-bottom:3rem;">
-            <p style="font-family:var(--font-body); font-weight:700; font-size:0.7rem; letter-spacing:2.5px; text-transform:uppercase; color:var(--vac-muted); margin:0 0 1rem;">Quick Actions</p>
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:1.25rem;">
-                <a href="#apply-now" class="vac-action-tile">
-                    <i data-lucide="plus"></i>
-                    <span style="font-family:var(--font-display); font-size:1rem;">New Application</span>
-                </a>
-                <a href="#profile-form" class="vac-action-tile">
-                    <i data-lucide="user"></i>
-                    <span style="font-family:var(--font-display); font-size:1rem;">Update Profile</span>
-                </a>
-                <a th:href="@{/account/messages}" class="vac-action-tile">
-                    <i data-lucide="message-square"></i>
-                    <span style="font-family:var(--font-display); font-size:1rem;">Messages</span>
-                </a>
-                <a th:href="@{/account/notifications}" class="vac-action-tile">
-                    <i data-lucide="bell"></i>
-                    <span style="font-family:var(--font-display); font-size:1rem;">Notifications</span>
-                </a>
-                <a th:href="@{/talent}" class="vac-action-tile">
-                    <i data-lucide="star"></i>
-                    <span style="font-family:var(--font-display); font-size:1rem;">View Showcase</span>
-                </a>
-            </div>
-        </section>
+                        <div class="vac-client-overview-grid">
+                            <!-- Progress & Guidance -->
+                            <section class="admin-panel">
+                                <div class="admin-panel__header">
+                                    <div>
+                                        <h3 class="admin-panel__title">Your Journey</h3>
+                                        <p class="admin-panel__sub">Track your application and portfolio review progress.</p>
+                                    </div>
+                                </div>
+                                <div style="padding: 0 1.5rem 1.5rem;">
+                                    <div class="vac-timeline-meter" style="margin-top: 1rem;">
+                                        <span th:classappend="${latestApplication != null} ? 'is-done'">Applied</span>
+                                        <span th:classappend="${latestApplication != null and latestApplication.status.name() != 'PENDING'} ? 'is-done'">Reviewed</span>
+                                        <span th:classappend="${latestApplication != null and latestApplication.status.name() == 'APPROVED'} ? 'is-done'">Accepted</span>
+                                    </div>
+                                    <div style="margin-top: 2rem; padding: 1.25rem; background: rgba(0,0,0,0.02); border-radius: 12px; border: 1px dashed var(--color-line);">
+                                        <h4 style="font-size: 0.9rem; font-weight: 800; margin-bottom: 0.5rem;">Next Steps</h4>
+                                        <p style="font-size: 0.85rem; color: var(--color-ink-faint); line-height: 1.5;">
+                                            Ensure your portfolio is complete with at least 3 high-quality images or videos of your performance. Our curators review applications every Tuesday.
+                                        </p>
+                                    </div>
+                                </div>
+                            </section>
 
-        <!-- Main Grid: Left = Journey + Status, Right = Apply + History -->
-        <div style="display:grid; grid-template-columns:1fr 1.4fr; gap:2rem; margin-bottom:3rem;">
-
-            <!-- Left Column -->
-            <div style="display:flex; flex-direction:column; gap:2rem;">
-
-                <!-- Application Journey Panel -->
-                <div class="admin-panel reveal">
-                    <div class="admin-panel__header">
-                        <div>
-                            <p style="font-family:var(--font-body); font-size:0.7rem; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--vac-gold); margin:0 0 0.25rem;">Progress Tracker</p>
-                            <h3 class="admin-panel__title">Your Journey</h3>
+                            <!-- Quick Profile View -->
+                            <section class="admin-panel vac-client-profile">
+                                <div class="vac-client-profile__hero">
+                                    <div class="vac-client-profile__avatar"
+                                         th:text="${user.firstName.substring(0,1).toUpperCase()}">T</div>
+                                    <div>
+                                        <p class="vac-client-profile__eyebrow">Talent Applicant</p>
+                                        <h2 class="vac-client-profile__name" th:text="${user.fullName}">Applicant Name</h2>
+                                        <p class="vac-client-profile__email" th:text="${user.email}">email@example.com</p>
+                                    </div>
+                                </div>
+                                <div class="vac-client-profile__meta">
+                                    <div class="vac-client-profile__meta-row">
+                                        <span class="vac-client-profile__meta-label">Member Since</span>
+                                        <span class="vac-client-profile__meta-value" th:text="${#temporals.format(user.createdAt, 'MMM yyyy')}">Jun 2026</span>
+                                    </div>
+                                    <div class="vac-client-profile__meta-row">
+                                        <span class="vac-client-profile__meta-label">Phone</span>
+                                        <span class="vac-client-profile__meta-value" th:text="${user.phone != null ? user.phone : 'Not set'}">Not set</span>
+                                    </div>
+                                </div>
+                                <div class="vac-client-profile__actions">
+                                    <button type="button" class="btn btn--primary btn--sm" onclick="switchTab('profile')">Edit Profile</button>
+                                    <button type="button" class="btn btn--outline btn--sm" onclick="switchTab('messages')">Contact Team</button>
+                                </div>
+                            </section>
                         </div>
                     </div>
-                    <div style="padding:2rem;">
-                        <!-- Timeline Meter -->
-                        <div class="vac-timeline-meter" style="margin-bottom:2rem;">
-                            <span th:classappend="${latestApplication != null} ? 'is-done'">Submitted</span>
-                            <span th:classappend="${latestApplication != null and latestApplication.status.name() != 'PENDING'} ? 'is-done'">Reviewed</span>
-                            <span th:classappend="${latestApplication != null and latestApplication.status.name() == 'APPROVED'} ? 'is-done'">Approved</span>
-                        </div>
-                        <!-- Live mini chart -->
-                        <div class="vac-live-chart">
-                            <div class="vac-chart-row">
-                                <span>Applications</span>
-                                <div class="vac-chart-track">
-                                    <i class="vac-live-bar" th:attr="style='width:' + (${applications != null ? (#lists.size(applications) > 0 ? '100' : '4') : '4'}) + '%'"></i>
-                                </div>
-                                <strong th:text="${applications != null ? #lists.size(applications) : 0}">0</strong>
-                            </div>
-                            <div class="vac-chart-row">
-                                <span>Status Signal</span>
-                                <div class="vac-chart-track">
-                                    <i class="vac-live-bar is-warning" th:style="${latestApplication != null} ? 'width:80%' : 'width:4%'"></i>
-                                </div>
-                                <strong th:text="${latestApplication != null ? latestApplication.status : '—'}">—</strong>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Status Detail Card -->
-                <div class="admin-panel reveal">
-                    <div class="admin-panel__header">
-                        <h3 class="admin-panel__title">Application Status</h3>
-                    </div>
-                    <div style="padding:2rem;">
-                        <p th:if="${latestApplication == null}" style="color:var(--vac-muted); font-family:var(--font-body);">No application submitted yet.</p>
-                        <div th:if="${latestApplication != null}" style="display:grid; gap:0.75rem;">
-                            <div style="display:flex; justify-content:space-between; align-items:center; padding:0.75rem; background:var(--vac-canvas); border-radius:12px;">
-                                <span style="font-size:0.8rem; font-weight:700; color:var(--vac-muted); text-transform:uppercase; letter-spacing:1px;">Status</span>
-                                <span class="admin-badge admin-badge--active" th:text="${latestApplication.status}">PENDING</span>
+                    <!-- TAB: PORTFOLIO -->
+                    <div id="tab-portfolio" class="dash-pane">
+                        <section class="admin-panel">
+                            <div class="admin-panel__header" style="border-bottom: 1px solid var(--color-line);">
+                                <div>
+                                    <h3 class="admin-panel__title">Creative Portfolio</h3>
+                                    <p class="admin-panel__sub">Submit images and videos to showcase your skills to our curators.</p>
+                                </div>
                             </div>
-                            <div style="display:flex; justify-content:space-between; align-items:center; padding:0.75rem; background:var(--vac-canvas); border-radius:12px;">
-                                <span style="font-size:0.8rem; font-weight:700; color:var(--vac-muted); text-transform:uppercase; letter-spacing:1px;">Category</span>
-                                <span style="font-weight:600; font-size:0.9rem;" th:text="${latestApplication.applicantCategory}">YOUTH</span>
-                            </div>
-                            <div style="display:flex; justify-content:space-between; align-items:center; padding:0.75rem; background:var(--vac-canvas); border-radius:12px;">
-                                <span style="font-size:0.8rem; font-weight:700; color:var(--vac-muted); text-transform:uppercase; letter-spacing:1px;">Talent Area</span>
-                                <span style="font-weight:600; font-size:0.9rem;" th:text="${latestApplication.talentArea}">DANCE</span>
-                            </div>
-                            <div style="display:flex; justify-content:space-between; align-items:center; padding:0.75rem; background:var(--vac-canvas); border-radius:12px;">
-                                <span style="font-size:0.8rem; font-weight:700; color:var(--vac-muted); text-transform:uppercase; letter-spacing:1px;">Last Update</span>
-                                <span style="font-weight:600; font-size:0.85rem; color:var(--vac-muted);" th:text="${latestApplication.lastNotifiedAt != null ? #temporals.format(latestApplication.lastNotifiedAt, 'dd MMM yyyy') : 'Pending review'}">Pending</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Update Profile Card -->
-                <div class="admin-panel reveal" id="profile-form">
-                    <div class="admin-panel__header">
-                        <h3 class="admin-panel__title">My Profile</h3>
-                    </div>
-                    <div style="padding:2rem;">
-                        <form th:action="@{/talent/dashboard/profile}" method="post" style="display:grid; gap:1.25rem;">
-                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
-                                <div class="form-group" style="margin:0;">
-                                    <label class="form-label">First Name</label>
-                                    <input class="form-input" name="firstName" th:value="${user.firstName}" required />
+                            <div style="display:grid; grid-template-columns: 1fr 320px; gap: 2rem; padding: 2rem;">
+                                <div>
+                                    <!-- Category Selectors (Visual only for now, can be used for title prefix) -->
+                                    <div style="display:flex; gap:1rem; margin-bottom:2rem; flex-wrap:wrap;">
+                                        <button type="button" class="btn btn--outline btn--sm" onclick="setUploadType('Portfolio Images')">
+                                            <i data-lucide="image"></i> Portfolio Images
+                                        </button>
+                                        <button type="button" class="btn btn--outline btn--sm" onclick="setUploadType('Performance Videos')">
+                                            <i data-lucide="video"></i> Performance Videos
+                                        </button>
+                                        <button type="button" class="btn btn--outline btn--sm" onclick="setUploadType('Artwork Samples')">
+                                            <i data-lucide="palette"></i> Artwork Samples
+                                        </button>
+                                    </div>
+
+                                    <!-- Large Upload Area -->
+                                    <div id="upload-dropzone" style="border: 2px dashed var(--color-line); border-radius: 24px; padding: 4rem 2rem; text-align: center; cursor: pointer; transition: all 0.2s;"
+                                         onclick="document.getElementById('portfolio-file-input').click()"
+                                         onmouseover="this.style.borderColor='var(--color-primary)'; this.style.background='rgba(0,166,81,0.02)';"
+                                         onmouseout="this.style.borderColor='var(--color-line)'; this.style.background='transparent';">
+                                        <i data-lucide="cloud-upload" style="width:54px; height:54px; color:var(--color-primary); margin-bottom:1rem;"></i>
+                                        <h4 id="upload-type-label" style="font-family:var(--font-display); font-size:1.25rem; margin-bottom:0.5rem;">Click to upload media</h4>
+                                        <p style="color:var(--color-ink-faint); font-size:0.9rem;">Drag and drop or click to browse files from your device.</p>
+                                    </div>
+
+                                    <!-- Upload Form (Hidden) -->
+                                    <form th:action="@{/talent/dashboard/portfolio/upload}" method="post" enctype="multipart/form-data" id="portfolio-upload-form" style="display:none;">
+                                        <input type="file" name="file" id="portfolio-file-input" onchange="document.getElementById('portfolio-upload-form').submit()" accept="image/*,video/*" />
+                                        <input type="hidden" name="title" id="portfolio-title-input" value="Portfolio Piece" />
+                                    </form>
                                 </div>
-                                <div class="form-group" style="margin:0;">
-                                    <label class="form-label">Last Name</label>
-                                    <input class="form-input" name="lastName" th:value="${user.lastName}" required />
+
+                                <aside>
+                                    <div style="background:rgba(0,0,0,0.02); border:1px solid var(--color-line); border-radius:16px; padding:1.5rem;">
+                                        <h4 style="font-size:0.8rem; font-weight:800; text-transform:uppercase; letter-spacing:1px; margin-bottom:1rem; display:flex; align-items:center; gap:0.5rem;">
+                                            <i data-lucide="info" style="width:16px;"></i>
+                                            Upload Guidelines
+                                        </h4>
+                                        <ul style="padding:0; margin:0; list-style:none; display:grid; gap:1rem;">
+                                            <li style="display:flex; gap:0.75rem; align-items:flex-start;">
+                                                <i data-lucide="check" style="width:14px; color:var(--color-primary); margin-top:0.2rem;"></i>
+                                                <span style="font-size:0.82rem; line-height:1.4; color:var(--color-ink-soft);"><strong>Images:</strong> JPG, PNG, WEBP (Max 10MB)</span>
+                                            </li>
+                                            <li style="display:flex; gap:0.75rem; align-items:flex-start;">
+                                                <i data-lucide="check" style="width:14px; color:var(--color-primary); margin-top:0.2rem;"></i>
+                                                <span style="font-size:0.82rem; line-height:1.4; color:var(--color-ink-soft);"><strong>Videos:</strong> MP4, MOV (Max 50MB recommended)</span>
+                                            </li>
+                                            <li style="display:flex; gap:0.75rem; align-items:flex-start;">
+                                                <i data-lucide="check" style="width:14px; color:var(--color-primary); margin-top:0.2rem;"></i>
+                                                <span style="font-size:0.82rem; line-height:1.4; color:var(--color-ink-soft);">Provide clear, high-resolution samples of your recent work.</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </aside>
+                            </div>
+
+                            <div style="padding: 0 2rem 2rem;">
+                                <h4 style="font-family:var(--font-display); font-size:1.1rem; margin-bottom:1.5rem;">Uploaded Showcase</h4>
+                                <div class="dash-wishlist-grid" th:if="${not #lists.isEmpty(portfolioItems)}">
+                                    <article class="dash-wish-card" th:each="item : ${portfolioItems}">
+                                        <div class="dash-wish-card__img" style="background:#000;">
+                                            <!-- Image Preview -->
+                                            <img th:if="${item.contentType != null and item.contentType.startsWith('image')}"
+                                                 th:src="${item.publicUrl}" th:alt="${item.title}" />
+                                            <!-- Video Preview Placeholder -->
+                                            <div th:if="${item.contentType != null and item.contentType.startsWith('video')}"
+                                                 style="display:grid; place-items:center; width:100%; height:100%; color:var(--vac-gold);">
+                                                <i data-lucide="play-circle" style="width:48px;height:48px;"></i>
+                                            </div>
+                                        </div>
+                                        <div class="dash-wish-card__body">
+                                            <strong th:text="${item.title}">Piece Title</strong>
+                                            <span th:text="${#temporals.format(item.createdAt, 'dd MMM yyyy')}">Date</span>
+                                            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.5rem;">
+                                                <span style="font-size:0.7rem; font-weight:800; text-transform:uppercase; color:var(--color-primary);"
+                                                      th:text="${item.contentType.contains('/') ? item.contentType.split('/')[1] : item.contentType}">JPG</span>
+                                                <a th:href="${item.publicUrl}" target="_blank" class="btn btn--outline btn--xs">View Full</a>
+                                            </div>
+                                        </div>
+                                    </article>
+                                </div>
+
+                                <div th:if="${#lists.isEmpty(portfolioItems)}" class="vac-empty-panel" style="padding: 4rem 2rem; border-top:1px solid var(--color-line);">
+                                    <p>No uploads yet. Select a category above to start building your portfolio.</p>
                                 </div>
                             </div>
-                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
-                                <div class="form-group" style="margin:0;">
-                                    <label class="form-label">Phone</label>
-                                    <input class="form-input" name="phone" th:value="${user.phone}" />
+                        </section>
+                    </div>
+
+                    <!-- TAB: APPLICATIONS -->
+                    <div id="tab-applications" class="dash-pane">
+                        <section class="admin-panel">
+                            <div class="admin-panel__header">
+                                <div>
+                                    <h3 class="admin-panel__title">New Application</h3>
+                                    <p class="admin-panel__sub">Submit a new application to join our programs or events.</p>
                                 </div>
-                                <div class="form-group" style="margin:0;">
+                            </div>
+                            <div style="padding: 1.5rem;">
+                                <form th:action="@{/talent/dashboard/apply}" method="post" enctype="multipart/form-data" class="vac-client-profile-form" style="max-width: 800px; margin: 0 auto;">
+                                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+                                        <div class="form-group">
+                                            <label class="form-label">Category</label>
+                                            <select class="form-select" name="applicantCategory" required style="width:100%;">
+                                                <option th:each="c : ${categories}" th:value="${c.name()}" th:text="${#strings.replace(c.name(),'_',' ')}">YOUTH</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Talent Area</label>
+                                            <select class="form-select" name="talentArea" required style="width:100%;">
+                                                <option th:each="a : ${areas}" th:value="${a.name()}" th:text="${#strings.replace(a.name(),'_',' ')}">DANCE</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" style="margin-top:1.5rem;">
+                                        <label class="form-label">Full Name</label>
+                                        <input class="form-input" name="fullName" th:value="${user.fullName}" required />
+                                    </div>
+                                    <div class="form-group" style="margin-top:1.5rem;">
+                                        <label class="form-label">Motivation & Background</label>
+                                        <textarea class="form-input" name="motivation" rows="4" placeholder="Why do you want to join? Tell us your story..."></textarea>
+                                    </div>
+                                    <div class="form-group" style="margin-top:1.5rem;">
+                                        <label class="form-label">Accessibility or Support Needs</label>
+                                        <input class="form-input" name="accessibilityNeeds" placeholder="e.g. wheelchair access, sign language..." />
+                                    </div>
+
+                                    <!-- Media Submission Fields -->
+                                    <div style="margin-top:2.5rem; padding-top:1.5rem; border-top:1px solid var(--color-line);">
+                                        <h4 style="font-family:var(--font-display); font-size:1.1rem; font-weight:800; color:var(--color-primary); margin-bottom:1rem;">Initial Portfolio Submission</h4>
+                                        <p style="font-size:0.85rem; color:var(--color-ink-faint); margin-bottom:1.5rem;">Submit at least one image or video to support your application. You can add more later in the 'My Portfolio' tab.</p>
+                                        
+                                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+                                            <div class="form-group">
+                                                <label class="form-label" style="display:flex; align-items:center; gap:0.5rem;"><i data-lucide="image" style="width:16px; height:16px;"></i> Portfolio Images</label>
+                                                <input type="file" class="form-input" name="portfolioImages" accept="image/*" multiple style="padding-top:0.6rem;" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label" style="display:flex; align-items:center; gap:0.5rem;"><i data-lucide="video" style="width:16px; height:16px;"></i> Performance Videos</label>
+                                                <input type="file" class="form-input" name="performanceVideos" accept="video/*" multiple style="padding-top:0.6rem;" />
+                                            </div>
+                                            <div class="form-group" style="grid-column: 1 / -1;">
+                                                <label class="form-label" style="display:flex; align-items:center; gap:0.5rem;"><i data-lucide="palette" style="width:16px; height:16px;"></i> Additional Artwork Samples</label>
+                                                <input type="file" class="form-input" name="artworkSamples" accept="image/*,video/*" multiple style="padding-top:0.6rem;" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <input type="hidden" name="captchaToken" value="skip" />
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                    <button type="submit" class="btn btn--primary" style="margin-top:2rem; width:100%;">Submit Application →</button>
+                                </form>
+                            </div>
+                        </section>
+
+                        <section class="admin-panel" style="margin-top:2rem;">
+                            <div class="admin-panel__header">
+                                <h3 class="admin-panel__title">Application History</h3>
+                            </div>
+                            <div style="overflow-x:auto;">
+                                <table class="admin-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Ref #</th>
+                                            <th>Category</th>
+                                            <th>Area</th>
+                                            <th>Date</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="app : ${applications}">
+                                            <td><code th:text="${app.referenceNumber}">VAC-000</code></td>
+                                            <td th:text="${app.applicantCategory}">CAT</td>
+                                            <td th:text="${app.talentArea}">AREA</td>
+                                            <td th:text="${#temporals.format(app.createdAt, 'dd MMM yyyy')}">Date</td>
+                                            <td>
+                                                <span class="order-status-badge"
+                                                      th:classappend="${app.status.name() == 'APPROVED' ? 'badge--delivered' : (app.status.name() == 'REJECTED' ? 'badge--cancelled' : 'badge--pending')}"
+                                                      th:text="${app.status}">PENDING</span>
+                                            </td>
+                                        </tr>
+                                        <tr th:if="${#lists.isEmpty(applications)}">
+                                            <td colspan="5" style="text-align:center; padding:3rem; color:var(--color-ink-faint);">No applications on record.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </section>
+                    </div>
+
+                    <!-- TAB: PROFILE -->
+                    <div id="tab-profile" class="dash-pane">
+                        <section class="admin-panel">
+                            <div class="admin-panel__header">
+                                <div>
+                                    <h3 class="admin-panel__title">Edit Account</h3>
+                                    <p class="admin-panel__sub">Update your personal information and contact details.</p>
+                                </div>
+                            </div>
+                            <form th:action="@{/talent/dashboard/profile}" method="post" class="vac-client-profile-form">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+                                    <div class="form-group">
+                                        <label class="form-label">First name</label>
+                                        <input type="text" name="firstName" th:value="${user.firstName}" class="form-input" required />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Last name</label>
+                                        <input type="text" name="lastName" th:value="${user.lastName}" class="form-input" required />
+                                    </div>
+                                </div>
+                                <div class="form-group" style="margin-top:1.5rem;">
+                                    <label class="form-label">Phone number</label>
+                                    <input type="text" name="phone" th:value="${user.phone}" class="form-input" />
+                                </div>
+                                <div class="form-group" style="margin-top:1.5rem;">
                                     <label class="form-label">Country</label>
-                                    <input class="form-input" name="country" th:value="${user.country}" />
+                                    <input type="text" name="country" th:value="${user.country}" class="form-input" />
                                 </div>
-                            </div>
-                            <button class="btn btn--primary" type="submit" style="width:100%;">Save Profile</button>
-                        </form>
+                                <button type="submit" class="btn btn--primary" style="margin-top:2rem;">Save Account Changes</button>
+                            </form>
+                        </section>
                     </div>
+
+                    <!-- TAB: MESSAGES -->
+                    <div id="tab-messages" class="dash-pane">
+                        <section class="admin-panel">
+                            <div class="admin-panel__header" style="border-bottom: 1px solid var(--color-line);">
+                                <div>
+                                    <h3 class="admin-panel__title">Curator Messaging</h3>
+                                    <p class="admin-panel__sub">Direct communication regarding your portfolio or application.</p>
+                                </div>
+                                <a th:href="@{/account/messages}" class="btn btn--outline btn--sm">Full Inbox</a>
+                            </div>
+                            <div class="vac-empty-panel" style="padding: 8rem 2rem;">
+                                <i data-lucide="message-square" style="width:48px; height:48px; color:var(--color-line); margin-bottom:1.25rem;"></i>
+                                <h3>Messages integrated here soon</h3>
+                                <p>You can currently manage your conversations in the main messaging center.</p>
+                                <a th:href="@{/account/messages}" class="btn btn--primary btn--sm" style="margin-top:1.5rem;">Go to Full Inbox</a>
+                            </div>
+                        </section>
+                    </div>
+
                 </div>
-
-            </div>
-
-            <!-- Right Column -->
-            <div style="display:flex; flex-direction:column; gap:2rem;">
-
-                <!-- Submit Application -->
-                <div class="admin-panel reveal" id="apply-now">
-                    <div class="admin-panel__header">
-                        <div>
-                            <p style="font-family:var(--font-body); font-size:0.7rem; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--vac-gold); margin:0 0 0.25rem;">Apply Now</p>
-                            <h3 class="admin-panel__title">Submit New Application</h3>
-                        </div>
-                    </div>
-                    <div style="padding:2rem;">
-                        <form th:action="@{/talent/dashboard/apply}" method="post" style="display:grid; gap:1.25rem;">
-                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
-                                <div class="form-group" style="margin:0;">
-                                    <label class="form-label">Full Name</label>
-                                    <input class="form-input" name="fullName" th:value="${user.fullName}" required />
-                                </div>
-                                <div class="form-group" style="margin:0;">
-                                    <label class="form-label">Email</label>
-                                    <input class="form-input" type="email" name="email" th:value="${user.email}" required />
-                                </div>
-                            </div>
-                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
-                                <div class="form-group" style="margin:0;">
-                                    <label class="form-label">Phone</label>
-                                    <input class="form-input" name="phone" th:value="${user.phone}" />
-                                </div>
-                                <div class="form-group" style="margin:0;">
-                                    <label class="form-label">Location</label>
-                                    <input class="form-input" name="location" th:value="${user.country}" />
-                                </div>
-                            </div>
-                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
-                                <div class="form-group" style="margin:0;">
-                                    <label class="form-label">Category</label>
-                                    <select class="form-select" name="applicantCategory" required>
-                                        <option th:each="c : ${categories}" th:value="${c.name()}" th:text="${#strings.replace(c.name(),'_',' ')}">YOUTH</option>
-                                    </select>
-                                </div>
-                                <div class="form-group" style="margin:0;">
-                                    <label class="form-label">Talent Area</label>
-                                    <select class="form-select" name="talentArea" required>
-                                        <option th:each="a : ${areas}" th:value="${a.name()}" th:text="${#strings.replace(a.name(),'_',' ')}">DANCE</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
-                                <div class="form-group" style="margin:0;">
-                                    <label class="form-label">Availability</label>
-                                    <input class="form-input" name="availabilityDetails" placeholder="When are you free?" />
-                                </div>
-                                <div class="form-group" style="margin:0;">
-                                    <label class="form-label">Preferred Channel</label>
-                                    <select class="form-select" name="preferredContactChannel">
-                                        <option value="EMAIL">Email</option>
-                                        <option value="WHATSAPP">WhatsApp</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group" style="margin:0;">
-                                <label class="form-label">Your Experience</label>
-                                <textarea class="form-input" name="experienceDescription" rows="3" placeholder="Briefly describe your background and creative experience…"></textarea>
-                            </div>
-                            <div class="form-group" style="margin:0;">
-                                <label class="form-label">Why Volcano Arts?</label>
-                                <textarea class="form-input" name="motivation" rows="3" placeholder="Tell us what excites you about joining our program…"></textarea>
-                            </div>
-                            <input type="hidden" name="captchaToken" value="skip" />
-                            <button class="btn btn--primary" type="submit" style="width:100%; padding:1rem; font-family:var(--font-body); font-weight:700; font-size:1rem;">Submit Application →</button>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Application History -->
-                <div class="admin-panel reveal">
-                    <div class="admin-panel__header">
-                        <h3 class="admin-panel__title">Application History</h3>
-                        <span style="background:var(--vac-mint); color:var(--vac-green-700); border-radius:999px; padding:0.3rem 0.9rem; font-weight:800; font-size:0.8rem; font-family:var(--font-body);"
-                              th:text="${applications != null ? #lists.size(applications) : 0}">0</span>
-                    </div>
-                    <div style="overflow-x:auto;">
-                        <table class="admin-table">
-                            <thead>
-                                <tr>
-                                    <th>Category</th>
-                                    <th>Area</th>
-                                    <th>Status</th>
-                                    <th>Edit</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:each="app : ${applications}">
-                                    <td>
-                                        <span style="font-weight:700; font-size:0.875rem;" th:text="${app.applicantCategory}">CAT</span>
-                                    </td>
-                                    <td th:text="${app.talentArea}" style="color:var(--vac-muted); font-size:0.875rem;">AREA</td>
-                                    <td>
-                                        <span class="admin-badge"
-                                              th:classappend="${app.status.name() == 'APPROVED'} ? 'admin-badge--active' : (${app.status.name() == 'REJECTED'} ? 'admin-badge--inactive' : 'admin-badge--pending')"
-                                              th:text="${app.status}">SUBMITTED</span>
-                                    </td>
-                                    <td>
-                                        <button th:if="${app.status == T(com.volcanoartscenter.platform.shared.model.TalentApplication.ApplicationStatus).PENDING or app.status == T(com.volcanoartscenter.platform.shared.model.TalentApplication.ApplicationStatus).AWAITING_INFO}"
-                                                class="btn btn--outline btn--xs"
-                                                th:onclick="'toggleEditRow(' + ${app.id} + ')'">Edit</button>
-                                    </td>
-                                </tr>
-                                <!-- Inline edit rows -->
-                                <tr th:each="app : ${applications}"
-                                    th:id="'edit-row-' + ${app.id}"
-                                    style="display:none; background:var(--vac-canvas);">
-                                    <td colspan="4" style="padding:1.25rem 1.5rem;">
-                                        <form th:action="@{|/talent/dashboard/applications/${app.id}/update|}" method="post"
-                                              style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
-                                            <input class="form-input" name="availabilityDetails" th:value="${app.availabilityDetails}" placeholder="Availability" style="font-size:0.85rem;" />
-                                            <input class="form-input" name="preferredContactChannel" th:value="${app.preferredContactChannel}" placeholder="Channel" style="font-size:0.85rem;" />
-                                            <textarea class="form-input" name="experienceDescription" rows="2" placeholder="Experience" style="font-size:0.85rem;" th:text="${app.experienceDescription}"></textarea>
-                                            <textarea class="form-input" name="motivation" rows="2" placeholder="Motivation" style="font-size:0.85rem;" th:text="${app.motivation}"></textarea>
-                                            <button class="btn btn--primary btn--sm" type="submit">Save</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                                <tr th:if="${applications == null or #lists.isEmpty(applications)}">
-                                    <td colspan="4" style="text-align:center; padding:3rem; color:var(--vac-muted);">
-                                        <i data-lucide="file-text" style="width:48px; height:48px; stroke:var(--vac-line); margin-bottom:1rem;"></i>
-                                        <p style="font-family:var(--font-body);">No applications yet. Submit your first above.</p>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-            </div>
+            </section>
         </div>
     </div>
 
-    <script>
-        function toggleEditRow(id) {
-            const row = document.getElementById('edit-row-' + id);
-            if (row) row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
-        }
+    <script th:inline="javascript">
+        (function() {
+            function switchTab(name) {
+                document.querySelectorAll(".dash-pane").forEach(p => p.classList.remove("is-active"));
+                document.querySelectorAll(".client-shell-tab").forEach(b => b.classList.remove("active"));
+
+                const pane = document.getElementById("tab-" + name);
+                const btn = document.querySelector('[data-shell-tab="' + name + '"]');
+
+                if (pane) pane.classList.add("is-active");
+                if (btn) btn.classList.add("active");
+
+                window.location.hash = name;
+            }
+
+            function setUploadType(type) {
+                document.getElementById('portfolio-title-input').value = type + " - Submission";
+                document.getElementById('upload-type-label').innerText = "Submit " + type;
+                document.getElementById('portfolio-file-input').click();
+            }
+
+            window.switchTab = switchTab;
+            window.setUploadType = setUploadType;
+
+            // Handle deep linking
+            var hash = window.location.hash.replace("#", "");
+            if (hash && document.getElementById("tab-" + hash)) {
+                switchTab(hash);
+            }
+        })();
     </script>
 </main>
 </body>

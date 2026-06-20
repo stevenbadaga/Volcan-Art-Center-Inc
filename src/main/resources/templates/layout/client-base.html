@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="_csrf" th:if="${_csrf}" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:if="${_csrf}" th:content="${_csrf.headerName}" />
+    <title layout:title-pattern="$CONTENT_TITLE — Volcano Arts Client">Client Workspace</title>
+    <link rel="icon" type="image/png" th:href="@{/images/favicon.png}" />
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
+    <link rel="stylesheet" th:href="@{/css/vac-overhaul.css}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600;700&family=Roboto+Slab:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&family=DM+Mono:wght@400&display=swap" rel="stylesheet" />
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        (function () {
+            try {
+                var savedTheme = localStorage.getItem('vac-theme') || 'system';
+                var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                var theme = savedTheme === 'system' ? (systemDark ? 'dark' : 'light') : savedTheme;
+                document.documentElement.setAttribute('data-theme', theme);
+                document.documentElement.setAttribute('data-user-preference', savedTheme);
+            } catch (e) {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+    <th:block layout:fragment="styles"></th:block>
+</head>
+
+<body class="admin-body client-shell-body" th:classappend="${currentPage != null ? ' admin-page--' + currentPage : ' admin-page--client'}">
+
+    <aside class="admin-sidebar admin-sidebar--premium" id="admin-sidebar">
+        <div class="admin-sidebar__header">
+            <a th:href="@{/client/dashboard}" class="admin-sidebar__logo">
+                <img class="logo-image logo-image--white" th:src="@{/uploads/logo-white-transparent.png}" alt="Volcano Arts Center logo" width="130" height="40" />
+                <img class="logo-image logo-image--green" th:src="@{/uploads/logo-green-transparent.png}" alt="Volcano Arts Center logo" width="130" height="40" />
+                <div class="admin-sidebar__logo-text">
+                    <span style="color:var(--sand);">Client Workspace</span>
+                </div>
+            </a>
+            <button class="admin-sidebar__close" id="sidebar-close" aria-label="Close sidebar">✕</button>
+        </div>
+
+        <nav class="admin-sidebar__nav">
+            <div class="admin-sidebar__section">
+                <span class="admin-sidebar__section-label">Menu</span>
+                <a th:href="@{/client/dashboard}" class="admin-sidebar__link client-shell-tab"
+                   th:classappend="${currentPage == 'client-dashboard'} ? ' active'"
+                   data-shell-tab="overview" onclick="setClientDashboardTab('overview'); if(typeof switchTab === 'function'){ switchTab('overview'); return false; }">
+                    <i data-lucide="layout-dashboard"></i>
+                    Overview
+                </a>
+                <a th:href="@{/client/dashboard}" class="admin-sidebar__link client-shell-tab" data-shell-tab="profile" onclick="setClientDashboardTab('profile'); if(typeof switchTab === 'function'){ switchTab('profile'); return false; }">
+                    <i data-lucide="badge-check"></i>
+                    Profile
+                </a>
+                <a th:href="@{/client/dashboard}" class="admin-sidebar__link client-shell-tab" data-shell-tab="orders" onclick="setClientDashboardTab('orders'); if(typeof switchTab === 'function'){ switchTab('orders'); return false; }">
+                    <i data-lucide="package"></i>
+                    Orders
+                    <span class="admin-sidebar__badge" th:text="${orders != null and #lists.size(orders) > 99 ? '99+' : (orders != null ? #lists.size(orders) : 0)}">0</span>
+                </a>
+                <a th:href="@{/client/bookings}" class="admin-sidebar__link"
+                   th:classappend="${currentPage == 'client-bookings'} ? ' active'">
+                    <i data-lucide="calendar-check"></i>
+                    Bookings
+                    <span class="admin-sidebar__badge" th:text="${bookings != null and #lists.size(bookings) > 99 ? '99+' : (bookings != null ? #lists.size(bookings) : 0)}">0</span>
+                </a>
+                <!-- STANDALONE NOTIFICATIONS LINK FIX -->
+                <a th:href="@{/account/notifications}" class="admin-sidebar__link"
+                   th:classappend="${currentPage == 'account-notifications'} ? 'active'">
+                    <i data-lucide="bell"></i>
+                    Notifications
+                    <span class="admin-sidebar__badge" data-client-unread-badge
+                          th:text="${notificationSummary != null and notificationSummary.unread > 99 ? '99+' : (notificationSummary != null ? notificationSummary.unread : 0)}">0</span>
+                </a>
+                <a th:href="@{/client/dashboard}" class="admin-sidebar__link client-shell-tab" data-shell-tab="messages" onclick="setClientDashboardTab('messages'); if(typeof switchTab === 'function'){ switchTab('messages'); return false; }">
+                    <i data-lucide="message-square"></i>
+                    Messages
+                    <span class="admin-sidebar__badge" th:if="${unreadMessageCount != null and unreadMessageCount > 0}"
+                          th:text="${unreadMessageCount > 99 ? '99+' : unreadMessageCount}">0</span>
+                </a>
+                <a th:href="@{/client/dashboard}" class="admin-sidebar__link client-shell-tab" data-shell-tab="wishlist" onclick="setClientDashboardTab('wishlist'); if(typeof switchTab === 'function'){ switchTab('wishlist'); return false; }">
+                    <i data-lucide="heart"></i>
+                    Wishlist
+                    <span class="admin-sidebar__badge" th:text="${savedItems != null and #lists.size(savedItems) > 99 ? '99+' : (savedItems != null ? #lists.size(savedItems) : 0)}">0</span>
+                </a>
+            </div>
+        </nav>
+
+        <div class="admin-sidebar__footer" style="padding:1rem; border-top:1px solid rgba(255,255,255,0.1); margin-top:auto;">
+            <a th:href="@{/}" class="admin-sidebar__link" style="margin-bottom:4px;">
+                <i data-lucide="globe"></i>
+                View Public Site
+            </a>
+            <form th:action="@{/logout}" method="post" class="admin-sidebar__logout" style="margin:0;">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <button type="submit" class="admin-sidebar__link admin-sidebar__link--logout" style="width:100%; text-align:left; background:none; border:none; cursor:pointer; color:rgba(255,100,80,0.8);">
+                    <i data-lucide="log-out"></i>
+                    Sign Out
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <div class="admin-main" id="admin-main">
+        <header class="admin-topbar admin-topbar--premium">
+            <div class="admin-topbar__left">
+                <button class="admin-topbar__toggle" id="sidebar-toggle" aria-label="Toggle sidebar">
+                    <span></span><span></span><span></span>
+                </button>
+                <div class="admin-topbar__breadcrumb">
+                    <span>Client</span>
+                    <span class="sep">›</span>
+                    <span th:text="${workspaceSection != null ? workspaceSection : (currentPage == 'account-notifications' ? 'Notifications' : 'Dashboard')}">Dashboard</span>
+                </div>
+                <div class="client-shell-topbar__title">
+                    <strong th:text="${pageTitle != null ? pageTitle : 'Client Dashboard'}">Client Dashboard</strong>
+                    <span th:text="${workspaceSubtitle != null ? workspaceSubtitle : (currentPage == 'account-notifications' ? 'Client notification center' : 'Protected workspace')}">Protected Workspace</span>
+                </div>
+            </div>
+            <div class="admin-topbar__search">
+                <i data-lucide="search"></i>
+                <input type="search" placeholder="Search your workspace..." disabled />
+            </div>
+            <div class="admin-topbar__right" style="display:flex; align-items:center; gap:1rem;">
+                <!-- Theme Switcher -->
+                <div class="nav-theme-switcher dropdown">
+                    <button type="button" class="nav-icon nav-icon-btn" id="theme-toggle" aria-label="Switch Theme" aria-expanded="false" aria-haspopup="true">
+                        <i data-lucide="sun" class="theme-icon-light" aria-hidden="true"></i>
+                        <i data-lucide="moon" class="theme-icon-dark" aria-hidden="true"></i>
+                        <i data-lucide="monitor" class="theme-icon-system" aria-hidden="true"></i>
+                    </button>
+                    <div class="dropdown-menu theme-dropdown" id="theme-menu" style="display: none;">
+                        <button class="theme-option" data-theme-value="light" aria-label="Light Theme">
+                            <i data-lucide="sun" width="16" height="16" aria-hidden="true"></i> <span>Light</span>
+                        </button>
+                        <button class="theme-option" data-theme-value="dark" aria-label="Dark Theme">
+                            <i data-lucide="moon" width="16" height="16" aria-hidden="true"></i> <span>Dark</span>
+                        </button>
+                        <button class="theme-option" data-theme-value="system" aria-label="System Theme">
+                            <i data-lucide="monitor" width="16" height="16" aria-hidden="true"></i> <span>System</span>
+                        </button>
+                    </div>
+                </div>
+                <details class="admin-notif-center" th:if="${navContext.authenticated}">
+                    <summary aria-label="Notifications">
+                        <i data-lucide="bell" style="width:20px;height:20px;"></i>
+                        <span class="admin-notif-center__badge" id="admin-bell-badge"
+                              th:if="${notificationSummary != null and notificationSummary.unread > 0}"
+                              th:text="${notificationSummary.unread > 99 ? '99+' : notificationSummary.unread}">0</span>
+                    </summary>
+                    <div class="admin-notif-center__panel">
+                        <a class="admin-notif-center__item"
+                           th:each="n : ${notificationSummary != null ? notificationSummary.recent : {}}"
+                           th:href="${n.ctaUrl != null ? n.ctaUrl : '/account/notifications'}"
+                           th:classappend="${n.unread} ? ' is-unread'">
+                            <div>
+                                <strong th:text="${n.title}">Notification</strong>
+                                <p th:text="${n.body}">Message</p>
+                            </div>
+                            <time th:text="${n.createdAt != null ? #temporals.format(n.createdAt, 'MMM d, HH:mm') : ''}"></time>
+                        </a>
+                        <p th:if="${notificationSummary == null or #lists.isEmpty(notificationSummary.recent)}" class="admin-notif-center__empty">
+                            No new notifications
+                        </p>
+                        <a class="admin-notif-center__all" th:href="@{/account/notifications}">Open Notification Center →</a>
+                    </div>
+                </details>
+                <div class="admin-topbar__user">
+                    <div class="admin-topbar__avatar"
+                         th:text="${navContext.userName != null and !#strings.isEmpty(navContext.userName) ? navContext.userName.substring(0,1) : 'C'}">C</div>
+                    <div class="admin-topbar__user-info">
+                        <span class="admin-topbar__user-name"
+                              th:text="${navContext.userName != null ? navContext.userName : 'Client'}">Client</span>
+                        <span class="admin-topbar__user-role"
+                              th:text="${navContext.registeredClient ? navContext.roleLabel : 'Staff Access'}">Registered Client</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="admin-toast-container" id="admin-toast-container"></div>
+
+        <div class="admin-content">
+            <main layout:fragment="content">
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/motion@10.18.0/dist/motion.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script th:src="@{/js/main.js}"></script>
+    <script th:src="@{/js/admin.js}"></script>
+    <script th:src="@{/js/vac-overhaul.js}"></script>
+    <script th:if="${successMessage}" th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            if(typeof showToast === 'function') showToast([[${successMessage}]], 'success');
+        });
+    </script>
+    <script th:if="${errorMessage}" th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            if(typeof showToast === 'function') showToast([[${errorMessage}]], 'error');
+        });
+    </script>
+    <script th:src="@{/js/admin-charts.js}"></script>
+    <script>
+        window.setClientDashboardTab = function(name) {
+            try {
+                sessionStorage.setItem("clientDashboardTab", name);
+            } catch (e) {
+            }
+        };
+
+        document.addEventListener("DOMContentLoaded", function() {
+            lucide.createIcons();
+        });
+    </script>
+    <th:block layout:fragment="scripts"></th:block>
+</body>
+
+</html>

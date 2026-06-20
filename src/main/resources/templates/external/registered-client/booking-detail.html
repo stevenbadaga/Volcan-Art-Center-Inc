@@ -1,0 +1,373 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/client-base}">
+<head>
+    <title>Booking Details - Volcano Arts Center</title>
+    <th:block layout:fragment="styles">
+        <style>
+            .vac-client-booking-detail {
+                display: grid;
+                gap: 1.5rem;
+            }
+
+            .vac-client-booking-hero {
+                position: relative;
+                overflow: hidden;
+                min-height: 320px;
+                border-radius: 30px;
+                border: 1px solid rgba(0, 63, 34, 0.08);
+                box-shadow: 0 24px 56px rgba(10, 42, 26, 0.14);
+                background: #0d1711;
+            }
+
+            .vac-client-booking-hero img {
+                position: absolute;
+                inset: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .vac-client-booking-hero__shade {
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(90deg, rgba(7, 18, 12, 0.88) 0%, rgba(7, 18, 12, 0.62) 45%, rgba(7, 18, 12, 0.22) 100%);
+            }
+
+            .vac-client-booking-hero__content {
+                position: relative;
+                z-index: 1;
+                display: grid;
+                gap: 0.85rem;
+                padding: clamp(2rem, 4vw, 3rem);
+                max-width: 840px;
+                color: #fff;
+            }
+
+            .vac-client-booking-hero__content p {
+                margin: 0;
+                font-family: var(--font-ui);
+                font-size: 0.76rem;
+                font-weight: 800;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                color: rgba(255,255,255,0.72);
+            }
+
+            .vac-client-booking-hero__content h1 {
+                margin: 0;
+                font-size: clamp(2.6rem, 5vw, 4.8rem);
+                line-height: 0.92;
+                color: #fff;
+            }
+
+            .vac-client-booking-hero__meta {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.65rem;
+            }
+
+            .vac-detail-pill {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0.5rem 0.88rem;
+                border-radius: 999px;
+                background: rgba(255,255,255,0.14);
+                border: 1px solid rgba(255,255,255,0.18);
+                backdrop-filter: blur(14px);
+                color: #fff;
+                font-size: 0.73rem;
+                font-weight: 800;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+            }
+
+            .vac-client-booking-layout {
+                display: grid;
+                grid-template-columns: minmax(0, 1.4fr) minmax(320px, 0.85fr);
+                gap: 1.25rem;
+            }
+
+            .vac-client-booking-panel {
+                padding: 1.3rem;
+                border-radius: 26px;
+                border: 1px solid rgba(0, 63, 34, 0.08);
+                background: rgba(255,255,255,0.96);
+                box-shadow: 0 18px 44px rgba(10, 42, 26, 0.08);
+            }
+
+            .vac-client-booking-panel h2,
+            .vac-client-booking-panel h3 {
+                margin: 0;
+                color: var(--color-ink);
+            }
+
+            .vac-client-booking-panel__head {
+                display: flex;
+                align-items: start;
+                justify-content: space-between;
+                gap: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .vac-client-booking-panel__head p {
+                margin: 0.35rem 0 0;
+                color: var(--color-ink-faint);
+                line-height: 1.6;
+            }
+
+            .vac-client-booking-detail-grid {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 0.9rem;
+            }
+
+            .vac-client-booking-detail-card {
+                padding: 0.95rem 1rem;
+                border-radius: 18px;
+                background: #f7faf8;
+                border: 1px solid rgba(0, 63, 34, 0.06);
+            }
+
+            .vac-client-booking-detail-card label {
+                display: block;
+                margin-bottom: 0.32rem;
+                color: var(--color-ink-faint);
+                font-size: 0.73rem;
+                font-weight: 700;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+            }
+
+            .vac-client-booking-detail-card strong,
+            .vac-client-booking-detail-card span {
+                color: var(--color-ink);
+                line-height: 1.5;
+            }
+
+            .vac-client-booking-note {
+                margin-top: 1rem;
+                padding: 1rem 1.05rem;
+                border-radius: 18px;
+                background: #f7faf8;
+                border: 1px solid rgba(0, 63, 34, 0.06);
+                color: var(--color-ink-faint);
+                line-height: 1.7;
+                white-space: pre-line;
+            }
+
+            .vac-client-booking-timeline {
+                display: grid;
+                gap: 0.85rem;
+            }
+
+            .vac-client-booking-timeline__item {
+                padding: 0.95rem 1rem;
+                border-radius: 18px;
+                background: #f7faf8;
+                border: 1px solid rgba(0, 63, 34, 0.06);
+            }
+
+            .vac-client-booking-timeline__item label {
+                display: block;
+                margin-bottom: 0.28rem;
+                color: var(--color-ink-faint);
+                font-size: 0.73rem;
+                font-weight: 700;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+            }
+
+            .vac-client-booking-timeline__item strong,
+            .vac-client-booking-timeline__item span {
+                line-height: 1.55;
+                color: var(--color-ink);
+            }
+
+            .vac-client-booking-actions {
+                display: grid;
+                gap: 0.8rem;
+            }
+
+            .vac-client-booking-actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .vac-client-booking-experience {
+                display: grid;
+                gap: 0.85rem;
+            }
+
+            .vac-client-booking-experience p {
+                margin: 0;
+                color: var(--color-ink-faint);
+                line-height: 1.75;
+            }
+
+            @media (max-width: 1080px) {
+                .vac-client-booking-layout {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            @media (max-width: 720px) {
+                .vac-client-booking-detail-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+<main layout:fragment="content"
+      class="vac-client-booking-detail"
+      th:with="bookingImage=${booking.experience != null and booking.experience.displayPrimaryImageUrl != null ? booking.experience.displayPrimaryImageUrl : '/uploads/Mayon Volcano, Albay Philippines.jpeg'}">
+    <section class="vac-client-booking-hero">
+        <img th:src="${bookingImage}" th:alt="${booking.experience != null ? booking.experience.title : booking.bookingReference}" loading="eager"
+             onerror="this.onerror=null;this.src='/uploads/wildlife-gorillas.jpeg';" />
+        <div class="vac-client-booking-hero__shade"></div>
+        <div class="vac-client-booking-hero__content">
+            <p>Full reservation record / client workspace</p>
+            <h1 th:text="${booking.experience != null ? booking.experience.title : booking.bookingReference}">Experience booking</h1>
+            <div class="vac-client-booking-hero__meta">
+                <span class="vac-detail-pill" th:text="${booking.bookingReference}">BK-000000</span>
+                <span class="vac-detail-pill" th:text="${booking.status}">PENDING</span>
+                <span class="vac-detail-pill" th:text="${booking.paymentStatus}">UNPAID</span>
+            </div>
+        </div>
+    </section>
+
+    <div class="vac-client-booking-layout">
+        <section class="vac-client-booking-panel">
+            <div class="vac-client-booking-panel__head">
+                <div>
+                    <h2>Booking details</h2>
+                    <p>Everything recorded when this booking was created, including date preferences, group information, and any special requests.</p>
+                </div>
+                <a th:href="@{/client/bookings}" class="btn btn--ghost btn--sm">Back to bookings</a>
+            </div>
+
+            <div class="vac-client-booking-detail-grid">
+                <div class="vac-client-booking-detail-card">
+                    <label>Guest name</label>
+                    <strong th:text="${booking.guestName}">Guest Name</strong>
+                </div>
+                <div class="vac-client-booking-detail-card">
+                    <label>Guest email</label>
+                    <strong th:text="${booking.guestEmail}">guest@example.com</strong>
+                </div>
+                <div class="vac-client-booking-detail-card">
+                    <label>Guest phone</label>
+                    <strong th:text="${booking.guestPhone != null and !#strings.isEmpty(booking.guestPhone) ? booking.guestPhone : 'Not provided'}">Not provided</strong>
+                </div>
+                <div class="vac-client-booking-detail-card">
+                    <label>Country</label>
+                    <strong th:text="${booking.guestCountry != null and !#strings.isEmpty(booking.guestCountry) ? booking.guestCountry : 'Not provided'}">Not provided</strong>
+                </div>
+                <div class="vac-client-booking-detail-card">
+                    <label>Preferred date</label>
+                    <strong th:text="${booking.preferredDate != null ? #temporals.format(booking.preferredDate, 'EEEE, d MMMM yyyy') : 'Not set'}">Date</strong>
+                </div>
+                <div class="vac-client-booking-detail-card">
+                    <label>Alternative date</label>
+                    <strong th:text="${booking.alternativeDate != null ? #temporals.format(booking.alternativeDate, 'EEEE, d MMMM yyyy') : 'No alternative selected'}">No alternative selected</strong>
+                </div>
+                <div class="vac-client-booking-detail-card">
+                    <label>Group size</label>
+                    <strong th:text="${booking.groupSize != null ? booking.groupSize + ' guest' + (booking.groupSize == 1 ? '' : 's') : 'Not set'}">1 guest</strong>
+                </div>
+                <div class="vac-client-booking-detail-card">
+                    <label>Preferred language</label>
+                    <strong th:text="${booking.preferredLanguage != null and !#strings.isEmpty(booking.preferredLanguage) ? booking.preferredLanguage : 'English'}">English</strong>
+                </div>
+                <div class="vac-client-booking-detail-card">
+                    <label>Total price</label>
+                    <strong th:text="${booking.totalPrice != null ? '$' + #numbers.formatDecimal(booking.totalPrice, 1, 'COMMA', 2, 'POINT') : 'Pending confirmation'}">$0.00</strong>
+                </div>
+                <div class="vac-client-booking-detail-card">
+                    <label>Deposit</label>
+                    <strong th:text="${booking.depositAmount != null ? '$' + #numbers.formatDecimal(booking.depositAmount, 1, 'COMMA', 2, 'POINT') : (booking.depositRequired != null and booking.depositRequired ? 'Required' : 'Not required')}">Not required</strong>
+                </div>
+                <div class="vac-client-booking-detail-card">
+                    <label>Payment method</label>
+                    <strong th:text="${booking.paymentMethod != null and !#strings.isEmpty(booking.paymentMethod) ? booking.paymentMethod : 'Manual or later confirmation'}">Manual or later confirmation</strong>
+                </div>
+                <div class="vac-client-booking-detail-card">
+                    <label>Tour operator</label>
+                    <strong th:text="${booking.tourOperatorName != null and !#strings.isEmpty(booking.tourOperatorName) ? booking.tourOperatorName : 'Direct client booking'}">Direct client booking</strong>
+                </div>
+                <div class="vac-client-booking-detail-card">
+                    <label>Operator email</label>
+                    <strong th:text="${booking.tourOperatorEmail != null and !#strings.isEmpty(booking.tourOperatorEmail) ? booking.tourOperatorEmail : 'Not applicable'}">Not applicable</strong>
+                </div>
+                <div class="vac-client-booking-detail-card">
+                    <label>Payment reference</label>
+                    <strong th:text="${booking.paymentReference != null and !#strings.isEmpty(booking.paymentReference) ? booking.paymentReference : 'Pending payment reference'}">Pending payment reference</strong>
+                </div>
+            </div>
+
+            <div th:if="${booking.specialRequests != null and !#strings.isEmpty(booking.specialRequests)}"
+                 class="vac-client-booking-note"
+                 th:text="${booking.specialRequests}">Special requests</div>
+        </section>
+
+        <aside class="vac-client-booking-panel" style="display:grid; gap:1.2rem;">
+            <section class="vac-client-booking-actions">
+                <a th:href="@{/client/bookings}" class="btn btn--outline btn--sm">Back to all bookings</a>
+                <a th:if="${booking.experience != null}" th:href="@{|/experiences/${booking.experience.slug}|}" class="btn btn--primary btn--sm">Open experience page</a>
+                <a th:href="@{/account/messages}" class="btn btn--ghost btn--sm">Open support inbox</a>
+            </section>
+
+            <section class="vac-client-booking-experience" th:if="${booking.experience != null}">
+                <h3>Experience context</h3>
+                <p th:text="${booking.experience.shortDescription != null and !#strings.isEmpty(booking.experience.shortDescription) ? booking.experience.shortDescription : (booking.experience.description != null ? booking.experience.description : 'Use the experience page for itinerary, meeting point, and travel guidance.')}">Experience summary</p>
+                <div class="vac-client-booking-detail-grid" style="grid-template-columns:1fr;">
+                    <div class="vac-client-booking-detail-card" th:if="${booking.experience.location != null and !#strings.isEmpty(booking.experience.location)}">
+                        <label>Location</label>
+                        <strong th:text="${booking.experience.location}">Musanze</strong>
+                    </div>
+                    <div class="vac-client-booking-detail-card" th:if="${booking.experience.meetingPoint != null and !#strings.isEmpty(booking.experience.meetingPoint)}">
+                        <label>Meeting point</label>
+                        <strong th:text="${booking.experience.meetingPoint}">Meeting point</strong>
+                    </div>
+                    <div class="vac-client-booking-detail-card" th:if="${booking.experience.durationHours != null}">
+                        <label>Duration</label>
+                        <strong th:text="${#numbers.formatDecimal(booking.experience.durationHours, 1, 'COMMA', 1, 'POINT') + ' hours'}">4.0 hours</strong>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3 style="margin-bottom:0.85rem;">Status timeline</h3>
+                <div class="vac-client-booking-timeline">
+                    <div class="vac-client-booking-timeline__item">
+                        <label>Booking created</label>
+                        <strong th:text="${booking.createdAt != null ? #temporals.format(booking.createdAt, 'd MMM yyyy, HH:mm') : 'Time unavailable'}">Created</strong>
+                    </div>
+                    <div class="vac-client-booking-timeline__item">
+                        <label>Payment due</label>
+                        <strong th:text="${booking.paymentDueAt != null ? #temporals.format(booking.paymentDueAt, 'd MMM yyyy, HH:mm') : 'Not scheduled'}">Not scheduled</strong>
+                    </div>
+                    <div class="vac-client-booking-timeline__item">
+                        <label>Confirmed at</label>
+                        <strong th:text="${booking.confirmedAt != null ? #temporals.format(booking.confirmedAt, 'd MMM yyyy, HH:mm') : 'Awaiting staff confirmation'}">Awaiting staff confirmation</strong>
+                    </div>
+                    <div class="vac-client-booking-timeline__item" th:if="${booking.adminNotes != null and !#strings.isEmpty(booking.adminNotes)}">
+                        <label>Staff note</label>
+                        <span th:text="${booking.adminNotes}">Staff note</span>
+                    </div>
+                    <div class="vac-client-booking-timeline__item" th:if="${booking.cancelledAt != null}">
+                        <label>Cancelled at</label>
+                        <strong th:text="${#temporals.format(booking.cancelledAt, 'd MMM yyyy, HH:mm')}">Cancelled</strong>
+                        <span th:if="${booking.cancellationReason != null and !#strings.isEmpty(booking.cancellationReason)}"
+                              th:text="${booking.cancellationReason}">Cancellation reason</span>
+                    </div>
+                </div>
+            </section>
+        </aside>
+    </div>
+</main>
+</body>
+</html>

@@ -13,3 +13,9 @@ spring:
         dialect: org.hibernate.dialect.H2Dialect
   thymeleaf:
     cache: false
+
+platform:
+  rate-limits:
+    enabled: false
+  idempotency:
+    enabled: false

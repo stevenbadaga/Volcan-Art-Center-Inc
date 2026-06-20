@@ -1,18 +1,6 @@
 package com.volcanoartscenter.platform.web.internal.superadmin.service;
 
-import com.volcanoartscenter.platform.shared.model.Booking;
-import com.volcanoartscenter.platform.shared.model.BlogPost;
-import com.volcanoartscenter.platform.shared.model.ContactInquiry;
-import com.volcanoartscenter.platform.shared.model.Experience;
-import com.volcanoartscenter.platform.shared.model.Product;
-import com.volcanoartscenter.platform.shared.model.ProductCategory;
-import com.volcanoartscenter.platform.shared.model.Role;
-import com.volcanoartscenter.platform.shared.model.TourOperatorRequest;
-import com.volcanoartscenter.platform.shared.model.User;
-import com.volcanoartscenter.platform.shared.model.AuditEvent;
-import com.volcanoartscenter.platform.shared.model.Donation;
-import com.volcanoartscenter.platform.shared.model.PlatformSetting;
-import com.volcanoartscenter.platform.shared.model.ShippingOrder;
+import com.volcanoartscenter.platform.shared.model.*;
 import com.volcanoartscenter.platform.shared.repository.*;
 import com.volcanoartscenter.platform.shared.audit.Audited;
 import com.volcanoartscenter.platform.shared.service.AvailabilityService;
@@ -76,16 +64,26 @@ public class SuperAdminService {
                 .toList();
     }
 
-    public Object listProducts() { return productRepository.findAll(); }
-    public Object listBookings() { return bookingRepository.findAll(); }
-    public Object listDonations() { return donationRepository.findAll(); }
-    public Object listTalentApplications() { return talentApplicationRepository.findAll(); }
-    public Object listBlogPosts() { return blogPostRepository.findAll(); }
-    public Object listReviews() { return reviewRepository.findAll(); }
-    public Object listShippingOrders() { return shippingOrderRepository.findAll(); }
-    public Object listContactInquiries() { return contactInquiryRepository.findAll(); }
-    public Object listOperatorRequests() { return tourOperatorRequestRepository.findAll(); }
-    public Object listAvailabilitySlots() { return availabilitySlotRepository.findAll(); }
+    @Transactional(readOnly = true)
+    public List<Product> listProducts() { return productRepository.findAll(); }
+    @Transactional(readOnly = true)
+    public List<Booking> listBookings() { return bookingRepository.findAll(); }
+    @Transactional(readOnly = true)
+    public List<Donation> listDonations() { return donationRepository.findAll(); }
+    @Transactional(readOnly = true)
+    public List<TalentApplication> listTalentApplications() { return talentApplicationRepository.findAll(); }
+    @Transactional(readOnly = true)
+    public List<BlogPost> listBlogPosts() { return blogPostRepository.findAll(); }
+    @Transactional(readOnly = true)
+    public List<Review> listReviews() { return reviewRepository.findAll(); }
+    @Transactional(readOnly = true)
+    public List<ShippingOrder> listShippingOrders() { return shippingOrderRepository.findAll(); }
+    @Transactional(readOnly = true)
+    public List<ContactInquiry> listContactInquiries() { return contactInquiryRepository.findAll(); }
+    @Transactional(readOnly = true)
+    public List<TourOperatorRequest> listOperatorRequests() { return tourOperatorRequestRepository.findAll(); }
+    @Transactional(readOnly = true)
+    public List<AvailabilitySlot> listAvailabilitySlots() { return availabilitySlotRepository.findAll(); }
     public List<AuditEvent> latestAuditEvents() { return auditEventRepository.findTop200ByOrderByCreatedAtDesc(); }
     public List<User> listInternalStaff() {
         return userRepository.findByRoles_NameIn(List.of("SUPER_ADMIN", "CONTENT_MANAGER", "OPS_MANAGER"))
@@ -323,6 +321,13 @@ public class SuperAdminService {
         User user = userRepository.findById(userId).orElseThrow();
         user.setEnabled(false);
         complianceService.audit(actorEmail, "STAFF_USER_DEACTIVATED", "User", userId, "Account deactivated");
+    }
+
+    @Transactional
+    public void activateStaff(Long userId, String actorEmail) {
+        User user = userRepository.findById(userId).orElseThrow();
+        user.setEnabled(true);
+        complianceService.audit(actorEmail, "STAFF_USER_ACTIVATED", "User", userId, "Account activated");
     }
 
     @Transactional

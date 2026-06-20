@@ -300,8 +300,8 @@ public class RegisteredClientService {
         
         // For backwards compatibility until old features fully replaced
         if (!items.isEmpty()) {
-            order.setProduct(items.getFirst().getProduct());
-            order.setQuantity(items.getFirst().getQuantity());
+            order.setProduct(items.get(0).getProduct());
+            order.setQuantity(items.get(0).getQuantity());
         }
 
         BigDecimal shipping = integrationFacadeService.estimateShipping("Rwanda".equalsIgnoreCase(country) ? "LOCAL" : "FEDEX", country, totalWeight);
@@ -546,6 +546,14 @@ public class RegisteredClientService {
 
     public List<Booking> bookingsForUser(User user) {
         return bookingRepository.findByUserOrderByCreatedAtDesc(user);
+    }
+
+    public Optional<Booking> bookingForUser(User user, String bookingReference) {
+        if (user == null || bookingReference == null || bookingReference.isBlank()) {
+            return Optional.empty();
+        }
+        return bookingRepository.findByBookingReference(bookingReference.trim())
+                .filter(booking -> booking.getUser() != null && booking.getUser().getId().equals(user.getId()));
     }
 
     public List<Donation> donationsForUser(User user) {

@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout/base}">
-<head><title>Notification Center</title></head>
+      layout:decorate="~{layout/client-base}">
+<head><title>Notification Center — Volcano Arts</title></head>
 <body>
 <main layout:fragment="content" class="vac-notification-page">
-    <section class="vac-message-hero">
-        <img src="/uploads/Home_virunga.png" alt="Volcano Arts notification center" loading="eager"
-             onerror="this.onerror=null;this.src='/uploads/volcano.jpg';" />
+    <section class="vac-message-hero vac-message-hero--compact vac-notification-hero">
+        <img src="/uploads/25332816648714928.jpeg" alt="Volcano Arts notification center" loading="eager"
+             onerror="this.onerror=null;this.src='/uploads/64457838418348827.jpeg';" />
         <div class="vac-message-hero__shade"></div>
         <div class="container vac-message-hero__content">
             <p>Notifications / orders / bookings / messages</p>
@@ -16,7 +16,7 @@
         </div>
     </section>
 
-    <section class="section">
+    <section class="section vac-notification-section">
         <div class="container">
             <div th:if="${successMessage}" class="alert-success" style="margin-bottom:1.25rem;" th:text="${successMessage}"></div>
 

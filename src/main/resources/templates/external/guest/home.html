@@ -3,64 +3,660 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/base}">
 <head>
-    <title>Volcano Arts Center | Authentic Rwandan Fine Art, Paintings &amp; Sculptures</title>
+    <title>Volcano Arts Center | Arts, Culture, Wildlife &amp; Experiences in Rwanda</title>
+    <th:block layout:fragment="meta">
+        <meta name="description" content="Discover Rwanda through authentic fine art, culture, wildlife, local talent, conservation, and unforgettable experiences near Volcanoes National Park." />
+        <meta property="og:title" content="Volcano Arts Center | Arts, Culture, Wildlife &amp; Experiences in Rwanda" />
+        <meta property="og:description" content="Discover Rwanda through authentic fine art, culture, wildlife, local talent, conservation, and unforgettable experiences near Volcanoes National Park." />
+        <meta property="og:image" content="/uploads/gorilla-home-transparent.png" />
+        <meta name="twitter:title" content="Volcano Arts Center | Arts, Culture, Wildlife &amp; Experiences in Rwanda" />
+        <meta name="twitter:description" content="Discover Rwanda through authentic fine art, culture, wildlife, local talent, conservation, and unforgettable experiences near Volcanoes National Park." />
+        <meta name="twitter:image" content="/uploads/gorilla-home-transparent.png" />
+    </th:block>
 </head>
 <body>
 <main layout:fragment="content" class="vac-home-premium">
 
-    <!-- 1. Art-First Hero Section (Keeping existing typography & font styling classes untouched) -->
+    <!-- 1. Art-First Hero Section (Unified Synchronized Slideshow) -->
     <section class="hero-golden hero-golden--home hero-golden--cinema" aria-label="Volcano Arts Center homepage hero">
-        <div class="hero-golden__bg" aria-hidden="true">
-            <img src="/uploads/aloe-vera-hero.jpeg" alt="Contemporary Rwandan fine art portrait by Ema Akilimali" class="hero-slide active" loading="eager"
-                 onerror="this.onerror=null;this.src='/uploads/art-hero-premium.png';" />
-            <div class="hero-golden__veil hero-golden__veil--cinema"></div>
-        </div>
-        <div class="hero-golden__content hero-golden__content--cinema">
-            <p class="hero-golden__kicker">Musanze, Rwanda · Est. 2012 · Original Masterpieces &amp; Global Shipping</p>
-            <h1 class="hero-golden__title">FINE ART</h1>
-            <div class="hero-golden__bottom">
-                <p class="hero-golden__sub">Discover museum-quality Rwandan paintings, contemporary sculptures, and curated heritage craft pieces direct from local Musanze makers. Secure worldwide shipping with tracked delivery.</p>
-                <div class="hero-golden__actions">
-                    <a th:href="@{/art-store}" class="btn-hero-primary">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-                        Shop Art Store
-                    </a>
-                    <a th:href="@{/experiences}" class="btn-hero-outline">Explore Experiences</a>
+        
+        <!-- Synchronized Slide Units -->
+        <div id="hero-master-slideshow">
+            <!-- Background Images Rotation at the back -->
+            <div id="hero-bg-slideshow">
+                <div class="hero-bg-slide active">
+                    <img src="/uploads/new%20images/Guitar%20art.jpeg" alt="Guitar Art" loading="eager" />
+                </div>
+                <div class="hero-bg-slide">
+                    <img src="/uploads/new%20images/MOnkey%20with%20a%20baby.jpeg" alt="Monkey with baby" loading="lazy" />
+                </div>
+                <div class="hero-bg-slide">
+                    <img src="/uploads/new%20images/art%20center%20road%20view%29.jpeg" alt="Art Center road view" loading="lazy" />
+                </div>
+                <div class="hero-bg-slide">
+                    <img src="/uploads/new%20images/Art%20ccenter%20gate.jpeg" alt="Art Center gate" loading="lazy" />
+                </div>
+                <div class="hero-bg-slide">
+                    <img src="/uploads/new%20images/Horizontal%20image%20to%20start%20home%20page.jpeg" alt="Home Page start image" loading="lazy" />
+                </div>
+                <div class="hero-bg-slide">
+                    <img src="/uploads/new%20images/black%20and%20white%202.jpeg" alt="Black and white" loading="lazy" />
+                </div>
+                <div class="hero-bg-slide">
+                    <img src="/uploads/Start%20up%20home%20page.jpeg" alt="Start up home page" loading="lazy" />
+                </div>
+                <div class="hero-bg-slide">
+                    <img src="/uploads/55028426690959709.jpeg" alt="Reforestation and stewardship" loading="lazy" />
+                </div>
+                <div class="hero-bg-slide">
+                    <img src="/uploads/aloe-vera-hero.jpeg" alt="Aloe vera hero" loading="lazy" />
                 </div>
             </div>
-            <p class="hero-golden__welcome">Welcome to the digital storefront of original art, culture &amp; conservation in Musanze, Rwanda.</p>
+
+            <!-- Subtle Cinematic Veil Overlay -->
+            <div class="hero-golden__veil hero-golden__veil--cinema"></div>
+
+            <!-- Large Rotating Words Layer -->
+            <div id="hero-word-slideshow">
+                <div class="hero-word-slide active">
+                    <div class="hero-golden__content hero-golden--home">
+                        <h1 class="hero-golden__title">CULTURE</h1>
+                    </div>
+                </div>
+                <div class="hero-word-slide">
+                    <div class="hero-golden__content hero-golden--home">
+                        <h1 class="hero-golden__title">WILDLIFE</h1>
+                    </div>
+                </div>
+                <div class="hero-word-slide">
+                    <div class="hero-golden__content hero-golden--home">
+                        <h1 class="hero-golden__title">ART</h1>
+                    </div>
+                </div>
+                <div class="hero-word-slide">
+                    <div class="hero-golden__content hero-golden--home">
+                        <h1 class="hero-golden__title hero-golden__title--conservation">CONSERVATION</h1>
+                    </div>
+                </div>
+                <div class="hero-word-slide">
+                    <div class="hero-golden__content hero-golden--home">
+                        <h1 class="hero-golden__title">RWANDA</h1>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gorilla Cutout (Visual Test: Layered above words) -->
+            <div id="hero-gorilla-layer" class="hero-gorilla-layer" aria-hidden="true">
+                <img src="/uploads/gorilla-home-transparent.png" alt="" class="hero-gorilla-cutout" />
+            </div>
         </div>
 
         <!-- Golden Rwanda–style connect rail -->
         <aside class="vac-connect-rail" aria-label="Connect with Volcano Arts Center">
-            <a th:if="${siteContact.hasYoutube}" th:href="${siteContact.youtubeUrl}" class="vac-connect-rail__link" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M22 8.5a3 3 0 0 0-2-2C18 6 12 6 12 6s-6 0-8 .5a3 3 0 0 0-2 2A31 31 0 0 0 1.5 12 31 31 0 0 0 2 15.5a3 3 0 0 0 2 2C6 18 12 18 12 18s6 0 8-.5a3 3 0 0 0 2-2 31 31 0 0 0 .5-3.5 31 31 0 0 0-.5-3.5z"/><path d="M10 15l5-3-5-3z" fill="currentColor" stroke="none"/></svg>
-            </a>
-            <a th:href="${siteContact.twitterUrl}" class="vac-connect-rail__link" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter">
+            <a th:href="${siteContact.twitterUrl != null ? siteContact.twitterUrl : '#'}" class="vac-connect-rail__link" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter">
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" stroke="none" aria-hidden="true"><path d="M18.244 2H21.5l-7.5 8.57L23 22h-6.844l-5.36-6.99L4.66 22H1.4l8.02-9.17L1 2h7.02l4.84 6.39zm-1.2 18h1.9L7.04 4H5.01z"/></svg>
             </a>
-            <a th:if="${siteContact.hasInstagram}" th:href="${siteContact.instagramUrl}" class="vac-connect-rail__link" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <a th:href="${siteContact.facebookUrl != null ? siteContact.facebookUrl : '#'}" class="vac-connect-rail__link" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            </a>
+            <!-- Instagram (Always visible or fallback to #) -->
+            <a th:href="${siteContact.instagramUrl != null ? siteContact.instagramUrl : '#'}" class="vac-connect-rail__link" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
             </a>
-            <a th:href="${siteContact.facebookUrl}" class="vac-connect-rail__link" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            <a th:if="${siteContact.hasWhatsapp}" th:href="${siteContact.whatsappUrl}" class="vac-connect-rail__link vac-connect-rail__link--wa" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
             </a>
         </aside>
 
-        <!-- WhatsApp Float -->
-        <div class="vac-wa-connect" th:if="${siteContact.hasWhatsapp}">
-            <p class="vac-wa-connect__hint">Need Help? <strong>Chat with us</strong></p>
-            <a th:href="${siteContact.whatsappUrl}" class="vac-wa-connect__btn" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
-                <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-            </a>
-        </div>
-        <div class="vac-wa-connect vac-wa-connect--placeholder" th:unless="${siteContact.hasWhatsapp}">
-            <p class="vac-wa-connect__hint">Need Help? <strong>Chat with us</strong></p>
-            <a href="#" class="vac-wa-connect__btn vac-wa-connect__btn--disabled" aria-disabled="true" title="WhatsApp number coming soon">
-                <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-            </a>
-        </div>
+        <!-- WhatsApp Float - Grouped in rail above -->
+        <div class="vac-wa-connect-removed-from-here" th:if="false"></div>
     </section>
+
+    <!-- Slideshow Styles & Logic -->
+    <style>
+        /* Specific overrides to bypass .vac-home-premium .hero-golden * overrides in global styles */
+        .vac-home-premium .hero-bg-slide {
+            position: absolute !important;
+            inset: 0 !important;
+            opacity: 0 !important;
+            z-index: 0 !important;
+            transition: opacity 1.2s ease-in-out !important;
+            pointer-events: none !important;
+        }
+
+        .vac-home-premium .hero-bg-slide.active {
+            opacity: 1 !important;
+            z-index: 1 !important;
+        }
+
+        .vac-home-premium .hero-bg-slide img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+            transform: scale(1.04) !important;
+            transition: transform 8s ease-out !important;
+            filter: brightness(0.78) contrast(1.04) !important;
+        }
+
+        .vac-home-premium .hero-bg-slide.active img {
+            transform: scale(1) !important;
+        }
+
+        .vac-home-premium .hero-word-slide {
+            position: absolute !important;
+            inset: 0 !important;
+            opacity: 0 !important;
+            z-index: 3 !important;
+            pointer-events: none !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: flex-end !important;
+            overflow: visible !important; /* Ensure long words never get clipped */
+        }
+
+        .vac-home-premium .hero-word-slide.active {
+            opacity: 1 !important;
+            z-index: 4 !important;
+        }
+
+        /* Coordinated Entry Animations */
+        .vac-home-premium .hero-golden--cinema .hero-golden__content,
+        .vac-home-premium .hero-word-slide .hero-golden__content {
+            position: absolute !important;
+            top: 32% !important; /* Visually pushed up 100px-130px */
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            width: 100% !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            text-align: center !important;
+            pointer-events: none !important;
+            z-index: 4 !important;
+            overflow: visible !important;
+        }
+
+        .vac-home-premium .hero-word-slide .hero-golden__title {
+            position: relative !important;
+            z-index: 4 !important; /* Below Gorilla */
+            font-size: clamp(3.5rem, 8vw, 8.5rem) !important; /* Reduced further to prevent dominate clipping */
+            line-height: 0.82 !important;
+            letter-spacing: 0.04em !important;
+            text-shadow: 0 4px 24px rgba(0,0,0,0.35) !important; /* Enhanced word readability */
+            width: max-content !important;
+            margin: 0 auto !important;
+            display: block !important;
+            opacity: 0 !important;
+            transform: translateY(20px) !important;
+            clip-path: inset(0 100% 0 0); /* Removed !important so keyframes can override it */
+            animation: none !important;
+            transition: transform 1.1s cubic-bezier(0.16, 1, 0.3, 1), opacity 1s ease-out;
+        }
+
+        .vac-home-premium .hero-word-slide .hero-golden__title--conservation {
+            font-size: clamp(2.8rem, 5.8vw, 6.4rem) !important; /* Adjusted to fit full word from C to N */
+            white-space: nowrap !important;
+            letter-spacing: 0.01em !important;
+            max-width: 98vw !important;
+            overflow: visible !important;
+        }
+
+        .vac-home-premium .hero-word-slide.active .hero-golden__title {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+            animation: heroWordType 1.4s cubic-bezier(0.4, 0, 0.2, 1) both !important;
+        }
+
+        .vac-home-premium .hero-word-slide .hero-golden__title::after {
+            content: none !important;
+            animation: none !important;
+        }
+
+        .vac-home-premium .hero-word-slide.active .hero-golden__title::after {
+            content: '' !important;
+            position: absolute !important;
+            top: 5% !important;
+            bottom: 5% !important;
+            left: 0 !important;
+            width: 4px !important;
+            background-color: #00a651 !important; /* Rwandan green */
+            animation: heroCursorMove 1.4s cubic-bezier(0.4, 0, 0.2, 1) both !important;
+            z-index: 5 !important;
+        }
+
+        .vac-home-premium .hero-word-slide .hero-golden__sub,
+        .vac-home-premium .hero-word-slide .hero-golden__actions {
+            opacity: 0 !important;
+            transform: translateY(20px) !important;
+            position: relative !important;
+            z-index: 4 !important; /* Above Gorilla */
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2) !important;
+            transition: transform 1s ease-out, opacity 1s ease-out !important;
+        }
+
+        .vac-home-premium .hero-word-slide.active .hero-golden__sub,
+        .vac-home-premium .hero-word-slide.active .hero-golden__actions {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+        }
+
+        .vac-home-premium .hero-word-slide.active .hero-golden__sub { transition-delay: 0.1s !important; }
+        .vac-home-premium .hero-word-slide.active .hero-golden__actions { transition-delay: 0.2s !important; }
+
+        .vac-home-premium .hero-word-slide.gorilla-focus .hero-golden__sub {
+            opacity: 0 !important;
+            transform: translateY(12px) !important;
+            pointer-events: none !important;
+        }
+
+        /* Gorilla Cutout Layering & Cinematic Settle Entrance */
+        .vac-home-premium .hero-gorilla-layer {
+            position: absolute !important;
+            inset: 0 !important;
+            z-index: 5 !important; /* Above Headline (z-index 4), Below Foreground UI */
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            pointer-events: none !important;
+            padding-top: 13.5rem !important; /* Pull gorilla lower so the title reads more clearly behind it */
+        }
+
+        .vac-home-premium .hero-gorilla-cutout {
+            --gorilla-transform-start: translateY(56px) scale(0.96);
+            --gorilla-transform-end: translateY(36px) scale(1);
+            --gorilla-transform-pulse: translateY(36px) scale(0.975);
+            max-width: 800px !important;
+            width: clamp(300px, 60vw, 850px) !important;
+            height: auto !important;
+            object-fit: contain !important;
+            opacity: 0;
+            transform: var(--gorilla-transform-start);
+            filter: blur(4px) brightness(0.95) drop-shadow(0 20px 50px rgba(0,0,0,0.45));
+            transition: opacity 1.1s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 1.1s cubic-bezier(0.16, 1, 0.3, 1),
+                        filter 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .vac-home-premium .hero-gorilla-layer.visible .hero-gorilla-cutout {
+            opacity: 1;
+            transform: var(--gorilla-transform-end);
+            filter: blur(0) brightness(1.1) contrast(1.05) saturate(1.08) drop-shadow(0 20px 50px rgba(0,0,0,0.45));
+        }
+
+        .vac-home-premium .hero-gorilla-layer.visible .hero-gorilla-cutout.is-gorilla-pulse {
+            animation: gorillaCinemaSettle 1600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        @keyframes gorillaCinemaSettle {
+            0% {
+                opacity: 1;
+                transform: var(--gorilla-transform-end);
+                filter: blur(0) brightness(1.1) contrast(1.05) saturate(1.08) drop-shadow(0 20px 50px rgba(0,0,0,0.45));
+            }
+            35% {
+                opacity: 0.22;
+                transform: var(--gorilla-transform-pulse);
+                filter: blur(3px) brightness(0.95) contrast(1) saturate(1) drop-shadow(0 10px 25px rgba(0,0,0,0.25));
+            }
+            100% {
+                opacity: 1;
+                transform: var(--gorilla-transform-end);
+                filter: blur(0) brightness(1.1) contrast(1.05) saturate(1.08) drop-shadow(0 20px 50px rgba(0,0,0,0.45));
+            }
+        }
+
+        @keyframes heroWordType {
+            0% {
+                clip-path: inset(0 100% 0 0);
+            }
+            100% {
+                clip-path: inset(0 0 0 0);
+            }
+        }
+
+        @keyframes heroCursorMove {
+            0% {
+                left: 0%;
+                opacity: 1;
+            }
+            85% {
+                left: 100%;
+                opacity: 1;
+            }
+            100% {
+                left: 100%;
+                opacity: 0;
+            }
+        }
+
+        /* Cinematic Veil Polish */
+        .vac-home-premium .hero-golden__veil--cinema {
+            position: absolute !important;
+            inset: 0 !important;
+            z-index: 2 !important; /* Above backgrounds (z-index 1), below words (z-index 3) */
+            background: linear-gradient(180deg, 
+                rgba(0,0,0,0.48) 0%, 
+                rgba(0,0,0,0.22) 30%, 
+                rgba(0,0,0,0.28) 60%, 
+                rgba(0,0,0,0.68) 100%) !important;
+            pointer-events: none !important; /* Prevents invisible overlay from blocking clicks */
+        }
+
+        /* Connect Rail (Social Icons) Desktop Tuning */
+        .vac-home-premium .vac-connect-rail {
+            position: absolute !important;
+            right: clamp(1rem, 3vw, 2.5rem) !important;
+            top: auto !important;
+            bottom: 60px !important;
+            transform: none !important;
+            z-index: 99 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 1.1rem !important;
+        }
+
+        .vac-home-premium .vac-connect-rail__link--wa {
+            background: #25D366 !important;
+            border-color: #20ba5a !important;
+            color: #fff !important;
+            position: relative !important;
+        }
+
+        .vac-home-premium .vac-connect-rail__link--wa:hover {
+            background: #20ba5a !important;
+            border-color: #1a9e4d !important;
+        }
+
+        .vac-home-premium .vac-connect-rail__link--wa::before {
+            content: "Chat with us !" !important;
+            position: absolute !important;
+            right: 58px !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            white-space: nowrap !important;
+            font-family: var(--font-ui), sans-serif !important;
+            font-size: 0.72rem !important;
+            font-weight: 700 !important;
+            letter-spacing: 0.05em !important;
+            color: #fff !important;
+            background: rgba(0, 0, 0, 0.48) !important;
+            border: 1px solid rgba(255, 255, 255, 0.16) !important;
+            backdrop-filter: blur(8px) !important;
+            padding: 0.35rem 0.75rem !important;
+            border-radius: 6px !important;
+            opacity: 0.85 !important;
+            transition: opacity 0.25s ease, transform 0.25s ease !important;
+            pointer-events: none !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+        }
+
+        .vac-home-premium .vac-connect-rail__link--wa:hover::before {
+            opacity: 1 !important;
+            transform: translateY(-50%) translateX(-2px) !important;
+        }
+
+        /* Tablet optimization (max-width: 1024px) */
+        @media (max-width: 1024px) {
+            .vac-home-premium .hero-golden--cinema {
+                min-height: 600px !important;
+                height: 75svh !important;
+            }
+            .vac-home-premium .hero-golden--cinema .hero-golden__content,
+            .vac-home-premium .hero-word-slide .hero-golden__content {
+                top: 40% !important;
+            }
+            .vac-home-premium .hero-golden--home .hero-golden__content {
+                padding: 100px 2rem 60px !important;
+            }
+            .vac-home-premium .hero-word-slide .hero-golden__title {
+                font-size: clamp(2.8rem, 11vw, 6rem) !important;
+                transform: translateY(15px) !important;
+            }
+            .vac-home-premium .hero-word-slide .hero-golden__title--conservation {
+                font-size: clamp(2.2rem, 5.8vw, 4.6rem) !important;
+                white-space: nowrap !important;
+                letter-spacing: 0.01em !important;
+                max-width: 98vw !important;
+                overflow: visible !important;
+            }
+            .vac-home-premium .hero-word-slide.active .hero-golden__title {
+                transform: translateY(0) !important;
+            }
+            .vac-home-premium .hero-gorilla-layer {
+                align-items: flex-end !important;
+                padding-top: 0 !important;
+                padding-bottom: 0 !important;
+            }
+            .vac-home-premium .hero-gorilla-cutout {
+                --gorilla-transform-start: translateY(35px) scale(0.91) !important;
+                --gorilla-transform-end: translateY(15px) scale(0.95) !important;
+                --gorilla-transform-pulse: translateY(15px) scale(0.92) !important;
+                width: clamp(220px, 40vw, 360px) !important;
+                max-width: 75% !important;
+            }
+            .vac-home-premium .vac-connect-rail {
+                position: absolute !important;
+                top: auto !important;
+                bottom: 24px !important;
+                left: 24px !important;
+                right: auto !important;
+                transform: none !important;
+                flex-direction: row !important;
+                gap: 12px !important;
+                z-index: 99 !important;
+            }
+            .vac-home-premium .vac-connect-rail__link {
+                width: 36px !important;
+                height: 36px !important;
+                background: rgba(0, 77, 38, 0.45) !important;
+                border-color: rgba(255, 255, 255, 0.3) !important;
+            }
+            .vac-home-premium .vac-connect-rail__link svg {
+                width: 16px !important;
+                height: 16px !important;
+            }
+            .vac-home-premium .vac-connect-rail__link--wa::before {
+                display: none !important;
+            }
+        }
+
+        /* Mobile optimization (max-width: 768px) */
+        @media (max-width: 768px) {
+            .vac-home-premium .hero-golden--cinema {
+                min-height: 500px !important;
+                height: 70svh !important;
+            }
+            .vac-home-premium .hero-golden--cinema .hero-golden__content,
+            .vac-home-premium .hero-word-slide .hero-golden__content {
+                top: 42% !important;
+            }
+            .vac-home-premium .hero-golden--home .hero-golden__content {
+                padding: 90px 1.5rem 50px !important;
+            }
+            .vac-home-premium .hero-word-slide .hero-golden__title {
+                font-size: clamp(2.4rem, 14vw, 4.5rem) !important;
+                transform: translateY(12px) !important;
+            }
+            .vac-home-premium .hero-word-slide .hero-golden__title--conservation {
+                font-size: clamp(1.8rem, 8vw, 3.4rem) !important;
+                white-space: nowrap !important;
+                letter-spacing: 0.01em !important;
+                max-width: 98vw !important;
+                overflow: visible !important;
+            }
+            .vac-home-premium .hero-word-slide.active .hero-golden__title {
+                transform: translateY(0) !important;
+            }
+            .vac-home-premium .hero-gorilla-layer {
+                align-items: flex-end !important;
+                padding-top: 0 !important;
+                padding-bottom: 0 !important;
+            }
+            .vac-home-premium .hero-gorilla-cutout {
+                --gorilla-transform-start: translateY(32px) scale(0.91) !important;
+                --gorilla-transform-end: translateY(12px) scale(0.95) !important;
+                --gorilla-transform-pulse: translateY(12px) scale(0.92) !important;
+                width: clamp(170px, 45vw, 260px) !important;
+                max-width: 70% !important;
+            }
+            .vac-home-premium .vac-connect-rail {
+                display: none !important;
+            }
+            .vac-home-premium .vac-connect-rail__link {
+                width: 32px !important;
+                height: 32px !important;
+                background: rgba(0, 77, 38, 0.45) !important;
+                border-color: rgba(255, 255, 255, 0.3) !important;
+            }
+            .vac-home-premium .vac-connect-rail__link svg {
+                width: 14px !important;
+                height: 14px !important;
+            }
+            .vac-home-premium .vac-connect-rail__link--wa::before {
+                display: none !important;
+            }
+
+            /* Better object-position for hero slides on mobile to avoid awkward cropping */
+            .vac-home-premium .hero-bg-slide img {
+                object-position: center center !important;
+            }
+            .vac-home-premium .hero-bg-slide:nth-child(3) img {
+                object-position: 40% center !important; /* Road view */
+            }
+            .vac-home-premium .hero-bg-slide:nth-child(4) img {
+                object-position: 40% center !important; /* Gate view */
+            }
+        }
+
+        /* Respect reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            .vac-home-premium .hero-bg-slide,
+            .vac-home-premium .hero-bg-slide img,
+            .vac-home-premium .hero-word-slide,
+            .vac-home-premium .hero-word-slide .hero-golden__title {
+                transition: opacity 1.2s ease-in-out !important;
+                transform: none !important;
+                animation: none !important;
+                clip-path: none !important;
+            }
+            .vac-home-premium .hero-gorilla-cutout,
+            .vac-home-premium .hero-gorilla-cutout.is-gorilla-pulse {
+                transition: opacity 1.2s ease-in-out !important;
+                transform: var(--gorilla-transform-end) !important;
+                animation: none !important;
+                filter: none !important;
+            }
+            .vac-home-premium .hero-word-slide.active .hero-golden__title::after {
+                display: none !important;
+            }
+        }
+    </style>
+
+    <script layout:fragment="scripts">
+        document.addEventListener("DOMContentLoaded", function() {
+            // ── Hero Slideshow & Gorilla Logic ──
+            const bgSlides = document.querySelectorAll('.hero-bg-slide');
+            const wordSlides = document.querySelectorAll('.hero-word-slide');
+            const gorillaLayer = document.getElementById('hero-gorilla-layer');
+            
+            if (bgSlides.length > 0 || wordSlides.length > 0) {
+                let currentBgIdx = 0;
+                let currentWordIdx = 0;
+                let bgChangeCount = 0;
+                const slideInterval = 5000;
+                const gorillaDelay = 500;
+
+                function triggerGorilla() {
+                    if (gorillaLayer) gorillaLayer.classList.add('visible');
+                }
+
+                function nextSlide() {
+                    // Update Background Images (modulo bgSlides.length)
+                    if (bgSlides.length > 0) {
+                        bgSlides[currentBgIdx].classList.remove('active');
+                        currentBgIdx = (currentBgIdx + 1) % bgSlides.length;
+                        bgSlides[currentBgIdx].classList.add('active');
+                    }
+
+                    // Update Words (modulo wordSlides.length)
+                    if (wordSlides.length > 0) {
+                        wordSlides[currentWordIdx].classList.remove('active');
+                        currentWordIdx = (currentWordIdx + 1) % wordSlides.length;
+                        wordSlides[currentWordIdx].classList.add('active');
+                    }
+
+                    // Count transitions and trigger gorilla pulse every 2 changes (10s)
+                    bgChangeCount++;
+                    if (bgChangeCount % 2 === 0) {
+                        const gorillaImg = document.querySelector('.hero-gorilla-cutout');
+                        if (gorillaImg) {
+                            gorillaImg.classList.add('is-gorilla-pulse');
+                            setTimeout(function() {
+                                gorillaImg.classList.remove('is-gorilla-pulse');
+                            }, 1800);
+                        }
+                    }
+                }
+
+                setTimeout(triggerGorilla, gorillaDelay);
+                setInterval(nextSlide, slideInterval);
+            }
+
+
+            // ── Overlapping Showcase Carousel ──
+            const stack = document.getElementById('showcase-stack');
+            if (stack) {
+                const slides = stack.querySelectorAll('.vac-showcase-slide');
+                const prevBtn = document.getElementById('showcase-prev');
+                const nextBtn = document.getElementById('showcase-next');
+                let activeIndex = 0;
+
+                function updateStack() {
+                    slides.forEach((slide, i) => {
+                        slide.classList.remove('active', 'prev', 'next', 'far-prev', 'far-next', 'hidden');
+                        
+                        if (i === activeIndex) {
+                            slide.classList.add('active');
+                        } else if (i === (activeIndex - 1 + slides.length) % slides.length) {
+                            slide.classList.add('prev');
+                        } else if (i === (activeIndex + 1) % slides.length) {
+                            slide.classList.add('next');
+                        } else if (i === (activeIndex - 2 + slides.length) % slides.length) {
+                            slide.classList.add('far-prev');
+                        } else if (i === (activeIndex + 2) % slides.length) {
+                            slide.classList.add('far-next');
+                        } else {
+                            slide.classList.add('hidden');
+                        }
+                    });
+                }
+
+                if (prevBtn) prevBtn.addEventListener('click', () => {
+                    activeIndex = (activeIndex - 1 + slides.length) % slides.length;
+                    updateStack();
+                });
+
+                if (nextBtn) nextBtn.addEventListener('click', () => {
+                    activeIndex = (activeIndex + 1) % slides.length;
+                    updateStack();
+                });
+
+                // Auto-init
+                updateStack();
+                
+                // Optional: Click a side slide to move to it
+                slides.forEach((slide, i) => {
+                    slide.addEventListener('click', () => {
+                        if (i !== activeIndex) {
+                            activeIndex = i;
+                            updateStack();
+                        }
+                    });
+                });
+            }
+        });
+    </script>
 
     <!-- 2. Commerce Trust Bar (Elevated immediately below the Hero section to build buyer trust) -->
     <div class="vac-intl-bar" id="ecommerce-trust-bar">
@@ -100,8 +696,8 @@
                 <p class="stat-item__label">Visitors / Year</p>
             </div>
             <div class="stat-item">
-                <p class="stat-item__val">12+ Years</p>
-                <p class="stat-item__label">Experiences</p>
+                <p class="stat-item__val">12+</p>
+                <p class="stat-item__label">Years Experience</p>
             </div>
         </div>
     </div>
@@ -110,11 +706,12 @@
     <section class="vac-section vac-art-showcase" id="featured-artworks">
         <div class="container">
             <div class="vac-section-head">
-                <div>
-                    <p class="vac-eyebrow">Primary · Art Commerce</p>
+                <div class="vac-section-head__title-group">
                     <h2 class="vac-heading-xl">Featured artworks.</h2>
                 </div>
-                <a th:href="@{/art-store}" class="btn btn--outline">View full store</a>
+                <div class="vac-section-head__action-group">
+                    <a th:href="@{/art-store}" class="vac-btn-premium-store">View full store</a>
+                </div>
             </div>
             <div th:if="${featuredArtworks == null or #lists.isEmpty(featuredArtworks)}" class="vac-empty-panel">
                 <h3>Artworks are being curated.</h3>
@@ -154,53 +751,100 @@
     </section>
 
     <!-- 5. Platform Pillars (Introduces the core segments with Art Store as Pillar 01) -->
-    <section class="vac-section vac-section--white" id="departments">
-        <div class="container">
-            <div class="vac-section-head vac-section-head--center">
-                <p class="vac-eyebrow">One Platform · Four Pillars</p>
-                <h2 class="vac-heading-xl">EVERYTHING VOLCANO ARTS CENTER OFFERS.</h2>
-                <p class="vac-lead vac-lead--center">Art commerce, cultural tourism, conservation giving, and talent development — unified for international audiences.</p>
+    <section class="vac-section vac-section--white vac-home-pillars" id="departments">
+        <div class="vac-pillars-panel">
+            <div class="container">
+                <div class="vac-pillars-panel__info">
+                    <p class="vac-eyebrow">One Platform · Four Pillars</p>
+                    <h2 class="vac-heading-xl">Everything Volcano Arts Center Offers.</h2>
+                </div>
             </div>
+        </div>
+        <div class="container">
             <div class="vac-dept-nav">
                 <a th:href="@{/art-store}" class="vac-dept-pillar vac-dept-pillar--art">
                     <div class="vac-dept-pillar__media">
-                        <img src="/uploads/arthomepage.jpeg" alt="Original Rwandan art collection" loading="lazy"
-                             onerror="this.onerror=null;this.src='/uploads/arts page 4.jpg';" />
+                        <div class="vac-dept-pillar__slides" aria-hidden="true">
+                            <img class="vac-dept-pillar__slide vac-dept-pillar__slide--1" src="/uploads/Art.jpeg" alt="" loading="lazy"
+                                 onerror="this.onerror=null;this.src='/uploads/arthomepage.jpeg';" />
+                            <img class="vac-dept-pillar__slide vac-dept-pillar__slide--2" src="/uploads/7881368095630241.jpeg" alt="" loading="lazy"
+                                 onerror="this.onerror=null;this.src='/uploads/Art.jpeg';" />
+                            <img class="vac-dept-pillar__slide vac-dept-pillar__slide--3" src="/uploads/Start up home page.jpeg" alt="" loading="lazy"
+                                 onerror="this.onerror=null;this.src='/uploads/Art.jpeg';" />
+                            <img class="vac-dept-pillar__slide vac-dept-pillar__slide--4" src="/uploads/25332816648714928.jpeg" alt="" loading="lazy"
+                                 onerror="this.onerror=null;this.src='/uploads/Art.jpeg';" />
+                        </div>
+                        <span class="vac-dept-pillar__media-tag">Curated collection</span>
                     </div>
+                    <div class="vac-dept-pillar__body">
                     <span class="vac-dept-pillar__num">01</span>
                     <h3>Art Store</h3>
                     <p>Original paintings, sculpture, and craft — curated for global collectors. Built to scale beyond 5,000 pieces.</p>
                     <span class="vac-dept-pillar__link">Browse collection →</span>
+                    </div>
                 </a>
                 <a th:href="@{/experiences}" class="vac-dept-pillar vac-dept-pillar--exp">
                     <div class="vac-dept-pillar__media">
-                        <img src="/uploads/experiences-safari-hero.jpeg" alt="Luxury safari and cultural tours" loading="lazy"
-                             onerror="this.onerror=null;this.src='/uploads/tours.png';" />
+                        <div class="vac-dept-pillar__slides" aria-hidden="true">
+                            <img class="vac-dept-pillar__slide vac-dept-pillar__slide--1" src="/uploads/Mayon Volcano, Albay Philippines.jpeg" alt="" loading="lazy"
+                                 onerror="this.onerror=null;this.src='/uploads/experiences-safari-hero.jpeg';" />
+                            <img class="vac-dept-pillar__slide vac-dept-pillar__slide--2" src="/uploads/25332816648714928.jpeg" alt="" loading="lazy"
+                                 onerror="this.onerror=null;this.src='/uploads/Mayon Volcano, Albay Philippines.jpeg';" />
+                            <img class="vac-dept-pillar__slide vac-dept-pillar__slide--3" src="/uploads/wildlife-gorillas.jpeg" alt="" loading="lazy"
+                                 onerror="this.onerror=null;this.src='/uploads/Mayon Volcano, Albay Philippines.jpeg';" />
+                            <img class="vac-dept-pillar__slide vac-dept-pillar__slide--4" src="/uploads/Mayon Volcano, Albay Philippines.jpeg" alt="" loading="lazy"
+                                 onerror="this.onerror=null;this.src='/uploads/experiences-safari-hero.jpeg';" />
+                        </div>
+                        <span class="vac-dept-pillar__media-tag">Journeys in motion</span>
                     </div>
+                    <div class="vac-dept-pillar__body">
                     <span class="vac-dept-pillar__num">02</span>
                     <h3>Experiences</h3>
                     <p>Community-led cultural journeys, village life, and volcano routes near Musanze.</p>
                     <span class="vac-dept-pillar__link">Plan your visit →</span>
+                    </div>
                 </a>
                 <a th:href="@{/conservation}" class="vac-dept-pillar vac-dept-pillar--con">
                     <div class="vac-dept-pillar__media">
-                        <img src="/uploads/conservationhomepage.jpeg" alt="Conservation and reforestation projects" loading="lazy"
-                             onerror="this.onerror=null;this.src='/uploads/conservation3.jpg';" />
+                        <div class="vac-dept-pillar__slides" aria-hidden="true">
+                            <img class="vac-dept-pillar__slide vac-dept-pillar__slide--1" src="/uploads/64457838418348827.jpeg" alt="" loading="lazy"
+                                 onerror="this.onerror=null;this.src='/uploads/conservationhomepage.jpeg';" />
+                            <img class="vac-dept-pillar__slide vac-dept-pillar__slide--2" src="/uploads/17099673582559833.jpeg" alt="" loading="lazy"
+                                 onerror="this.onerror=null;this.src='/uploads/64457838418348827.jpeg';" />
+                            <img class="vac-dept-pillar__slide vac-dept-pillar__slide--3" src="/uploads/wildlife-gorillas.jpeg" alt="" loading="lazy"
+                                 onerror="this.onerror=null;this.src='/uploads/64457838418348827.jpeg';" />
+                            <img class="vac-dept-pillar__slide vac-dept-pillar__slide--4" src="/uploads/64457838418348827.jpeg" alt="" loading="lazy"
+                                 onerror="this.onerror=null;this.src='/uploads/conservationhomepage.jpeg';" />
+                        </div>
+                        <span class="vac-dept-pillar__media-tag">Transparent impact</span>
                     </div>
+                    <div class="vac-dept-pillar__body">
                     <span class="vac-dept-pillar__num">03</span>
                     <h3>Conservation</h3>
                     <p>Fund reforestation, education, and stewardship projects with transparent impact.</p>
                     <span class="vac-dept-pillar__link">Support impact →</span>
+                    </div>
                 </a>
                 <a th:href="@{/talent}" class="vac-dept-pillar vac-dept-pillar--talent">
                     <div class="vac-dept-pillar__media">
-                        <img src="/uploads/talenthome.jpeg" alt="Rwandan talent and media program" loading="lazy"
-                             onerror="this.onerror=null;this.src='/uploads/talent and media.jpg';" />
+                        <div class="vac-dept-pillar__slides" aria-hidden="true">
+                            <img class="vac-dept-pillar__slide vac-dept-pillar__slide--1" src="/uploads/55028426690959709.jpeg" alt="" loading="lazy"
+                                 onerror="this.onerror=null;this.src='/uploads/talenthome.jpeg';" />
+                            <img class="vac-dept-pillar__slide vac-dept-pillar__slide--2" src="/uploads/25332816648714928.jpeg" alt="" loading="lazy"
+                                 onerror="this.onerror=null;this.src='/uploads/55028426690959709.jpeg';" />
+                            <img class="vac-dept-pillar__slide vac-dept-pillar__slide--3" src="/uploads/Start up home page.jpeg" alt="" loading="lazy"
+                                 onerror="this.onerror=null;this.src='/uploads/55028426690959709.jpeg';" />
+                            <img class="vac-dept-pillar__slide vac-dept-pillar__slide--4" src="/uploads/Art.jpeg" alt="" loading="lazy"
+                                 onerror="this.onerror=null;this.src='/uploads/55028426690959709.jpeg';" />
+                        </div>
+                        <span class="vac-dept-pillar__media-tag">Creative pipeline</span>
                     </div>
+                    <div class="vac-dept-pillar__body">
                     <span class="vac-dept-pillar__num">04</span>
                     <h3>Talent &amp; Media</h3>
                     <p>Discover emerging Rwandan artists and apply to the mentorship pipeline.</p>
                     <span class="vac-dept-pillar__link">Meet talent →</span>
+                    </div>
                 </a>
             </div>
         </div>
@@ -211,12 +855,12 @@
         <div class="container vac-home-why__grid">
             <div class="vac-home-polaroids">
                 <article class="vac-home-polaroid vac-home-polaroid--one">
-                    <img src="/uploads/arthomepage.jpeg" alt="Rwandan artisan artworks" loading="lazy"
-                         onerror="this.onerror=null;this.src='/uploads/arts page 4.jpg';" />
+                    <img src="/uploads/7881368095630241.jpeg" alt="Rwandan artisan artworks" loading="lazy"
+                         onerror="this.onerror=null;this.src='/uploads/arthomepage.jpeg';" />
                 </article>
                 <article class="vac-home-polaroid vac-home-polaroid--two">
-                    <img src="/uploads/talent-silhouette.jpeg" alt="Traditional performance" loading="lazy"
-                         onerror="this.onerror=null;this.src='/uploads/Media and dance 2.jpg';" />
+                    <img src="/uploads/Celebrate heritage, strength, and beauty with this….jpeg" alt="Traditional performance" loading="lazy"
+                         onerror="this.onerror=null;this.src='/uploads/talent-silhouette.jpeg';" />
                 </article>
                 <div class="vac-home-rating-card">
                     <span>★★★★★</span>
@@ -241,7 +885,7 @@
         </div>
     </section>
 
-    <!-- 7. Cultural Tours & Journeys: Secondary Complementary Segment (Frame tours as "Journey to the Source") -->
+    <!-- 7. Cultural Tours & Journeys: Overlapping Showcase -->
     <section class="vac-wildlife-showcase reveal" id="creative-source-nature">
         <div class="container">
             <div class="vac-section-head vac-section-head--center">
@@ -249,30 +893,54 @@
                 <h2 class="vac-heading-xl">The landscape of inspiration.</h2>
                 <p class="vac-lead vac-lead--center">Beyond the gallery canvas, see where the inspiration begins. Journey into the misty volcanic forests, savanna wildlife corridors, and community villages that local Rwandan artists call home.</p>
             </div>
-            <div class="vac-wildlife-showcase__grid">
-                <a th:href="@{/experiences}" class="vac-wildlife-showcase__card vac-wildlife-showcase__card--hero">
-                    <img src="/uploads/wildlife-gorillas.jpeg" alt="Mountain gorillas in Volcanoes National Park" loading="lazy"
-                         onerror="this.onerror=null;this.src='/uploads/Home_wildlife.png';" />
-                    <div class="vac-wildlife-showcase__copy">
-                        <span>Gorilla &amp; Forest Trails</span>
-                        <h3>Meet the gentle giants</h3>
-                        <p>Immersive treks exploring gorilla trails hosted by local conservation guides.</p>
+            
+            <div class="vac-showcase-container">
+                <button class="vac-showcase-nav vac-showcase-nav--prev" id="showcase-prev" aria-label="Previous image">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                </button>
+                
+                <div class="vac-showcase-stack" id="showcase-stack">
+                    <div class="vac-showcase-slide active">
+                        <img src="/uploads/wildlife-gorillas.jpeg" alt="Mountain gorillas in Volcanoes National Park" loading="lazy" />
+                        <div class="vac-showcase-caption">
+                            <h3>Gorilla &amp; Forest Trails</h3>
+                        </div>
                     </div>
-                </a>
-                <a th:href="@{/experiences}" class="vac-wildlife-showcase__card">
-                    <img src="/uploads/experiences-safari-hero.jpeg" alt="Luxury safari at golden hour" loading="lazy" />
-                    <div class="vac-wildlife-showcase__copy">
-                        <span>Safari Adventures</span>
-                        <h3>Golden hour savanna</h3>
+                    <div class="vac-showcase-slide">
+                        <img src="/uploads/Mayon Volcano, Albay Philippines.jpeg" alt="Luxury safari at golden hour" loading="lazy" />
+                        <div class="vac-showcase-caption">
+                            <h3>Golden Hour Savanna</h3>
+                        </div>
                     </div>
-                </a>
-                <a th:href="@{/conservation}" class="vac-wildlife-showcase__card">
-                    <img src="/uploads/conservation-planting.jpeg" alt="Community reforestation project" loading="lazy" />
-                    <div class="vac-wildlife-showcase__copy">
-                        <span>Ecosystem Stewardship</span>
-                        <h3>Reforest the volcano foothills</h3>
+                    <div class="vac-showcase-slide">
+                        <img src="/uploads/17099673582559833.jpeg" alt="Community reforestation project" loading="lazy" />
+                        <div class="vac-showcase-caption">
+                            <h3>Volcano Stewardship</h3>
+                        </div>
                     </div>
-                </a>
+                    <div class="vac-showcase-slide">
+                        <img src="/uploads/experiences-safari-hero.jpeg" alt="Safari Experience" loading="lazy" />
+                        <div class="vac-showcase-caption">
+                            <h3>Savanna Journeys</h3>
+                        </div>
+                    </div>
+                    <div class="vac-showcase-slide">
+                        <img src="/uploads/experiences-waterfall.jpeg" alt="Rwanda Waterfalls" loading="lazy" />
+                        <div class="vac-showcase-caption">
+                            <h3>Misty Falls</h3>
+                        </div>
+                    </div>
+                    <div class="vac-showcase-slide">
+                        <img src="/uploads/experiences-bisoke.jpeg" alt="Mount Bisoke" loading="lazy" />
+                        <div class="vac-showcase-caption">
+                            <h3>Bisoke Summit</h3>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="vac-showcase-nav vac-showcase-nav--next" id="showcase-next" aria-label="Next image">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                </button>
             </div>
         </div>
     </section>
@@ -431,8 +1099,8 @@
     <section class="vac-section vac-section--ivory" th:unless="${featuredCampaign != null}" id="conservation-fallback">
         <div class="container vac-conservation-spotlight__grid">
             <div class="vac-conservation-spotlight__media">
-                <img src="/uploads/conservationhomepage.jpeg" alt="Conservation" loading="lazy"
-                     onerror="this.onerror=null;this.src='/uploads/conservation3.jpg';" />
+                <img src="/uploads/64457838418348827.jpeg" alt="Conservation" loading="lazy"
+                     onerror="this.onerror=null;this.src='/uploads/conservationhomepage.jpeg';" />
             </div>
             <div class="vac-conservation-spotlight__copy">
                 <p class="vac-eyebrow">Conservation Impact</p>
@@ -478,13 +1146,13 @@
                 </div>
                 <div class="vac-talent-teaser__grid vac-talent-teaser__grid--fallback" th:if="${talentProfiles == null or #lists.isEmpty(talentProfiles)}">
                     <article class="vac-talent-card">
-                        <div class="vac-talent-card__media"><img src="/uploads/talent-portrait.jpeg" alt="Talent" loading="lazy"
-                             onerror="this.onerror=null;this.src='/uploads/talent and media.jpg';" /></div>
+                        <div class="vac-talent-card__media"><img src="/uploads/55028426690959709.jpeg" alt="Talent" loading="lazy"
+                             onerror="this.onerror=null;this.src='/uploads/talent-portrait.jpeg';" /></div>
                         <div class="vac-talent-card__body"><h3>Emerging Artists</h3><p>Mentorship and market access for Rwandan creatives.</p></div>
                     </article>
                     <article class="vac-talent-card">
-                        <div class="vac-talent-card__media"><img src="/uploads/talent-silhouette.jpeg" alt="Performance" loading="lazy"
-                             onerror="this.onerror=null;this.src='/uploads/media and dance.jpg';" /></div>
+                        <div class="vac-talent-card__media"><img src="/uploads/Celebrate heritage, strength, and beauty with this….jpeg" alt="Performance" loading="lazy"
+                             onerror="this.onerror=null;this.src='/uploads/talent-silhouette.jpeg';" /></div>
                         <div class="vac-talent-card__body"><h3>Cultural Performance</h3><p>Dance, music, and storytelling on global stages.</p></div>
                     </article>
                 </div>

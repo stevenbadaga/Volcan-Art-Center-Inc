@@ -12,9 +12,9 @@
 
     <section class="hero-golden hero-golden--compact hero-golden--contact hero-golden--fitted vac-cinematic-hero reveal">
         <div class="hero-golden__bg vac-cinematic-hero__bg">
-            <img class="hero-slide active vac-cinematic-hero__img" src="/uploads/wildlifehome.jpeg" alt="Rwandan landscape at golden hour"
+            <img class="hero-slide active vac-cinematic-hero__img" src="/uploads/Witnessing the _perfect cone_ of Mayon Volcano….jpeg" alt="Rwandan landscape at golden hour"
                  onerror="this.onerror=null;this.src='/uploads/Home_virunga.png';" />
-            <img class="hero-slide vac-cinematic-hero__img" src="/uploads/experiences-bisoke.jpeg" alt="Volcanoes National Park region" />
+            <img class="hero-slide vac-cinematic-hero__img" src="/uploads/Mayon Volcano, Albay Philippines.jpeg" alt="Volcanoes National Park region" />
             <div class="hero-golden__veil vac-cinematic-hero__veil vac-cinematic-hero__veil--light"></div>
         </div>
         <div class="hero-golden__content">
@@ -24,7 +24,8 @@
                 <p class="hero-golden__sub">Whether you have booking questions, art inquiries, or partnership proposals, our team in Musanze is ready to help you discover the magic of Rwanda.</p>
                 <div class="hero-golden__actions">
                     <a href="#live-chat" class="btn-hero-primary">Send a Message</a>
-                    <a href="https://wa.me/250788000000" target="_blank" rel="noopener" class="btn-hero-outline">WhatsApp Us</a>
+                    <a th:if="${siteContact.hasWhatsapp}" th:href="${siteContact.whatsappUrl}" target="_blank" rel="noopener" class="btn-hero-outline">WhatsApp Us</a>
+                    <a th:unless="${siteContact.hasWhatsapp}" th:href="${siteContact.phoneUrl}" class="btn-hero-outline">Call Us</a>
                 </div>
             </div>
         </div>
@@ -144,7 +145,7 @@
                             </div>
                             <div>
                                 <h4 style="font-family:var(--font-ui); font-size:.7rem; letter-spacing:var(--track-wide); text-transform:uppercase; color:var(--ash); margin:0 0 .35rem;">Email</h4>
-                                <a href="mailto:info@volcanoartsandhospes.com" style="color:var(--green-dark); font-weight:500;">info@volcanoartsandhospes.com</a>
+                                <a th:if="${siteContact.hasEmail}" th:href="${siteContact.emailUrl}" th:text="${siteContact.emailDisplay}" style="color:var(--green-dark); font-weight:500;">hello@volcanoartsandhospes.com</a>
                             </div>
                         </div>
 
@@ -154,8 +155,12 @@
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347"/></svg>
                             </div>
                             <div>
-                                <h4 style="font-family:var(--font-ui); font-size:.7rem; letter-spacing:var(--track-wide); text-transform:uppercase; color:var(--ash); margin:0 0 .35rem;">WhatsApp</h4>
-                                <p style="color:var(--charcoal); font-size:.95rem; margin:0;">Fastest for booking questions. Daytime (CAT, UTC+2).</p>
+                                <h4 style="font-family:var(--font-ui); font-size:.7rem; letter-spacing:var(--track-wide); text-transform:uppercase; color:var(--ash); margin:0 0 .35rem;">WhatsApp &amp; phone</h4>
+                                <p style="color:var(--charcoal); font-size:.95rem; margin:0 0 .7rem;">Fastest for booking questions. Daytime (CAT, UTC+2).</p>
+                                <div style="display:flex; gap:.65rem; flex-wrap:wrap;">
+                                    <a th:if="${siteContact.hasWhatsapp}" th:href="${siteContact.whatsappUrl}" target="_blank" rel="noopener" class="btn btn--primary btn--sm">Chat on WhatsApp</a>
+                                    <a th:if="${siteContact.hasPhone}" th:href="${siteContact.phoneUrl}" class="btn btn--outline btn--sm" th:text="${siteContact.phoneDisplay}">+250 788 883 986</a>
+                                </div>
                             </div>
                         </div>
                         <div style="display: flex; gap: 1rem; align-items: center; justify-content: space-between; padding:1.25rem; background:linear-gradient(135deg, rgba(0,166,81,.14), rgba(255,255,255,.7)); border:1px solid rgba(0,166,81,.3); border-radius:var(--radius-md);">
@@ -200,7 +205,7 @@
                 </div>
                 <div class="reveal split-section__media">
                     <span class="split-section__media-tag">B2B</span>
-                    <img src="/uploads/tours.png" alt="Tour operators" loading="lazy" onerror="this.onerror=null;this.src='/uploads/Home_virunga.png';" />
+                    <img src="/uploads/7881368095630241.jpeg" alt="Tour operators" loading="lazy" onerror="this.onerror=null;this.src='/uploads/tours.png';" />
                 </div>
             </div>
         </div>

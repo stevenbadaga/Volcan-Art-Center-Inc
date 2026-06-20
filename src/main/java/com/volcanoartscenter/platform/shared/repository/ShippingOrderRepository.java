@@ -18,6 +18,8 @@ public interface ShippingOrderRepository extends JpaRepository<ShippingOrder, Lo
     @EntityGraph(attributePaths = {"user", "product", "orderItems", "orderItems.product"})
     List<ShippingOrder> findAll();
 
+    long countByStatusIn(java.util.Collection<ShippingOrder.OrderStatus> statuses);
+
     /**
      * Review eligibility check: has this user received delivery of this product?
      * Checks both the legacy single-product FK and the new order_items table.

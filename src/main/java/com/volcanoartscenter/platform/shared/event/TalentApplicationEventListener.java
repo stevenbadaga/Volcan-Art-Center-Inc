@@ -30,7 +30,7 @@ public class TalentApplicationEventListener {
         if (app.getPhone() != null && !app.getPhone().isEmpty()) {
             String waMessage = String.format("Hello %s! Volcano Arts Center has approved your talent portfolio '%s'. Please check your email for the next steps.", 
                                              app.getFullName(), app.getReferenceNumber());
-            notificationService.sendWhatsAppAsync(app.getPhone(), app.getPhone(), waMessage);
+            notificationService.sendWhatsAppAsync(app.getPhone(), waMessage);
         }
     }
 }

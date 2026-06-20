@@ -3,7 +3,16 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/base}">
 <head>
-    <title>Art Store | Volcano Arts Center</title>
+    <title>Shop Rwandan Art &amp; Handmade Products | Volcano Arts Center</title>
+    <th:block layout:fragment="meta">
+        <meta name="description" content="Explore and purchase authentic handmade artworks, cultural products, and creative pieces from local Rwandan talent at Volcano Arts Center." />
+        <meta property="og:title" content="Shop Rwandan Art &amp; Handmade Products | Volcano Arts Center" />
+        <meta property="og:description" content="Explore and purchase authentic handmade artworks, cultural products, and creative pieces from local Rwandan talent at Volcano Arts Center." />
+        <meta property="og:image" content="/uploads/Art.jpeg" />
+        <meta name="twitter:title" content="Shop Rwandan Art &amp; Handmade Products | Volcano Arts Center" />
+        <meta name="twitter:description" content="Explore and purchase authentic handmade artworks, cultural products, and creative pieces from local Rwandan talent at Volcano Arts Center." />
+        <meta name="twitter:image" content="/uploads/Art.jpeg" />
+    </th:block>
 </head>
 
 <body>
@@ -11,9 +20,9 @@
 
     <section class="hero-golden hero-golden--compact hero-golden--art hero-golden--fitted hero-golden--frame-fill hero-golden--portrait-source vac-cinematic-hero reveal">
         <div class="hero-golden__bg vac-cinematic-hero__bg">
-            <img class="hero-slide-backdrop" src="/uploads/aloe-vera-hero.jpeg" alt="" aria-hidden="true" />
-            <img class="hero-slide active vac-cinematic-hero__img" src="/uploads/aloe-vera-hero.jpeg" alt="Contemporary Rwandan art"
-                 onerror="this.onerror=null;this.src='/uploads/aloe-vera-hero.jpeg';" />
+            <img class="hero-slide-backdrop" src="/uploads/Witnessing the _perfect cone_ of Mayon Volcano….jpeg" alt="" aria-hidden="true" />
+            <img class="hero-slide active vac-cinematic-hero__img" src="/uploads/Art.jpeg" alt="Contemporary Rwandan art"
+                 onerror="this.onerror=null;this.src='/uploads/Art.jpeg';" />
             <div class="hero-golden__veil vac-cinematic-hero__veil vac-cinematic-hero__veil--light"></div>
         </div>
         <div class="hero-golden__content">
@@ -32,15 +41,15 @@
     <section class="vac-showcase-band vac-showcase-band--compact reveal">
         <div class="container vac-showcase-band__grid">
             <article class="vac-showcase-band__card">
-                <img src="/uploads/aloe-vera-hero.jpeg" alt="Gallery collection" loading="lazy" />
+                <img src="/uploads/This pencil sketch captures the charm of two ducks….jpeg" alt="Gallery collection" loading="lazy" />
                 <div class="vac-showcase-band__copy"><span>Curated</span><h3>Museum-quality presentation</h3></div>
             </article>
             <article class="vac-showcase-band__card">
-                <img src="/uploads/art-layered-sculpture.jpeg" alt="Contemporary craft" loading="lazy" />
+                <img src="/uploads/7881368095630241.jpeg" alt="Contemporary craft" loading="lazy" />
                 <div class="vac-showcase-band__copy"><span>Original</span><h3>Rwandan makers</h3></div>
             </article>
             <article class="vac-showcase-band__card">
-                <img src="/uploads/arthomepage.jpeg" alt="Fine art portrait" loading="lazy"
+                <img src="/uploads/Start up home page.jpeg" alt="Fine art portrait" loading="lazy"
                      onerror="this.onerror=null;this.src='/uploads/arthome.jpeg';" />
                 <div class="vac-showcase-band__copy"><span>Global</span><h3>Ship worldwide</h3></div>
             </article>
@@ -131,10 +140,10 @@
                         <article class="vac-catalog-card vac-clickable-card reveal"
                                  th:each="product,iter : ${products}"
                                  th:attr="data-card-url=@{/art-store/{slug}(slug=${product.slug})}"
-                                 th:with="productFallback=${iter.index % 6 == 0 ? '/uploads/arthomepage.jpeg' : iter.index % 6 == 1 ? '/uploads/art-layered-sculpture.jpeg' : iter.index % 6 == 2 ? '/uploads/arthomepage2.jpeg' : iter.index % 6 == 3 ? '/uploads/art-gallery-interior.jpeg' : iter.index % 6 == 4 ? '/uploads/4600427105964790400.jpeg' : '/uploads/arthome.jpeg'},productImage=${product.displayPrimaryImageUrl != null ? product.displayPrimaryImageUrl : productFallback}">
+                                 th:with="productFallback=${iter.index % 6 == 0 ? '/uploads/Art.jpeg' : iter.index % 6 == 1 ? '/uploads/7881368095630241.jpeg' : iter.index % 6 == 2 ? '/uploads/Start up home page.jpeg' : iter.index % 6 == 3 ? '/uploads/This pencil sketch captures the charm of two ducks….jpeg' : iter.index % 6 == 4 ? '/uploads/Celebrate heritage, strength, and beauty with this….jpeg' : '/uploads/25332816648714928.jpeg'},productImage=${product.displayPrimaryImageUrl != null ? product.displayPrimaryImageUrl : productFallback}">
                             <a th:href="@{/art-store/{slug}(slug=${product.slug})}" class="vac-catalog-card__media">
                                 <img th:src="${productImage}" th:alt="${product.name}" loading="lazy"
-                                     onerror="this.onerror=null;this.src='/uploads/arthome.jpeg';" />
+                                     onerror="this.onerror=null;this.src='/uploads/Art.jpeg';" />
                                 <span class="vac-catalog-card__badge" th:if="${product.inventoryType != null and product.inventoryType.name() == 'UNIQUE'}">1 of 1</span>
                                 <span class="vac-catalog-card__wish" aria-hidden="true">♡</span>
                             </a>

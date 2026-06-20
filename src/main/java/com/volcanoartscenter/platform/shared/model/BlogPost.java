@@ -3,9 +3,9 @@ package com.volcanoartscenter.platform.shared.model;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Locale;
+import java.util.Set;
 
 @Entity
 @Table(name = "blog_posts")
@@ -18,13 +18,13 @@ public class BlogPost {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 300)
+    @Column(nullable = false, length = 200)
     private String title;
 
-    @Column(nullable = false, unique = true, length = 350)
+    @Column(nullable = false, unique = true, length = 200)
     private String slug;
 
-    @Column(name = "excerpt", length = 500)
+    @Column(columnDefinition = "TEXT")
     private String excerpt;
 
     @Column(nullable = false, columnDefinition = "TEXT")
@@ -38,10 +38,11 @@ public class BlogPost {
     private Long coverMediaId;
 
     @ElementCollection
+    @org.hibernate.annotations.Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
     @CollectionTable(name = "blog_post_images", joinColumns = @JoinColumn(name = "post_id"))
     @Column(name = "image_url")
     @Builder.Default
-    private List<String> additionalImages = new ArrayList<>();
+    private Set<String> additionalImages = new LinkedHashSet<>();
 
     // Categorization
     @Enumerated(EnumType.STRING)
@@ -50,10 +51,11 @@ public class BlogPost {
     private BlogCategory category = BlogCategory.UPDATE;
 
     @ElementCollection
+    @org.hibernate.annotations.Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
     @CollectionTable(name = "blog_post_tags", joinColumns = @JoinColumn(name = "post_id"))
     @Column(name = "tag", length = 50)
     @Builder.Default
-    private List<String> tags = new ArrayList<>();
+    private Set<String> tags = new LinkedHashSet<>();
 
     // Author
     @ManyToOne(fetch = FetchType.LAZY)
@@ -116,8 +118,12 @@ public class BlogPost {
 
     @Transient
     public String getAdditionalImagesText() {
-        List<String> images = additionalImages == null ? java.util.Collections.emptyList() : additionalImages;
-        return String.join(System.lineSeparator(), images);
+        if (additionalImages == null || additionalImages.isEmpty()) {
+            return "";
+        }
+        return additionalImages.stream()
+                .filter(java.util.Objects::nonNull)
+                .collect(java.util.stream.Collectors.joining(System.lineSeparator()));
     }
 
     @Transient

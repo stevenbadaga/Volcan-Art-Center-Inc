@@ -3,90 +3,91 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/base}">
 <head>
-    <title>Cultural Experiences | Volcano Arts Center</title>
+    <title>Cultural &amp; Wildlife Experiences in Rwanda | Volcano Arts Center</title>
+    <th:block layout:fragment="meta">
+        <meta name="description" content="Book authentic art, culture, wildlife, and community experiences in Rwanda with Volcano Arts Center. Journey to the source of inspiration." />
+        <meta property="og:title" content="Cultural &amp; Wildlife Experiences in Rwanda | Volcano Arts Center" />
+        <meta property="og:description" content="Book authentic art, culture, wildlife, and community experiences in Rwanda with Volcano Arts Center. Journey to the source of inspiration." />
+        <meta property="og:image" content="/uploads/experiences-safari-hero.jpeg" />
+        <meta name="twitter:title" content="Cultural &amp; Wildlife Experiences in Rwanda | Volcano Arts Center" />
+        <meta name="twitter:description" content="Book authentic art, culture, wildlife, and community experiences in Rwanda with Volcano Arts Center. Journey to the source of inspiration." />
+        <meta name="twitter:image" content="/uploads/experiences-safari-hero.jpeg" />
+    </th:block>
 </head>
 
 <body>
 <main layout:fragment="content">
 
-    <section class="hero-golden hero-golden--compact hero-golden--experiences hero-golden--fitted hero-golden--frame-fill hero-golden--portrait-source vac-cinematic-hero reveal">
+    <section class="hero-golden hero-golden--compact hero-golden--experiences hero-golden--fitted hero-golden--frame-fill hero-golden--portrait-source vac-cinematic-hero vac-experience-hero-ref reveal">
         <div class="hero-golden__bg vac-cinematic-hero__bg">
-            <img class="hero-slide-backdrop" src="/uploads/experiences-hero-premium.png" alt="" aria-hidden="true" />
-            <img class="hero-slide active vac-cinematic-hero__img" src="/uploads/experiences-hero-premium.png" alt="Young mountain gorilla in Volcanoes National Park"
+            <img class="hero-slide-backdrop" src="/uploads/Mayon Volcano, Albay Philippines.jpeg" alt="" aria-hidden="true" />
+            <img class="hero-slide active vac-cinematic-hero__img" src="/uploads/Mayon Volcano, Albay Philippines.jpeg" alt="Young mountain gorilla in Volcanoes National Park"
                  onerror="this.onerror=null;this.src='/uploads/experiences-safari-hero.jpeg';" />
             <div class="hero-golden__veil vac-cinematic-hero__veil vac-cinematic-hero__veil--light"></div>
         </div>
-        <div class="hero-golden__content">
-            <p class="hero-golden__kicker">Discover Rwanda from the inside</p>
-            <h1 class="hero-golden__title hero-golden__title--compact">Cultural Journeys</h1>
-            <div class="hero-golden__bottom">
-                <p class="hero-golden__sub">Immerse yourself in authentic community-led experiences and conservation journeys led by Musanze hosts.</p>
-                <div class="hero-golden__actions">
-                    <a href="#experiences" class="btn-hero-primary">View All Journeys</a>
-                    <a th:href="@{/contact}" class="btn-hero-outline">Custom Request</a>
+        <div class="hero-golden__content container vac-experience-hero-ref__content">
+            <div class="vac-experience-hero-ref__panel">
+                <div class="vac-experience-hero-ref__main">
+                    <p class="hero-golden__kicker vac-experience-hero-ref__kicker">Discover Rwanda from the inside</p>
+                    <h1 class="hero-golden__title hero-golden__title--compact vac-experience-hero-ref__title">Cultural Journeys</h1>
+                    <p class="hero-golden__sub vac-experience-hero-ref__sub">Immerse yourself in authentic community-led experiences and conservation journeys led by Musanze hosts.</p>
+                </div>
+                <div class="vac-experience-hero-ref__aside">
+                    <p class="vac-eyebrow vac-experience-hero-ref__eyebrow">Experience Value</p>
+                    <h2 class="vac-experience-hero-ref__aside-title">Trip details that are easy to trust.</h2>
+                    <p class="vac-experience-hero-ref__aside-copy">Guests can scan options faster with clearer duration, group size, location, and pricing &mdash; built for international travellers.</p>
+                    <div class="hero-golden__actions vac-experience-hero-ref__actions">
+                        <a href="#experiences" class="btn-hero-primary">View All Journeys</a>
+                        <a th:href="@{/contact}" class="btn-hero-outline">Custom Request</a>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="vac-section vac-section--white">
+    <section class="vac-section vac-section--white vac-experience-value vac-experience-value--cards-only">
         <div class="container">
-            <div class="vac-section-head vac-section-head--center">
-                <div>
-                    <p class="vac-eyebrow">Experience Value</p>
-                    <h2 class="vac-heading-lg">Trip details that are easy to trust.</h2>
-                </div>
-                <p class="vac-lead vac-lead--center">Guests can scan options faster with clearer duration, group size, location, and pricing — built for international travellers.</p>
-            </div>
-
-            <div class="vac-focus-grid vac-focus-grid--media">
+            <div class="vac-focus-grid vac-focus-grid--media vac-experience-value__grid">
                 <a th:href="@{/experiences(category='CULTURAL')}" class="vac-focus-card vac-focus-card--media">
-                    <img class="vac-focus-card__photo" src="/uploads/experiences-village.jpeg" alt="" aria-hidden="true" loading="lazy" />
+                    <img class="vac-focus-card__photo" src="/uploads/25332816648714928.jpeg" alt="" aria-hidden="true" loading="lazy" />
                     <div class="vac-focus-card__shade"></div>
-                    <span class="vac-focus-card__label">Culture</span>
                     <h3>Community-Led Experiences</h3>
-                    <p>Stories, performance, food, and local traditions hosted by real residents near Volcanoes National Park.</p>
                 </a>
                 <a th:href="@{/experiences(category='CONSERVATION')}" class="vac-focus-card vac-focus-card--media">
                     <img class="vac-focus-card__photo" src="/uploads/wildlife-gorillas.jpeg" alt="" aria-hidden="true" loading="lazy" />
                     <div class="vac-focus-card__shade"></div>
-                    <span class="vac-focus-card__label">Wildlife</span>
                     <h3>Volcano &amp; Wildlife Routes</h3>
-                    <p>Curated journeys through landscapes tied to conservation outcomes and community impact.</p>
                 </a>
                 <a th:href="@{/contact}" class="vac-focus-card vac-focus-card--media">
-                    <img class="vac-focus-card__photo" src="/uploads/experiences-waterfall.jpeg" alt="" aria-hidden="true" loading="lazy" />
+                    <img class="vac-focus-card__photo" src="/uploads/Witnessing the _perfect cone_ of Mayon Volcano….jpeg" alt="" aria-hidden="true" loading="lazy" />
                     <div class="vac-focus-card__shade"></div>
-                    <span class="vac-focus-card__label">Adventure</span>
                     <h3>Tailored Itinerary Support</h3>
-                    <p>Request custom trips for families, schools, tour operators, or corporate retreats.</p>
                 </a>
             </div>
         </div>
     </section>
 
-    <section class="vac-section vac-section--ivory" id="experiences">
+    <section class="vac-section vac-section--ivory vac-experience-listing" id="experiences">
         <div class="container">
-            <div class="vac-section-head">
-                <div>
-                    <p class="vac-eyebrow">Immersive Experiences</p>
+            <div class="vac-section-head vac-experience-listing__head">
+                <div class="vac-experience-listing__title-group">
                     <h2 class="vac-heading-xl">Cultural journeys near the volcanoes.</h2>
                 </div>
-                <p class="vac-lead" th:if="${experiences != null}" th:text="${#lists.size(experiences)} + ' experiences available'">Experiences available</p>
+                <p class="vac-lead vac-experience-listing__count" th:if="${experiences != null}" th:text="${#lists.size(experiences)} + ' experiences available'">Experiences available</p>
             </div>
 
-            <div class="vac-filter-dock">
+            <div class="vac-filter-dock vac-experience-listing__dock">
                 <form method="get" th:action="@{/experiences}" class="vac-filter-dock__form">
                     <div class="vac-filter-dock__chips">
-                        <a class="btn btn--outline btn--sm" th:href="@{/experiences}">All</a>
-                        <a class="btn btn--outline btn--sm" th:href="@{/experiences(category='CULTURAL')}">Cultural</a>
-                        <a class="btn btn--outline btn--sm" th:href="@{/experiences(category='VILLAGE')}">Village Life</a>
-                        <a class="btn btn--outline btn--sm" th:href="@{/experiences(category='CONSERVATION')}">Conservation</a>
-                        <a class="btn btn--outline btn--sm" th:href="@{/experiences(category='CUSTOM')}">Custom</a>
+                        <a class="btn btn--outline btn--sm vac-experience-listing__chip" th:href="@{/experiences}">All</a>
+                        <a class="btn btn--outline btn--sm vac-experience-listing__chip" th:href="@{/experiences(category='CULTURAL')}">Cultural</a>
+                        <a class="btn btn--outline btn--sm vac-experience-listing__chip" th:href="@{/experiences(category='VILLAGE')}">Village Life</a>
+                        <a class="btn btn--outline btn--sm vac-experience-listing__chip" th:href="@{/experiences(category='CONSERVATION')}">Conservation</a>
+                        <a class="btn btn--outline btn--sm vac-experience-listing__chip" th:href="@{/experiences(category='CUSTOM')}">Custom</a>
                     </div>
                     <div class="vac-filter-dock__search">
-                        <input type="search" class="form-input" name="q" th:value="${q}" placeholder="Search by name, location…" />
-                        <button type="submit" class="btn btn--primary btn--sm">Search</button>
+                        <input type="search" class="form-input" name="q" th:value="${q}" placeholder="Search by name, location..." />
+                        <button type="submit" class="btn btn--primary btn--sm vac-experience-listing__search-btn">Search</button>
                     </div>
                 </form>
             </div>
@@ -114,8 +115,8 @@
                         </p>
                         <h3><a th:href="@{/experiences/{slug}(slug=${exp.slug})}" th:text="${exp.title}">Experience</a></h3>
                         <p class="vac-exp-meta">
-                            <span class="vac-exp-stars" aria-hidden="true">★★★★★</span>
-                            <span th:text="|${exp.minGroupSize}–${exp.maxGroupSize} guests|">2–15 guests</span>
+                            <span class="vac-exp-stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                            <span th:text="|${exp.minGroupSize}&ndash;${exp.maxGroupSize} guests|">2&ndash;15 guests</span>
                         </p>
                         <p th:if="${exp.shortDescription != null}" th:text="${exp.shortDescription}">Description</p>
                         <div class="vac-premium-exp-card__foot">
@@ -135,62 +136,62 @@
         </div>
     </section>
 
-    <section class="vac-section vac-section--white">
+    <section class="vac-section vac-section--white vac-experience-stories">
         <div class="container">
-            <div class="vac-section-head">
-                <div>
-                    <p class="vac-eyebrow">Adventure Stories</p>
-                    <h2 class="vac-heading-lg">Guest moments in Musanze</h2>
+            <div class="vac-section-head vac-experience-stories__head">
+                <div class="vac-experience-stories__title-group">
+                    <p class="vac-eyebrow vac-experience-stories__eyebrow">Adventure Stories</p>
+                    <h2 class="vac-heading-lg vac-experience-stories__title">Guest moments in Musanze</h2>
                 </div>
-                <a th:href="@{/blog}" class="btn btn--outline">Read full stories</a>
+                <a th:href="@{/blog}" class="btn btn--outline vac-experience-stories__cta">Read full stories</a>
             </div>
 
-            <div class="vac-premium-story-grid" th:if="${experiences != null and !#lists.isEmpty(experiences)}">
-                <article class="vac-premium-story-card"
+            <div class="vac-premium-story-grid vac-experience-stories__grid" th:if="${experiences != null and !#lists.isEmpty(experiences)}">
+                <article class="vac-premium-story-card vac-experience-stories__card"
                          th:each="exp,iter : ${experiences}"
                          th:if="${iter.index < 3}"
-                         th:with="expFallback=${iter.index == 0 ? '/uploads/talent and media.jpg' : iter.index == 1 ? '/uploads/media and dance.jpg' : '/uploads/Media and dance 2.jpg'},expImage=${exp.displayPrimaryImageUrl != null ? exp.displayPrimaryImageUrl : expFallback}">
+                         th:with="expFallback=${iter.index == 0 ? '/uploads/talent%20and%20media.jpg' : iter.index == 1 ? '/uploads/media%20and%20dance.jpg' : '/uploads/Media%20and%20dance%202.jpg'},expImage=${exp.displayPrimaryImageUrl != null ? exp.displayPrimaryImageUrl : expFallback}">
                     <a th:href="@{/experiences/{slug}(slug=${exp.slug})}">
-                        <img th:src="${expImage}" th:alt="${exp.title}" loading="lazy" onerror="this.onerror=null;this.src='/uploads/media and dance.jpg';" />
+                        <img th:src="${expImage}" th:alt="${exp.title}" loading="lazy" onerror="this.onerror=null;this.src='/uploads/media%20and%20dance.jpg';" />
                     </a>
-                    <div>
-                        <p>Lead adventure</p>
-                        <h3><a th:href="@{/experiences/{slug}(slug=${exp.slug})}" th:text="${exp.title}">Title</a></h3>
-                        <span th:text="${exp.shortDescription != null and !#strings.isEmpty(exp.shortDescription) ? exp.shortDescription : 'Open the full itinerary, host information, and booking notes for this experience.'}">Story excerpt</span>
+                    <div class="vac-experience-stories__card-body">
+                        <p class="vac-experience-stories__kicker">Guest Story</p>
+                        <h3 class="vac-experience-stories__card-title"><a th:href="@{/experiences/{slug}(slug=${exp.slug})}" th:text="${exp.title}">Title</a></h3>
+                        <span class="vac-experience-stories__excerpt" th:text="${exp.shortDescription != null and !#strings.isEmpty(exp.shortDescription) ? exp.shortDescription : 'Open the full itinerary, host information, and booking notes for this experience.'}">Story excerpt</span>
                     </div>
                 </article>
             </div>
 
-            <div class="vac-premium-story-grid" th:if="${experiences == null or #lists.isEmpty(experiences)}">
-                <article class="vac-premium-story-card">
-                    <a th:href="@{/blog}"><img src="/uploads/experiences-village.jpeg" alt="Community hike" loading="lazy" /></a>
-                    <div>
-                        <p>Story</p>
-                        <h3><a th:href="@{/blog}">Misty Morning Volcano Walk</a></h3>
-                        <span>Guests explored volcanic foothills with local guides, ending with hand-crafted tea and storytelling.</span>
+            <div class="vac-premium-story-grid vac-experience-stories__grid" th:if="${experiences == null or #lists.isEmpty(experiences)}">
+                <article class="vac-premium-story-card vac-experience-stories__card">
+                    <a th:href="@{/blog}"><img src="/uploads/17099673582559833.jpeg" alt="Community hike" loading="lazy" /></a>
+                    <div class="vac-experience-stories__card-body">
+                        <p class="vac-experience-stories__kicker">Guest Story</p>
+                        <h3 class="vac-experience-stories__card-title"><a th:href="@{/blog}">Misty Morning Volcano Walk</a></h3>
+                        <span class="vac-experience-stories__excerpt">Guests explored volcanic foothills with local guides, ending with hand-crafted tea and storytelling.</span>
                     </div>
                 </article>
-                <article class="vac-premium-story-card">
+                <article class="vac-premium-story-card vac-experience-stories__card">
                     <a th:href="@{/blog}"><img src="/uploads/wildlife-gorillas.jpeg" alt="Village visit" loading="lazy" /></a>
-                    <div>
-                        <p>Story</p>
-                        <h3><a th:href="@{/blog}">Village Rhythms &amp; Craft Trails</a></h3>
-                        <span>A curated path through dance circles, artisan workshops, and community-led performances.</span>
+                    <div class="vac-experience-stories__card-body">
+                        <p class="vac-experience-stories__kicker">Guest Story</p>
+                        <h3 class="vac-experience-stories__card-title"><a th:href="@{/blog}">Village Rhythms &amp; Craft Trails</a></h3>
+                        <span class="vac-experience-stories__excerpt">A curated path through dance circles, artisan workshops, and community-led performances.</span>
                     </div>
                 </article>
-                <article class="vac-premium-story-card">
-                    <a th:href="@{/blog}"><img src="/uploads/conservation-planting.jpeg" alt="Conservation walk" loading="lazy" /></a>
-                    <div>
-                        <p>Story</p>
-                        <h3><a th:href="@{/blog}">Conservation Pathfinders</a></h3>
-                        <span>Travelers joined youth conservation teams and learned how tourism supports local ecosystem protection.</span>
+                <article class="vac-premium-story-card vac-experience-stories__card">
+                    <a th:href="@{/blog}"><img src="/uploads/64457838418348827.jpeg" alt="Conservation walk" loading="lazy" /></a>
+                    <div class="vac-experience-stories__card-body">
+                        <p class="vac-experience-stories__kicker">Guest Story</p>
+                        <h3 class="vac-experience-stories__card-title"><a th:href="@{/blog}">Conservation Pathfinders</a></h3>
+                        <span class="vac-experience-stories__excerpt">Travelers joined youth conservation teams and learned how tourism supports local ecosystem protection.</span>
                     </div>
                 </article>
             </div>
         </div>
     </section>
 
-    <section class="vac-cta-band vac-cta-band--media reveal" style="background-image:url('/uploads/experiences-bisoke.jpeg');">
+    <section class="vac-cta-band vac-cta-band--media reveal" style="background-image:url('/uploads/Start up home page.jpeg');">
         <div class="container vac-cta-band__inner">
             <div>
                 <p class="vac-eyebrow vac-eyebrow--light">Need help?</p>

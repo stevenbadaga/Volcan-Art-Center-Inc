@@ -49,6 +49,7 @@ public class OpsManagerService {
     private final ExperienceRepository experienceRepository;
     private final BlackoutDateRepository blackoutDateRepository;
     private final UserRepository userRepository;
+    private final com.volcanoartscenter.platform.shared.repository.ProductRepository productRepository;
     private final AvailabilityService availabilityService;
     private final ComplianceService complianceService;
     private final IntegrationFacadeService integrationFacadeService;
@@ -58,6 +59,12 @@ public class OpsManagerService {
     public long totalBookings() { return bookingRepository.count(); }
     public long totalOrders() { return shippingOrderRepository.count(); }
     public long totalInquiries() { return contactInquiryRepository.count(); }
+
+    public Booking getBookingByReference(String reference) {
+        return bookingRepository.findByBookingReference(reference)
+                .orElseThrow(() -> new com.volcanoartscenter.platform.shared.exception.NotFoundException("Booking not found: " + reference));
+    }
+
     public long pendingTalentApplications() {
         return talentApplicationRepository.findAll().stream()
                 .filter(a -> a.getStatus() == TalentApplication.ApplicationStatus.PENDING || a.getStatus() == TalentApplication.ApplicationStatus.AWAITING_INFO)
@@ -71,7 +78,7 @@ public class OpsManagerService {
     }
 
     @Transactional
-    public Booking updateBookingStatus(Long id, Booking.BookingStatus status, String adminNotes, String notifyChannel, String actorEmail) {
+    public Booking updateBookingStatus(Long id, Booking.BookingStatus status, Booking.PaymentStatus paymentStatus, String adminNotes, String notifyChannel, String actorEmail) {
         Booking booking = bookingRepository.findById(id).orElseThrow();
         Booking.BookingStatus previousStatus = booking.getStatus();
         boolean wasCapacityHolding = previousStatus != Booking.BookingStatus.CANCELLED;
@@ -92,11 +99,14 @@ public class OpsManagerService {
         }
 
         booking.setStatus(status);
+        if (paymentStatus != null) {
+            booking.setPaymentStatus(paymentStatus);
+        }
         booking.setAdminNotes(adminNotes);
         if ((status == Booking.BookingStatus.CONFIRMED || status == Booking.BookingStatus.COMPLETED) && booking.getConfirmedAt() == null) {
             booking.setConfirmedAt(LocalDateTime.now());
         }
-        complianceService.audit(actorEmail, "OPS_BOOKING_UPDATED", "Booking", id, "Status=" + status + ", notes=" + adminNotes);
+        complianceService.audit(actorEmail, "OPS_BOOKING_UPDATED", "Booking", id, "Status=" + status + ", Payment=" + paymentStatus + ", notes=" + adminNotes);
         sendNotification(notifyChannel, booking.getGuestEmail(), booking.getGuestPhone(),
                 "Booking update: " + booking.getBookingReference(),
                 "Your booking " + booking.getBookingReference() + " is now " + status + ".");
@@ -161,6 +171,31 @@ public class OpsManagerService {
                 "Order update: " + order.getOrderReference(),
                 "Your order " + order.getOrderReference() + " is now " + status + ".");
         return order;
+    }
+
+    @Transactional
+    public ShippingOrder createManualOrder(Long userId, Long productId, Integer quantity, BigDecimal totalAmount, ShippingOrder.OrderStatus status, ShippingOrder.PaymentStatus paymentStatus, String adminNotes, String actorEmail) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        com.volcanoartscenter.platform.shared.model.Product product = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("Product not found"));
+
+        ShippingOrder order = new ShippingOrder();
+        order.setOrderReference("MAN-" + System.currentTimeMillis() + "-" + (int)(Math.random()*1000));
+        order.setUser(user);
+        order.setRecipientName(user.getFullName());
+        order.setRecipientEmail(user.getEmail());
+        order.setRecipientPhone(user.getPhone() != null ? user.getPhone() : "N/A");
+        order.setProduct(product);
+        order.setQuantity(quantity != null ? quantity : 1);
+        order.setProductTotal(totalAmount);
+        order.setTotalAmount(totalAmount);
+        order.setStatus(status);
+        order.setPaymentStatus(paymentStatus);
+        order.setAdminNotes(adminNotes);
+        order.setCreatedAt(LocalDateTime.now());
+
+        ShippingOrder saved = shippingOrderRepository.save(order);
+        complianceService.audit(actorEmail, "OPS_MANUAL_ORDER_CREATED", "ShippingOrder", saved.getId(), "Ref=" + saved.getOrderReference());
+        return saved;
     }
 
     public List<ContactInquiry> listContactInquiries() {
@@ -370,7 +405,7 @@ public class OpsManagerService {
     }
 
     private void sendNotification(String channel, String email, String phone, String subject, String body) {
-        String normalizedChannel = normalize(channel);
+        String normalizedChannel = normalizeChannel(channel);
         if ("EMAIL".equals(normalizedChannel) && email != null && !email.isBlank()) {
             notificationService.sendEmailAsync(email.trim().toLowerCase(Locale.ROOT), subject, body);
         } else if ("WHATSAPP".equals(normalizedChannel) && phone != null && !phone.isBlank()) {
@@ -386,6 +421,13 @@ public class OpsManagerService {
             return current;
         }
         return next;
+    }
+
+    private String normalizeChannel(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+        return value.trim().toUpperCase(Locale.ROOT);
     }
 
     private String normalize(String value) {

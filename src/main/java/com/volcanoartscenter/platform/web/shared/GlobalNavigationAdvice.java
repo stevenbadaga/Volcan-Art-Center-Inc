@@ -118,6 +118,7 @@ public class GlobalNavigationAdvice {
         return adminActivitySummaryService.summarize();
     }
 
+
     public record NotificationSummary(long unread, List<Notification> recent) {
         static NotificationSummary empty() { return new NotificationSummary(0L, List.of()); }
     }

@@ -51,7 +51,7 @@ public class GuestController {
                 .toList();
 
         List<DonationCampaign> activeCampaigns = donationCampaignRepository.findByActiveTrueOrderByNameAsc();
-        DonationCampaign featuredCampaign = activeCampaigns.isEmpty() ? null : activeCampaigns.getFirst();
+        DonationCampaign featuredCampaign = activeCampaigns.isEmpty() ? null : activeCampaigns.get(0);
 
         var topReviews = reviewRepository.findAll()
                 .stream()
@@ -101,7 +101,8 @@ public class GuestController {
     @GetMapping("/login")
     public String login(@RequestParam(required = false) String redirect, HttpServletRequest request, Model model) {
         model.addAttribute("pageTitle", "Sign In — Volcano Arts Center");
-        model.addAttribute("googleOauthEnabled", clientRegistrationRepository.getIfAvailable() != null);
+        ClientRegistrationRepository registrations = clientRegistrationRepository.getIfAvailable();
+        model.addAttribute("googleOauthEnabled", registrations != null && registrations.findByRegistrationId("google") != null);
         String safeRedirect = null;
         if (redirect != null && redirect.startsWith("/") && !redirect.startsWith("//")) {
             safeRedirect = redirect;

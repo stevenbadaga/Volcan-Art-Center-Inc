@@ -298,9 +298,23 @@ public class ContentManagerController {
         model.addAttribute("pageTitle", "Blog Posts");
         model.addAttribute("items", contentManagerService.listBlogPosts(q, category));
         model.addAttribute("blogCategories", BlogPost.BlogCategory.values());
-        model.addAttribute("mediaItems", contentManagerService.listMediaAssets(null, null));
         model.addAttribute("q", q);
         model.addAttribute("selectedCategory", category);
+
+        // Safe default blog form values for the creation form
+        BlogPost newPost = BlogPost.builder()
+                .title("")
+                .slug("")
+                .excerpt("")
+                .content("")
+                .featuredImageUrl("")
+                .published(false)
+                .category(BlogPost.BlogCategory.UPDATE)
+                .highlighted(false)
+                .tags(java.util.Collections.emptySet())
+                .build();
+        model.addAttribute("newPost", newPost);
+
         return "internal/content-manager/blog-posts";
     }
 
@@ -329,7 +343,7 @@ public class ContentManagerController {
             contentManagerService.createBlogPost(title, slug, excerpt, content, category, published, finalImageUrl, coverMediaId, highlighted, metaTitle, metaDescription, galleryUrls);
             redirectAttributes.addFlashAttribute("successMessage", "Blog post created.");
         } catch (Exception ex) {
-            redirectAttributes.addFlashAttribute("successMessage", ex.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
         }
         return "redirect:/admin/content/blog-posts";
     }
@@ -363,7 +377,7 @@ public class ContentManagerController {
             contentManagerService.updateBlogPost(id, title, excerpt, content, category, published, coverMediaId, highlighted, finalImageUrl, metaTitle, metaDescription, galleryUrls);
             redirectAttributes.addFlashAttribute("successMessage", "Blog post updated.");
         } catch (Exception ex) {
-            redirectAttributes.addFlashAttribute("successMessage", ex.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
         }
         return "redirect:/admin/content/blog-posts";
     }
@@ -580,7 +594,6 @@ public class ContentManagerController {
         model.addAttribute("pageTitle", "Talent Showcase");
         model.addAttribute("items", contentManagerService.listTalentProfiles());
         model.addAttribute("categories", TalentApplication.ApplicantCategory.values());
-        model.addAttribute("mediaItems", contentManagerService.listMediaAssets(null, null));
         return "internal/content-manager/talent-showcase";
     }
 

@@ -12,16 +12,28 @@
     <link rel="icon" type="image/png" th:href="@{/images/favicon.png}" />
     <link rel="stylesheet" th:href="@{/css/main.css}" />
     <link rel="stylesheet" th:href="@{/css/vac-overhaul.css}" />
+    <style>
+    /* LINE-HEIGHT GUARD — prevents text clipping on uppercase display titles.
+       Font-sizes are NOT overridden here — they come from V6 in main.css. */
+    .hero__title,.vac-home-hero__title,.vac-commerce-hero__title,.vac-premium-hero__title,
+    .hero-golden__title,.hero-title,.vac-role-hero__title,.vac-dashboard-hero__title,
+    .vac-blog-hero-head__title,.dash-hero__title,
+    .hero--home .hero__title{line-height:1.06!important}
+    .vac-role-hero__title,.vac-dashboard-hero__title{line-height:1.12!important}
+    .admin-panel__title,.admin-card__header h3,.dash-panel__title{text-transform:none!important;line-height:1.3!important}
+    </style>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,700;1,300&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600;700&family=Roboto+Slab:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&family=DM+Mono:wght@400&display=swap" rel="stylesheet" />
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
         (function () {
             try {
-                var savedTheme = localStorage.getItem('vac-theme');
-                document.documentElement.setAttribute('data-theme',
-                    savedTheme === 'dark' ? 'dark' : 'light');
+                var savedTheme = localStorage.getItem('vac-theme') || localStorage.getItem('vac-admin-theme') || 'system';
+                var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                var theme = savedTheme === 'system' ? (systemDark ? 'dark' : 'light') : savedTheme;
+                document.documentElement.setAttribute('data-theme', theme);
+                document.documentElement.setAttribute('data-user-preference', savedTheme);
             } catch (e) {
                 document.documentElement.setAttribute('data-theme', 'light');
             }
@@ -34,21 +46,15 @@
 
     <!-- ── Admin Sidebar ── -->
     <aside class="admin-sidebar admin-sidebar--premium" id="admin-sidebar">
-        <div class="admin-sidebar__header" style="padding:1.5rem 1.25rem;">
-            <a th:href="@{/}" class="admin-sidebar__logo" style="display:flex; align-items:center; gap:0.875rem; text-decoration:none;">
-                <svg width="40" height="40" viewBox="0 0 1024 430" fill="var(--g)" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
-                    <path d="M500.5 45L617 190.5L664.5 204L686.5 137L819 238L863 268L892 411H491.5L633 216L500.5 45Z" />
-                    <path d="M410 82L159 292.5L72 355L82.5 411H444.5L343.5 391.5L500.5 220L410 82Z" />
-                    <path d="M260.5 365L296.5 330.5L327.5 344L284 411H252.5L260.5 365Z" />
-                    <path d="M621.5 320.5L658 292.5L686.5 365L645 411H605L621.5 320.5Z" />
-                    <path d="M738 310L773.5 282.5L789.5 320.5L758 375H719.5L738 310Z" />
-                </svg>
-                <div class="admin-sidebar__logo-text" style="display:flex; flex-direction:column; line-height:1.15; min-width:0;">
-                    <span style="font-family:'Syne', sans-serif; font-weight:800; font-size:1.1rem; color:#fff; white-space:nowrap; letter-spacing:0.5px;">Volcano Arts</span>
-                    <span style="font-family:'DM Sans', sans-serif; font-size:0.65rem; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--sand);">Admin Console</span>
+        <div class="admin-sidebar__header">
+            <a th:href="@{/}" class="admin-sidebar__logo">
+                <img class="logo-image logo-image--white" th:src="@{/uploads/logo-white-transparent.png}" alt="Volcano Arts Center logo" width="130" height="40" />
+                <img class="logo-image logo-image--green" th:src="@{/uploads/logo-green-transparent.png}" alt="Volcano Arts Center logo" width="130" height="40" />
+                <div class="admin-sidebar__logo-text">
+                    <span style="color:var(--sand);">Admin Console</span>
                 </div>
             </a>
-            <button class="admin-sidebar__close" id="sidebar-close" aria-label="Close sidebar" style="color:rgba(255,255,255,0.6); background:none; border:none; font-size:1.2rem; cursor:pointer;">✕</button>
+            <button class="admin-sidebar__close" id="sidebar-close" aria-label="Close sidebar">✕</button>
         </div>
 
 
@@ -263,9 +269,28 @@
             </div>
             <div class="admin-topbar__search">
                 <i data-lucide="search"></i>
-                <input type="search" placeholder="Search orders, bookings, donations…" disabled />
+                <input type="search" id="admin-search" placeholder="Search orders, bookings, donations…" />
             </div>
             <div class="admin-topbar__right" style="display:flex; align-items:center; gap:1rem;">
+                <!-- Theme Switcher -->
+                <div class="nav-theme-switcher dropdown">
+                    <button type="button" class="nav-icon nav-icon-btn" id="theme-toggle" aria-label="Switch Theme" aria-expanded="false" aria-haspopup="true">
+                        <i data-lucide="sun" class="theme-icon-light" aria-hidden="true"></i>
+                        <i data-lucide="moon" class="theme-icon-dark" aria-hidden="true"></i>
+                        <i data-lucide="monitor" class="theme-icon-system" aria-hidden="true"></i>
+                    </button>
+                    <div class="dropdown-menu theme-dropdown" id="theme-menu" style="display: none;">
+                        <button class="theme-option" data-theme-value="light" aria-label="Light Theme">
+                            <i data-lucide="sun" width="16" height="16" aria-hidden="true"></i> <span>Light</span>
+                        </button>
+                        <button class="theme-option" data-theme-value="dark" aria-label="Dark Theme">
+                            <i data-lucide="moon" width="16" height="16" aria-hidden="true"></i> <span>Dark</span>
+                        </button>
+                        <button class="theme-option" data-theme-value="system" aria-label="System Theme">
+                            <i data-lucide="monitor" width="16" height="16" aria-hidden="true"></i> <span>System</span>
+                        </button>
+                    </div>
+                </div>
                 <details class="admin-notif-center" th:if="${navContext.authenticated}">
                     <summary aria-label="Notifications">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -298,9 +323,9 @@
                          style="width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg, var(--vac-green), var(--vac-green-700)); color:#fff; display:flex; align-items:center; justify-content:center; font-family:var(--font-heading); font-weight:800; font-size:0.95rem; flex-shrink:0;"
                          th:text="${navContext.roleLabel != null ? navContext.roleLabel.substring(0,1) : 'A'}">A</div>
                     <div class="admin-topbar__user-info" style="display:flex; flex-direction:column; line-height:1.2;">
-                        <span class="admin-topbar__user-name" style="font-family:var(--font-body); font-weight:700; font-size:0.9rem; color:var(--vac-ink);"
+                        <span class="admin-topbar__user-name" style="font-family:var(--font-body); font-weight:700; font-size:0.9rem; color:var(--color-ink);"
                             th:text="${navContext.userName != null ? navContext.userName : 'Admin'}">Admin</span>
-                        <span class="admin-topbar__user-role" style="font-family:var(--font-body); font-size:0.7rem; font-weight:600; letter-spacing:0.5px; color:var(--vac-muted); text-transform:uppercase;" th:text="${navContext.roleLabel}">Super Admin</span>
+                        <span class="admin-topbar__user-role" style="font-family:var(--font-body); font-size:0.7rem; font-weight:600; letter-spacing:0.5px; color:var(--color-ink-faint); text-transform:uppercase;" th:text="${navContext.roleLabel}">Super Admin</span>
                     </div>
                 </div>
             </div>

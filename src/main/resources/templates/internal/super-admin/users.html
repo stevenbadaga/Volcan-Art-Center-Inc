@@ -826,9 +826,13 @@
                                                 th:attr="data-edit-toggle=${u.id}">
                                             Edit Access
                                         </button>
-                                        <form th:action="@{|/admin/users/${u.id}/deactivate|}" method="post" style="display:inline;">
+                                        <form th:if="${u.enabled}" th:action="@{|/admin/users/${u.id}/deactivate|}" method="post" style="display:inline;">
                                             <input type="hidden" name="tab" th:value="${activeDirectoryTab}" />
                                             <button class="btn btn--ghost btn--xs" type="submit" onclick="return confirm('Deactivate this account?')">Deactivate</button>
+                                        </form>
+                                        <form th:unless="${u.enabled}" th:action="@{|/admin/users/${u.id}/activate|}" method="post" style="display:inline;">
+                                            <input type="hidden" name="tab" th:value="${activeDirectoryTab}" />
+                                            <button class="btn btn--primary btn--xs" type="submit" onclick="return confirm('Activate this account?')">Activate</button>
                                         </form>
                                     </div>
                                 </td>

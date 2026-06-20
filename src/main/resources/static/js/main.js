@@ -564,7 +564,12 @@
 
             // Wire openers / closers
             $$('[data-cart-open]').forEach(el => el.addEventListener('click', (e) => { e.preventDefault(); open(); }));
-            $$('[data-cart-close]').forEach(el => el.addEventListener('click', (e) => { e.preventDefault(); close(); }));
+            $$('[data-cart-close]').forEach(el => el.addEventListener('click', (e) => {
+                close();
+                if (el.tagName !== 'A' || !el.getAttribute('href') || el.getAttribute('href') === '#') {
+                    e.preventDefault();
+                }
+            }));
             document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
 
             // Wire remove buttons (delegated)

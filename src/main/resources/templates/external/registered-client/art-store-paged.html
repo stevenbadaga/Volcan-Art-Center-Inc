@@ -64,9 +64,9 @@
                         <article class="vac-premium-art-card vac-clickable-card"
                                  th:each="p,iter : ${productsPage.content}"
                                  th:attr="data-card-url=@{|/art-store/${p.slug}|}"
-                                 th:with="productFallback=${iter.index % 6 == 0 ? '/uploads/arts page.jpg' : iter.index % 6 == 1 ? '/uploads/Arts Page 2.jpg' : iter.index % 6 == 2 ? '/uploads/arts page 3.jpg' : iter.index % 6 == 3 ? '/uploads/arts page 4.jpg' : iter.index % 6 == 4 ? '/uploads/arts.png' : '/uploads/arts page .jpg'},productImage=${p.displayPrimaryImageUrl != null ? p.displayPrimaryImageUrl : productFallback}">
+                                 th:with="productFallback=${iter.index % 6 == 0 ? '/uploads/Art.jpeg' : iter.index % 6 == 1 ? '/uploads/7881368095630241.jpeg' : iter.index % 6 == 2 ? '/uploads/Start up home page.jpeg' : iter.index % 6 == 3 ? '/uploads/This pencil sketch captures the charm of two ducks….jpeg' : iter.index % 6 == 4 ? '/uploads/Celebrate heritage, strength, and beauty with this….jpeg' : '/uploads/25332816648714928.jpeg'},productImage=${p.displayPrimaryImageUrl != null ? p.displayPrimaryImageUrl : productFallback}">
                             <a th:href="@{|/art-store/${p.slug}|}" class="vac-premium-art-card__image">
-                                <img th:src="${productImage}" th:alt="${p.name}" loading="lazy" onerror="this.onerror=null;this.src='/uploads/arts.png';" />
+                                <img th:src="${productImage}" th:alt="${p.name}" loading="lazy" onerror="this.onerror=null;this.src='/uploads/Art.jpeg';" />
                             </a>
                             <div class="vac-premium-art-card__body">
                                 <p th:text="${p.category != null ? p.category.name : 'Original Rwandan Art'}">Original Rwandan Art</p>

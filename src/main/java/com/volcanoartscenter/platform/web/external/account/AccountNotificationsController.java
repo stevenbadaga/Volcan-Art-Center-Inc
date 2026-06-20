@@ -35,7 +35,7 @@ public class AccountNotificationsController {
         var pageData = notifications.inbox(user.getId(), page, 20, category, unreadOnly);
 
         model.addAttribute("currentPage", "account-notifications");
-        model.addAttribute("pageTitle", "My Notifications — Volcano Arts Center");
+        model.addAttribute("pageTitle", "Notification Center");
         model.addAttribute("notifications", pageData.getContent());
         model.addAttribute("hasNext", pageData.hasNext());
         model.addAttribute("hasPrev", pageData.hasPrevious());

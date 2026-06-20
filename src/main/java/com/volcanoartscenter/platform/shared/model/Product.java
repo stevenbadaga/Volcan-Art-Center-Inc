@@ -91,6 +91,7 @@ public class Product {
     private String primaryImageUrl;
 
     @ElementCollection
+    @org.hibernate.annotations.Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
     @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
     @Column(name = "image_url")
     @Builder.Default
@@ -147,7 +148,7 @@ public class Product {
 
     @Transient
     public String getAdditionalImagesText() {
-        List<String> images = additionalImages == null ? Collections.emptyList() : additionalImages;
+        List<String> images = additionalImages == null ? java.util.Collections.emptyList() : additionalImages;
         return String.join(System.lineSeparator(), images);
     }
 

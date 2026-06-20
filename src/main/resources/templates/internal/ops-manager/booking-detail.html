@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/admin-base}">
+<head>
+    <title th:text="'Booking Detail: ' + ${booking.bookingReference}">Booking Detail</title>
+    <style>
+        .booking-detail-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            align-items: start;
+        }
+        .detail-section {
+            margin-bottom: 2rem;
+        }
+        .detail-section h3 {
+            font-family: var(--font-ui);
+            font-size: 0.85rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-primary);
+            border-bottom: 1px solid var(--color-line);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .detail-row {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+        }
+        .detail-label {
+            font-weight: 600;
+            color: var(--color-ink-mute);
+        }
+        .detail-value {
+            color: var(--color-ink);
+        }
+        .status-update-card {
+            position: sticky;
+            top: 1.5rem;
+        }
+        @media (max-width: 992px) {
+            .booking-detail-grid {
+                grid-template-columns: 1fr;
+            }
+            .status-update-card {
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+<main layout:fragment="content" class="vac-admin-dashboard">
+    <div class="container">
+        <div class="vac-admin-dashboard__header">
+            <div class="vac-admin-dashboard__heading">
+                <a th:href="@{/admin/ops/bookings}" class="vac-admin-card__link" style="display: inline-flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+                    <i data-lucide="arrow-left" width="16" height="16"></i> Back to Bookings
+                </a>
+                <div class="vac-admin-dashboard__eyebrow">Operations Management</div>
+                <h1 th:text="'Booking: ' + ${booking.bookingReference}">Booking: REF-12345</h1>
+                <p>Manage and review the complete details of this experience booking.</p>
+            </div>
+            <div class="vac-admin-dashboard__controls">
+                <div class="vac-admin-dashboard__live">
+                    <span class="vac-admin-dashboard__live-dot"></span>
+                    <span>Detailed View</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="booking-detail-grid">
+            <div class="vac-admin-card">
+                <!-- Main Booking Info -->
+                <div class="detail-section">
+                    <h3>Booking Information</h3>
+                    <div class="detail-row">
+                        <span class="detail-label">Reference:</span>
+                        <strong class="detail-value" th:text="${booking.bookingReference}">REF-12345</strong>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Created At:</span>
+                        <span class="detail-value" th:text="${#temporals.format(booking.createdAt, 'dd MMM yyyy, HH:mm')}">12 Jun 2026</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Visit Date:</span>
+                        <strong class="detail-value" th:text="${#temporals.format(booking.scheduledDate, 'dd MMM yyyy')}">20 Jun 2026</strong>
+                    </div>
+                    <div th:if="${booking.alternateDate != null}" class="detail-row">
+                        <span class="detail-label">Alt Date:</span>
+                        <span class="detail-value" th:text="${#temporals.format(booking.alternateDate, 'dd MMM yyyy')}">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Status:</span>
+                        <span class="chip" th:classappend="${booking.status.name() == 'PENDING' ? 'chip--warning' : (booking.status.name() == 'CONFIRMED' or booking.status.name() == 'COMPLETED' ? 'chip--success' : 'chip--danger')}" th:text="${booking.status}">PENDING</span>
+                    </div>
+                </div>
+
+                <!-- Guest Info -->
+                <div class="detail-section">
+                    <h3>Guest Information</h3>
+                    <div class="detail-row">
+                        <span class="detail-label">Guest Name:</span>
+                        <span class="detail-value" th:text="${booking.guestName}">John Doe</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Email:</span>
+                        <span class="detail-value" th:text="${booking.guestEmail}">john@example.com</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Phone:</span>
+                        <span class="detail-value" th:text="${booking.guestPhone}">+1234567890</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Group Size:</span>
+                        <span class="detail-value" th:text="${booking.numberOfGuests + ' People'}">2 People</span>
+                    </div>
+                    <div th:if="${booking.specialRequests != null and !booking.specialRequests.isEmpty()}" class="detail-section" style="margin-top: 1rem;">
+                        <span class="detail-label">Special Requests:</span>
+                        <div class="vac-auth-hint" th:text="${booking.specialRequests}" style="margin-top: 0.5rem;">No special requests.</div>
+                    </div>
+                </div>
+
+                <!-- Experience Info -->
+                <div class="detail-section">
+                    <h3>Experience</h3>
+                    <div class="detail-row">
+                        <span class="detail-label">Title:</span>
+                        <span class="detail-value" th:text="${booking.experience != null ? booking.experience.title : 'N/A'}">Volcano Trek</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Language:</span>
+                        <span class="detail-value" th:text="${booking.languagePreference}">English</span>
+                    </div>
+                </div>
+
+                <!-- Payment Info -->
+                <div class="detail-section">
+                    <h3>Payment</h3>
+                    <div class="detail-row">
+                        <span class="detail-label">Total Amount:</span>
+                        <strong class="detail-value" th:text="${booking.currency + ' ' + booking.totalAmount}">USD 150.00</strong>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Payment Status:</span>
+                        <span class="chip" th:classappend="${booking.paymentStatus.name() == 'PAID' ? 'chip--success' : (booking.paymentStatus.name() == 'UNPAID' ? 'chip--danger' : 'chip--warning')}" th:text="${booking.paymentStatus}">UNPAID</span>
+                    </div>
+                    <div th:if="${booking.paymentReference != null}" class="detail-row">
+                        <span class="detail-label">Payment Ref:</span>
+                        <span class="detail-value" th:text="${booking.paymentReference}">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar Actions -->
+            <div class="vac-admin-shell__rail">
+                <div class="vac-admin-card status-update-card">
+                    <div class="vac-admin-card__header">
+                        <h2>Update Status</h2>
+                    </div>
+                    <form th:action="@{/admin/ops/bookings/{id}/status(id=${booking.id})}" method="post" class="vac-admin-composer__form" style="padding: 0;">
+                        <input type="hidden" name="origin" value="detail" />
+                        <div class="form-group">
+                            <label for="status">Booking Status</label>
+                            <select id="status" name="status" class="form-select">
+                                <option th:each="st : ${bookingStatuses}" th:value="${st}" th:text="${st}" th:selected="${st == booking.status}"></option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="paymentStatus">Payment Status</label>
+                            <select id="paymentStatus" name="paymentStatus" class="form-select">
+                                <option th:each="ps : ${paymentStatuses}" th:value="${ps}" th:text="${ps}" th:selected="${ps == booking.paymentStatus}"></option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="adminNotes">Internal Note</label>
+                            <textarea id="adminNotes" name="adminNotes" class="form-textarea" rows="4" th:text="${booking.adminNotes}" placeholder="Add a note for other staff..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="notifyChannel">Notification Channel</label>
+                            <select id="notifyChannel" name="notifyChannel" class="form-select">
+                                <option value="">No notification</option>
+                                <option value="EMAIL" selected>Email Guest</option>
+                                <option value="SMS">SMS Guest</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn--primary" style="width: 100%; margin-top: 1rem;">Update Booking</button>
+                    </form>
+                </div>
+
+                <div th:if="${booking.cancellationReason != null}" class="vac-admin-card" style="border-left: 4px solid var(--danger);">
+                    <div class="vac-admin-card__header">
+                        <h2>Cancellation Detail</h2>
+                    </div>
+                    <div class="detail-row" style="grid-template-columns: 1fr;">
+                        <span class="detail-label">Reason for cancellation:</span>
+                        <div class="vac-auth-hint" style="margin-top: 0.5rem; background: rgba(231, 76, 60, 0.05); border-color: rgba(231, 76, 60, 0.2);" th:text="${booking.cancellationReason}">Reason...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

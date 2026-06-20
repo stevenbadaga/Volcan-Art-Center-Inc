@@ -2,16 +2,27 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/base}">
-<head><title th:text="${product.name + ' | Volcano Arts Center'}">Product | Volcano Arts Center</title></head>
+<head>
+    <title th:text="${product.name + ' | Volcano Arts Center'}">Product | Volcano Arts Center</title>
+    <th:block layout:fragment="meta">
+        <meta name="description" th:content="${product.description != null ? product.description : 'Authentic handmade artwork and products by local Rwandan talent.'}" />
+        <meta property="og:title" th:content="${product.name + ' | Volcano Arts Center'}" />
+        <meta property="og:description" th:content="${product.description != null ? product.description : 'Authentic handmade artwork and products by local Rwandan talent.'}" />
+        <meta property="og:image" th:content="${product.displayPrimaryImageUrl != null ? product.displayPrimaryImageUrl : '/uploads/Art.jpeg'}" />
+        <meta name="twitter:title" th:content="${product.name + ' | Volcano Arts Center'}" />
+        <meta name="twitter:description" th:content="${product.description != null ? product.description : 'Authentic handmade artwork and products by local Rwandan talent.'}" />
+        <meta name="twitter:image" th:content="${product.displayPrimaryImageUrl != null ? product.displayPrimaryImageUrl : '/uploads/Art.jpeg'}" />
+    </th:block>
+</head>
 <body>
 <main layout:fragment="content">
 
     <section class="hero-golden hero-golden--compact hero-golden--art vac-cinematic-hero reveal">
         <div class="hero-golden__bg vac-cinematic-hero__bg">
             <img class="hero-slide active vac-cinematic-hero__img"
-                 th:src="${product.displayPrimaryImageUrl != null ? product.displayPrimaryImageUrl : '/uploads/arthomepage.jpeg'}"
+                 th:src="${product.displayPrimaryImageUrl != null ? product.displayPrimaryImageUrl : '/uploads/Art.jpeg'}"
                  alt="Artwork background"
-                 onerror="this.onerror=null;this.src='/uploads/art-gallery-interior.jpeg';" />
+                 onerror="this.onerror=null;this.src='/uploads/Start up home page.jpeg';" />
             <div class="hero-golden__veil vac-cinematic-hero__veil"></div>
         </div>
         <div class="hero-golden__content">
@@ -32,10 +43,10 @@
 
             <div class="vac-product-gallery">
                 <img id="vac-pd-main"
-                     th:src="${product.displayPrimaryImageUrl != null ? product.displayPrimaryImageUrl : '/uploads/arthomepage.jpeg'}"
+                     th:src="${product.displayPrimaryImageUrl != null ? product.displayPrimaryImageUrl : '/uploads/Art.jpeg'}"
                      th:alt="${product.name}"
                      loading="eager"
-                     onerror="this.onerror=null;this.src='/uploads/art-layered-sculpture.jpeg';" />
+                     onerror="this.onerror=null;this.src='/uploads/7881368095630241.jpeg';" />
                 <div th:if="${!#lists.isEmpty(product.additionalImages)}" class="vac-product-gallery__thumbs">
                     <button type="button" class="vac-product-gallery__thumb" th:each="imageUrl : ${product.additionalImages}"
                             th:attr="data-full=${imageUrl}"

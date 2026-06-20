@@ -10,259 +10,273 @@
 <body>
 <th:block layout:fragment="breadcrumb">
     <a th:href="@{/admin/dashboard}">Admin</a>
-    <span class="sep">›</span>
+    <span class="sep">></span>
     <span>Dashboard</span>
 </th:block>
 
 <main layout:fragment="content">
-    <section class="vac-role-hero vac-role-hero--admin reveal" style="min-height:52vh; align-items:flex-end;">
-        <img src="/uploads/Home_virunga.png" alt="Volcanic mountain operations backdrop" loading="eager"
-             onerror="this.onerror=null;this.src='/uploads/volcano.jpg';" />
-        <div class="vac-role-hero__overlay" style="background:linear-gradient(165deg, rgba(0,33,19,0.2) 0%, rgba(0,12,7,0.95) 100%);"></div>
-        <div class="vac-role-hero__content" style="max-width:1400px; margin:0 auto; padding:3rem 2rem;">
-            <p class="vac-role-hero__kicker">Admin Command Center &bull; Operations &bull; Content &bull; Revenue</p>
-            <h1 class="vac-role-hero__title" style="font-size:clamp(3rem,8vw,8rem); font-family:var(--font-ui); font-weight:800; letter-spacing:-0.03em; line-height:0.9;">PLATFORM<br><span style="color:var(--vac-gold);">OVERVIEW</span></h1>
-            <p class="vac-role-hero__desc" style="max-width:580px; margin-top:0.75rem;">Live intelligence across bookings, orders, donations, and growth impact.</p>
-            <div class="vac-client-hero-strip">
-                <div class="vac-client-hero-strip__stat">
-                    <strong th:text="${totalBookings}">0</strong>
-                    <span>Tour Bookings</span>
+    <div class="vac-admin-dashboard-new">
+        <!-- 1. Header Area -->
+        <header class="admin-page-header">
+            <div class="admin-page-header__info">
+                <span class="admin-page-header__eyebrow" style="font-size:0.75rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--vac-green, #00A651); font-weight:700; margin-bottom:0.35rem; display:block;">SUPER ADMIN COMMAND CENTER</span>
+                <h1 style="margin:0; font-size:1.85rem; font-weight:800; color:var(--color-ink);">Overview</h1>
+                <p style="margin:0.25rem 0 0; color:var(--color-ink-soft); font-size:0.9rem;">Unified visibility across commerce, journeys, conservation, content, and staff operations.</p>
+            </div>
+            <div class="admin-page-header__actions" style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap; margin-top:0.5rem;">
+                <div class="vac-admin-dashboard__live" style="display:inline-flex; align-items:center; gap:0.5rem; font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--color-ink-soft); margin-right:1rem;">
+                    <span class="vac-admin-dashboard__live-dot" style="width:8px; height:8px; border-radius:50%; background-color:#00A651; box-shadow:0 0 10px #00A651; display:inline-block;" aria-hidden="true"></span>
+                    <span>Live</span>
+                    <span data-live-updated style="font-weight:500; text-transform:none; letter-spacing:normal; opacity:0.85; margin-left:0.25rem;">(Updated just now)</span>
                 </div>
-                <div class="vac-client-hero-strip__stat">
-                    <strong th:text="${totalShippingOrders}">0</strong>
-                    <span>Art Orders</span>
+                <button id="kpi-refresh" class="btn btn--outline btn--sm" type="button" style="padding:0.5rem 1rem;">Refresh data</button>
+                <a class="btn btn--primary btn--sm" th:href="@{/admin/users}" style="padding:0.5rem 1rem;">Manage Staff</a>
+            </div>
+        </header>
+
+        <!-- 2. Clickable Summary Cards Grid -->
+        <div class="vac-dashboard-kpi-grid">
+            <a class="vac-dashboard-kpi-card" th:href="@{/admin/content/products}">
+                <div class="vac-kpi-icon"><i data-lucide="palette"></i></div>
+                <div class="vac-kpi-info">
+                    <span class="vac-kpi-label">Art Products</span>
+                    <strong class="vac-kpi-value" th:text="${totalProducts}">0</strong>
                 </div>
-                <div class="vac-client-hero-strip__stat">
-                    <strong th:text="${totalDonations}">0</strong>
-                    <span>Donations</span>
+                <div class="vac-kpi-chevron"><i data-lucide="chevron-right"></i></div>
+            </a>
+            
+            <a class="vac-dashboard-kpi-card" th:href="@{/admin/content/products}">
+                <div class="vac-kpi-icon"><i data-lucide="folder"></i></div>
+                <div class="vac-kpi-info">
+                    <span class="vac-kpi-label">Categories</span>
+                    <strong class="vac-kpi-value" th:text="${totalCategories}">0</strong>
                 </div>
-            </div>
-        </div>
-    </section>
+                <div class="vac-kpi-chevron"><i data-lucide="chevron-right"></i></div>
+            </a>
 
-    <div class="admin-page-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem; margin-top:1.5rem;">
-        <div class="admin-page-header__info">
-            <h1>Executive Summary</h1>
-            <div class="vac-live-row" style="margin-top:0.35rem;">
-                <span class="vac-live-badge">Live</span>
-                <span class="vac-live-meta" data-live-updated>Updated just now</span>
-            </div>
-        </div>
-        <div class="admin-page-header__actions">
-            <button id="kpi-refresh" class="btn btn--outline btn--sm">↻ Refresh Data</button>
-            <a class="btn btn--primary btn--sm" th:href="@{/admin/users}">Manage Staff</a>
-        </div>
-    </div>
-
-    <!-- Ultra Premium KPIs -->
-    <div class="admin-kpi-grid reveal-stagger" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1.5rem; margin-bottom:2.5rem;">
-        <div class="admin-kpi" data-kpi="revenueCaptured" data-prefix="$">
-            <div class="admin-kpi__label" style="color:var(--vac-muted); font-size:0.8rem; font-weight:800; text-transform:uppercase;">Gross Revenue</div>
-            <div class="admin-kpi__value" data-count style="font-family:var(--font-display); font-size:2.5rem; line-height:1.2; color:var(--vac-green-900);">0</div>
-            <div class="admin-kpi__trend" style="font-size:0.85rem; color:var(--vac-green); font-weight:700;">+12% this month</div>
-        </div>
-        <a class="admin-kpi" th:href="@{/admin/ops/shipping-orders}">
-            <div class="admin-kpi__label" style="color:var(--vac-muted); font-size:0.8rem; font-weight:800; text-transform:uppercase;">Art Orders</div>
-            <div class="admin-kpi__value" data-count th:text="${totalShippingOrders}" style="font-family:var(--font-display); font-size:2.5rem; line-height:1.2; color:var(--vac-green-900);">0</div>
-            <div class="admin-kpi__trend" style="font-size:0.85rem; color:var(--vac-muted);">Active Shipments</div>
-        </a>
-        <a class="admin-kpi" th:href="@{/admin/ops/bookings}">
-            <div class="admin-kpi__label" style="color:var(--vac-muted); font-size:0.8rem; font-weight:800; text-transform:uppercase;">Tour Bookings</div>
-            <div class="admin-kpi__value" data-count th:text="${totalBookings}" style="font-family:var(--font-display); font-size:2.5rem; line-height:1.2; color:var(--vac-green-900);">0</div>
-            <div class="admin-kpi__trend" style="font-size:0.85rem; color:var(--vac-muted);">Confirmed Guests</div>
-        </a>
-        <a class="admin-kpi" th:href="@{/admin/ops/donations}">
-            <div class="admin-kpi__label" style="color:var(--vac-muted); font-size:0.8rem; font-weight:800; text-transform:uppercase;">Donations</div>
-            <div class="admin-kpi__value" data-count th:text="${totalDonations}" style="font-family:var(--font-display); font-size:2.5rem; line-height:1.2; color:var(--vac-green-900);">0</div>
-            <div class="admin-kpi__trend" style="font-size:0.85rem; color:var(--vac-gold); font-weight:700;">Conservation Impact</div>
-        </a>
-    </div>
-
-    <!-- Analytics Charts Grid -->
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin-bottom:2.5rem;">
-        <div class="admin-chart-container reveal">
-            <h3 style="font-family:var(--font-display); font-size:1.4rem; color:var(--vac-green-900); margin-bottom:0.5rem;">Revenue Trajectory</h3>
-            <p style="color:var(--vac-muted); font-size:0.9rem; margin-bottom:1.5rem;">Simulated 6-month financial performance.</p>
-            <div style="position:relative; height:300px; width:100%;">
-                <canvas id="revenueChart"></canvas>
-            </div>
-        </div>
-        <div class="admin-chart-container reveal" style="animation-delay:0.1s;">
-            <h3 style="font-family:var(--font-display); font-size:1.4rem; color:var(--vac-green-900); margin-bottom:0.5rem;">Department Volume</h3>
-            <p style="color:var(--vac-muted); font-size:0.9rem; margin-bottom:1.5rem;">Transaction count by operational unit.</p>
-            <div style="position:relative; height:300px; width:100%;">
-                <canvas id="departmentChart"
-                        th:attr="data-orders=${totalShippingOrders != null ? totalShippingOrders : 0},data-bookings=${totalBookings != null ? totalBookings : 0},data-donations=${totalDonations != null ? totalDonations : 0}"></canvas>
-            </div>
-        </div>
-    </div>
-
-    <!-- Lower Dashboard Row -->
-    <div style="display:grid; grid-template-columns:2fr 1fr; gap:2rem; margin-bottom:3rem;">
-        
-        <!-- Quick Actions Panel -->
-        <div class="admin-panel reveal">
-            <div class="admin-panel__header">
-                <div>
-                    <h3 class="admin-panel__title">Command & Control</h3>
-                    <p class="admin-panel__sub">Direct access to critical administrative tasks.</p>
+            <a class="vac-dashboard-kpi-card" th:href="@{/admin/content/products}">
+                <div class="vac-kpi-icon"><i data-lucide="layers"></i></div>
+                <div class="vac-kpi-info">
+                    <span class="vac-kpi-label">Collections</span>
+                    <strong class="vac-kpi-value" th:text="${totalCollections}">0</strong>
                 </div>
-            </div>
-            <div class="admin-quick-actions" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:1rem; padding:2rem;">
-                <a th:href="@{/admin/content/products}" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:1.5rem; background:var(--vac-canvas); border-radius:var(--vac-radius-sm); color:var(--vac-ink); text-decoration:none; font-weight:700;">
-                    <svg style="width:32px; height:32px; stroke:var(--vac-green); margin-bottom:0.75rem;" viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-                    Publish Art
-                </a>
-                <a th:href="@{/admin/ops/availability-slots}" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:1.5rem; background:var(--vac-canvas); border-radius:var(--vac-radius-sm); color:var(--vac-ink); text-decoration:none; font-weight:700;">
-                    <svg style="width:32px; height:32px; stroke:var(--vac-green); margin-bottom:0.75rem;" viewBox="0 0 24 24" fill="none" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    Manage Slots
-                </a>
-                <a th:href="@{/admin/conservation-campaigns}" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:1.5rem; background:var(--vac-canvas); border-radius:var(--vac-radius-sm); color:var(--vac-ink); text-decoration:none; font-weight:700;">
-                    <svg style="width:32px; height:32px; stroke:var(--vac-green); margin-bottom:0.75rem;" viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg>
-                    Campaigns
-                </a>
-                <a th:href="@{/admin/export}" target="_blank" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:1.5rem; background:var(--vac-ink); border-radius:var(--vac-radius-sm); color:#fff; text-decoration:none; font-weight:700;">
-                    <svg style="width:32px; height:32px; stroke:var(--vac-gold); margin-bottom:0.75rem;" viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                    Export Data
-                </a>
-            </div>
+                <div class="vac-kpi-chevron"><i data-lucide="chevron-right"></i></div>
+            </a>
+
+            <a class="vac-dashboard-kpi-card" th:href="@{/admin/ops/bookings}">
+                <div class="vac-kpi-icon"><i data-lucide="calendar"></i></div>
+                <div class="vac-kpi-info">
+                    <span class="vac-kpi-label">Experience Bookings</span>
+                    <strong class="vac-kpi-value" th:text="${totalBookings}">0</strong>
+                </div>
+                <div class="vac-kpi-chevron"><i data-lucide="chevron-right"></i></div>
+            </a>
+
+            <a class="vac-dashboard-kpi-card" th:href="@{/admin/content/blog-posts}">
+                <div class="vac-kpi-icon"><i data-lucide="feather"></i></div>
+                <div class="vac-kpi-info">
+                    <span class="vac-kpi-label">Blog Posts / Stories</span>
+                    <strong class="vac-kpi-value" th:text="${totalBlogPosts}">0</strong>
+                </div>
+                <div class="vac-kpi-chevron"><i data-lucide="chevron-right"></i></div>
+            </a>
+
+            <a class="vac-dashboard-kpi-card" th:href="@{/admin/reviews}">
+                <div class="vac-kpi-icon"><i data-lucide="star"></i></div>
+                <div class="vac-kpi-info">
+                    <span class="vac-kpi-label">Reviews / Pending</span>
+                    <strong class="vac-kpi-value" th:text="${pendingReviewsCount}">0</strong>
+                </div>
+                <div class="vac-kpi-chevron"><i data-lucide="chevron-right"></i></div>
+            </a>
+
+            <a class="vac-dashboard-kpi-card" th:href="@{/admin/conservation-campaigns}">
+                <div class="vac-kpi-icon"><i data-lucide="leaf"></i></div>
+                <div class="vac-kpi-info">
+                    <span class="vac-kpi-label">Conservation Campaigns</span>
+                    <strong class="vac-kpi-value" th:text="${campaigns != null ? #lists.size(campaigns) : 0}">0</strong>
+                </div>
+                <div class="vac-kpi-chevron"><i data-lucide="chevron-right"></i></div>
+            </a>
+
+            <a class="vac-dashboard-kpi-card" th:href="@{/admin/ops/talent-applications}">
+                <div class="vac-kpi-icon"><i data-lucide="file-text"></i></div>
+                <div class="vac-kpi-info">
+                    <span class="vac-kpi-label">Talent Applications</span>
+                    <strong class="vac-kpi-value" th:text="${totalTalentApplications}">0</strong>
+                </div>
+                <div class="vac-kpi-chevron"><i data-lucide="chevron-right"></i></div>
+            </a>
         </div>
 
-        <!-- Notification Panel -->
-        <div class="admin-panel vac-notification-center reveal">
-            <div class="admin-panel__header">
-                <div>
-                    <h3 class="admin-panel__title">Live Alerts</h3>
-                </div>
-                <a th:href="@{/account/notifications}" class="btn btn--ghost btn--sm">All →</a>
-            </div>
-            <div style="padding:1.5rem; display:grid; gap:0.75rem;">
-                <a class="vac-notification-center__item"
-                   style="display:block; padding:1rem; border-radius:var(--vac-radius-sm); border:1px solid var(--vac-line); text-decoration:none; color:var(--vac-ink); transition:all 0.2s;"
-                   th:each="n : ${notificationSummary != null ? notificationSummary.recent : {}}"
-                   th:href="${n.ctaUrl != null ? n.ctaUrl : '/account/notifications'}"
-                   onmouseover="this.style.background='var(--vac-mint)'"
-                   onmouseout="this.style.background=''">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:0.35rem;">
-                        <strong th:text="${n.title}" style="font-size:0.95rem;">Alert</strong>
-                        <time th:text="${n.createdAt != null ? #temporals.format(n.createdAt, 'MMM d, HH:mm') : ''}" style="font-size:0.75rem; color:var(--vac-muted);"></time>
-                    </div>
-                    <p th:text="${n.body}" style="font-size:0.85rem; color:var(--vac-muted); margin:0; line-height:1.4;">Body</p>
-                </a>
-                <p style="text-align:center; color:var(--vac-muted); padding:2rem 0;" th:if="${notificationSummary == null or #lists.isEmpty(notificationSummary.recent)}">No active alerts.</p>
-            </div>
-        </div>
-        
-    <!-- Conservation Campaigns Management -->
-    <div class="admin-panel reveal" style="margin-bottom:3rem;" id="conservation-panel">
-        <div class="admin-panel__header">
-            <div>
-                <h3 class="admin-panel__title">Conservation Projects</h3>
-                <p class="admin-panel__sub">Manage active donation campaigns and track conservation impact.</p>
-            </div>
-            <button class="btn btn--primary btn--sm" onclick="document.getElementById('create-campaign-form').style.display = document.getElementById('create-campaign-form').style.display === 'none' ? 'block' : 'none';">+ New Campaign</button>
-        </div>
-        
-        <!-- Create form (hidden by default) -->
-        <div id="create-campaign-form" style="display:none; padding:2rem; border-bottom:1px solid var(--vac-line); background:var(--vac-canvas);">
-            <h4 style="margin:0 0 1rem; font-family:var(--font-display); color:var(--vac-green-900);">Create New Campaign</h4>
-            <form th:action="@{/admin/conservation-campaigns}" method="post" enctype="multipart/form-data" style="display:grid; gap:1rem;">
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
-                    <div class="form-group" style="margin:0;">
-                        <label class="form-label">Campaign Name *</label>
-                        <input class="form-input" name="name" required="required" placeholder="e.g. Reforestation Drive 2026" />
-                    </div>
-                    <div class="form-group" style="margin:0;">
-                        <label class="form-label">Goal Amount ($)</label>
-                        <input class="form-input" name="goalAmount" type="number" step="0.01" placeholder="e.g. 10000" />
-                    </div>
-                </div>
-                <div class="form-group" style="margin:0;">
-                    <label class="form-label">Description</label>
-                    <textarea class="form-textarea" name="description" rows="2" placeholder="Describe the campaign purpose and goals..."></textarea>
-                </div>
-                <div class="form-group" style="margin:0;">
-                    <label class="form-label">Impact Statement</label>
-                    <input class="form-input" name="impactStatement" placeholder="e.g. $25 plants 5 trees in the Volcanoes buffer zone" />
-                </div>
-                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem;">
-                    <div class="form-group" style="margin:0;">
-                        <label class="form-label">Upload Image (from device)</label>
-                        <input type="file" class="form-input" name="imageFile" accept="image/*" style="padding:0.5rem;" required />
-                    </div>
-                    <div class="form-group" style="margin:0;">
-                        <label class="form-label">Status</label>
-                        <select class="form-select" name="active">
-                            <option value="true">Active</option>
-                            <option value="false">Inactive</option>
-                        </select>
-                    </div>
-                </div>
-                <div style="display:flex; gap:0.75rem; margin-top:0.5rem;">
-                    <button type="submit" class="btn btn--primary btn--sm">Create Campaign</button>
-                    <button type="button" class="btn btn--outline btn--sm" onclick="document.getElementById('create-campaign-form').style.display='none';">Cancel</button>
-                </div>
-            </form>
-        </div>
-
-
-        <div style="padding:2rem;">
-            <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(340px, 1fr)); gap:1.5rem;">
-                <div class="vac-campaign-card" th:each="c : ${campaigns}">
-                    <div class="vac-campaign-card__img"
-                         th:style="${c.imageUrl != null ? 'background-image:url(' + c.imageUrl + ')' : 'background-image:url(/uploads/conservation3.jpg)'}">
-                        <span th:if="${c.active}"
-                              style="position:absolute; top:12px; right:12px; background:var(--vac-green); color:#fff; padding:0.25rem 0.75rem; border-radius:999px; font-size:0.75rem; font-weight:800; text-transform:uppercase;">Active</span>
-                        <span th:unless="${c.active}"
-                              style="position:absolute; top:12px; right:12px; background:#e74c3c; color:#fff; padding:0.25rem 0.75rem; border-radius:999px; font-size:0.75rem; font-weight:800; text-transform:uppercase;">Inactive</span>
-                    </div>
-                    <div class="vac-campaign-card__body">
-                        <h3 style="font-family:var(--font-display); margin:0 0 0.5rem; font-size:1.3rem;" th:text="${c.name}">Campaign Name</h3>
-                        <p th:if="${c.description}" style="color:var(--vac-muted); font-size:0.9rem; line-height:1.5; margin:0 0 0.75rem;" th:text="${c.description}">Description</p>
-                        <p th:if="${c.impactStatement}" style="color:var(--vac-gold); font-weight:700; font-size:0.85rem; margin:0 0 0.5rem;" th:text="${c.impactStatement}">Impact</p>
-                        <div th:if="${c.goalAmount != null}" style="display:flex; justify-content:space-between; font-size:0.85rem; color:var(--vac-muted);">
-                            <span>Raised: <strong th:text="'$' + ${#numbers.formatDecimal(c.raisedAmount != null ? c.raisedAmount : 0, 1, 2)}">$0</strong></span>
-                            <span>Goal: <strong th:text="'$' + ${#numbers.formatDecimal(c.goalAmount, 1, 2)}">$0</strong></span>
+        <!-- 3. Secondary Panels Layout Grid -->
+        <div class="vac-dashboard-panels-grid">
+            <!-- Left Column -->
+            <div class="vac-panels-col">
+                <!-- Recent Bookings -->
+                <section class="admin-card">
+                    <div class="admin-card__header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+                        <div>
+                            <h3 style="margin:0;">Recent Bookings</h3>
+                            <p style="margin:0.15rem 0 0;">Latest submissions and experience bookings entering the platform.</p>
                         </div>
-                        <div th:if="${c.goalAmount != null}" class="vac-campaign-progress">
-                            <div class="vac-campaign-progress__fill"
-                                 th:style="'width:' + ${c.goalAmount.doubleValue() > 0 ? ((c.raisedAmount != null ? c.raisedAmount.doubleValue() : 0) / c.goalAmount.doubleValue() * 100) : 0} + '%'"></div>
-                        </div>
-
-                        <!-- Inline Edit (hidden by details) -->
-                        <details style="margin-top:1rem;">
-                            <summary style="cursor:pointer; color:var(--vac-green); font-weight:700; font-size:0.85rem; text-transform:uppercase; letter-spacing:0.5px;">Edit / Delete</summary>
-                            <form th:action="@{|/admin/conservation-campaigns/${c.id}/update|}" method="post" enctype="multipart/form-data" style="margin-top:1rem; display:grid; gap:0.75rem;">
-                                <input class="form-input" name="name" th:value="${c.name}" required="required" placeholder="Name" />
-                                <textarea class="form-textarea" name="description" rows="2" th:text="${c.description}" placeholder="Description"></textarea>
-                                <input class="form-input" name="impactStatement" th:value="${c.impactStatement}" placeholder="Impact statement" />
-                                <div style="display:grid; grid-template-columns:1fr; gap:0.75rem;">
-                                    <input class="form-input" name="goalAmount" type="number" step="0.01" th:value="${c.goalAmount}" placeholder="Goal" />
-                                </div>
-                                <div style="display:grid; grid-template-columns:1fr; gap:0.75rem;">
-                                    <label class="form-label" style="font-size:0.75rem;">Update Image (Optional)</label>
-                                    <input type="file" class="form-input" name="imageFile" accept="image/*" />
-                                </div>
-                                <select class="form-select" name="active">
-                                    <option value="true" th:selected="${c.active}">Active</option>
-                                    <option value="false" th:selected="${!c.active}">Inactive</option>
-                                </select>
-                                <div style="display:flex; gap:0.5rem; margin-top:0.5rem;">
-                                    <button type="submit" class="btn btn--primary btn--sm">Save</button>
-                                </div>
-                            </form>
-                            <form th:action="@{|/admin/conservation-campaigns/${c.id}/delete|}" method="post" style="margin-top:0.5rem;">
-                                <button type="submit" class="btn btn--outline btn--sm" style="color:#e74c3c; border-color:#e74c3c; width:100%;" onclick="return confirm('Delete this campaign permanently?');">Delete Campaign</button>
-                            </form>
-                        </details>
+                        <a class="btn btn--outline btn--sm" th:href="@{/admin/ops/bookings}">Open Bookings</a>
                     </div>
-                </div>
+                    <div class="admin-card__body" style="padding:0;">
+                        <div class="admin-table-wrap">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Reference</th>
+                                        <th>Guest</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="booking : ${latestBookings}">
+                                        <td>
+                                            <a th:href="@{/admin/ops/bookings}" style="text-decoration:none; font-weight:700; color:var(--vac-green, #00A651);">
+                                                <span th:text="${booking.bookingReference}">VAC-2026-0001</span>
+                                            </a>
+                                            <div style="font-size:0.75rem; color:var(--color-ink-soft);" th:text="${booking.experience != null ? booking.experience.title : 'Custom request'}">Experience</div>
+                                        </td>
+                                        <td th:text="${booking.guestName}">Guest Name</td>
+                                        <td th:text="${booking.preferredDate != null ? #temporals.format(booking.preferredDate, 'MMM d, yyyy') : 'TBD'}">Date</td>
+                                        <td>
+                                            <span class="chip" data-status th:attr="data-status=${booking.status}" th:text="${booking.status}">PENDING</span>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${latestBookings == null or #lists.isEmpty(latestBookings)}">
+                                        <td colspan="4" class="vac-admin-empty-state">
+                                            No bookings have been recorded yet.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Store Activity & Audit Trail -->
+                <section class="admin-card">
+                    <div class="admin-card__header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+                        <div>
+                            <h3 style="margin:0;">Recent Store Activity</h3>
+                            <p style="margin:0.15rem 0 0;">Real-time audit log of database and platform events.</p>
+                        </div>
+                        <a class="btn btn--outline btn--sm" th:href="@{/admin/audit-log}">View Audit Log</a>
+                    </div>
+                    <div class="admin-card__body">
+                        <div class="vac-activity-timeline">
+                            <div class="vac-activity-item" th:each="event, stat : ${auditEvents}" th:if="${stat.index < 5}">
+                                <div class="vac-activity-icon"><i data-lucide="activity"></i></div>
+                                <div class="vac-activity-details">
+                                    <div class="vac-activity-title">
+                                        <strong th:text="${#strings.replace(event.eventType, '_', ' ')}">EVENT</strong>
+                                        <span class="vac-activity-time" th:text="${event.createdAt != null ? #temporals.format(event.createdAt, 'MMM d, HH:mm') : ''}">time</span>
+                                    </div>
+                                    <p class="vac-activity-desc" th:text="${event.details != null ? event.details : event.entityType}">Details</p>
+                                    <small class="vac-activity-actor" th:text="${event.actorEmail != null ? event.actorEmail : 'System'}">actor</small>
+                                </div>
+                            </div>
+                            <div class="vac-admin-empty-state" th:if="${auditEvents == null or #lists.isEmpty(auditEvents)}">
+                                No recent activity logged.
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </div>
 
-            <div th:if="${campaigns == null or #lists.isEmpty(campaigns)}" style="padding:3rem 1rem; text-align:center; color:var(--vac-muted);">
-                <svg style="width:48px; height:48px; stroke:var(--vac-line); margin-bottom:1rem;" viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/></svg>
-                <p style="font-size:1.1rem; margin-bottom:1rem;">No conservation campaigns active yet.</p>
-                <button class="btn btn--primary btn--sm" onclick="document.getElementById('create-campaign-form').style.display='block';">Create Your First Campaign</button>
+            <!-- Right Column -->
+            <div class="vac-panels-col">
+                <!-- Quick Actions -->
+                <section class="admin-card">
+                    <div class="admin-card__header">
+                        <div>
+                            <h3 style="margin:0;">Quick Actions</h3>
+                            <p style="margin:0.15rem 0 0;">Deploy content or review operational logs directly.</p>
+                        </div>
+                    </div>
+                    <div class="admin-card__body">
+                        <div class="vac-quick-actions-grid">
+                            <a class="vac-action-btn" th:href="@{/admin/content/products}">
+                                <i data-lucide="plus-circle"></i>
+                                <span>Add Product</span>
+                            </a>
+                            <a class="vac-action-btn" th:href="@{/admin/content/experiences}">
+                                <i data-lucide="compass"></i>
+                                <span>Add Experience</span>
+                            </a>
+                            <a class="vac-action-btn" th:href="@{/admin/content/blog-posts}">
+                                <i data-lucide="pen-tool"></i>
+                                <span>New Blog Post</span>
+                            </a>
+                            <a class="vac-action-btn" th:href="@{/admin/reviews}">
+                                <i data-lucide="check-square"></i>
+                                <span>Manage Reviews</span>
+                            </a>
+                            <a class="vac-action-btn" th:href="@{/}" target="_blank">
+                                <i data-lucide="globe"></i>
+                                <span>View Public Site</span>
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Pending Items / Needs Attention -->
+                <section class="admin-card">
+                    <div class="admin-card__header">
+                        <div>
+                            <h3 style="margin:0;">Needs Attention</h3>
+                            <p style="margin:0.15rem 0 0;">Operational review queues currently awaiting staff confirmation.</p>
+                        </div>
+                    </div>
+                    <div class="admin-card__body" style="padding:0;">
+                        <div class="vac-attention-list">
+                            <a class="vac-attention-item" th:href="@{/admin/reviews}">
+                                <div class="vac-attention-title">Pending Moderation Reviews</div>
+                                <span class="vac-attention-badge" th:text="${pendingReviewsCount}">0</span>
+                            </a>
+                            <a class="vac-attention-item" th:href="@{/admin/ops/contact-inquiries}">
+                                <div class="vac-attention-title">Contact Inquiries</div>
+                                <span class="vac-attention-badge" th:text="${totalInquiries}">0</span>
+                            </a>
+                            <a class="vac-attention-item" th:href="@{/admin/ops/talent-applications}">
+                                <div class="vac-attention-title">Talent Applications</div>
+                                <span class="vac-attention-badge" th:text="${totalTalentApplications}">0</span>
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Notifications / Inbox -->
+                <section class="admin-card">
+                    <div class="admin-card__header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+                        <div>
+                            <h3 style="margin:0;">System Notifications</h3>
+                            <p style="margin:0.15rem 0 0;">Latest messages and platform alerts.</p>
+                        </div>
+                        <a class="btn btn--outline btn--sm" th:href="@{/account/notifications}">Open All</a>
+                    </div>
+                    <div class="admin-card__body" style="padding:0;">
+                        <div class="vac-inbox-list">
+                            <a class="vac-inbox-item"
+                               th:each="n : ${notificationSummary != null ? notificationSummary.recent : {}}"
+                               th:href="${n.ctaUrl != null ? n.ctaUrl : '/account/notifications'}"
+                               th:classappend="${n.unread} ? 'is-unread'">
+                                <div class="vac-inbox-meta">
+                                    <strong th:text="${n.title}">Notification Title</strong>
+                                    <span class="vac-inbox-time" th:text="${n.createdAt != null ? #temporals.format(n.createdAt, 'MMM d, HH:mm') : ''}">Time</span>
+                                </div>
+                                <p th:text="${n.body}">Message content...</p>
+                            </a>
+                            <div class="vac-admin-empty-state" th:if="${notificationSummary == null or #lists.isEmpty(notificationSummary.recent)}">
+                                No unread notifications.
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </div>
         </div>
     </div>
@@ -270,41 +284,14 @@
 
 <th:block layout:fragment="scripts">
 <script th:inline="javascript">
-/* Charts are rendered by /js/admin-charts.js (single source of truth).
-   This script only handles the live revenue KPI + auto-refresh. */
-(function () {
-    const fmtMoney = (n) => '$' + (Number(n) || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-    function setKpi(key, value) {
-        const root = document.querySelector(`[data-kpi="${key}"]`);
-        if (!root) return;
-        const valEl = root.querySelector('.admin-kpi__value');
-        if (!valEl) return;
-        const prefix = root.getAttribute('data-prefix') || '';
-        valEl.textContent = prefix === '$' ? fmtMoney(value) : (Number(value) || 0).toLocaleString();
+document.addEventListener('DOMContentLoaded', function () {
+    var refresh = document.getElementById('kpi-refresh');
+    if (refresh) {
+        refresh.addEventListener('click', function() {
+            location.reload();
+        });
     }
-
-    async function loadKpis() {
-        try {
-            const csrfMeta = document.querySelector('meta[name="_csrf"]');
-            const headers = { 'Accept': 'application/json' };
-            if (csrfMeta) headers['X-CSRF-TOKEN'] = csrfMeta.content;
-            const res = await fetch('/api/v1/ops/dashboard/kpis', { headers, credentials: 'same-origin' });
-            if (!res.ok) return;
-            const json = await res.json();
-            const d = json && json.data ? json.data : {};
-            if (d.revenueCaptured != null) setKpi('revenueCaptured', d.revenueCaptured);
-        } catch (_) { }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        loadKpis();
-        // Live auto-refresh of executive KPIs.
-        setInterval(loadKpis, 30000);
-        const refresh = document.getElementById('kpi-refresh');
-        if (refresh) refresh.addEventListener('click', loadKpis);
-    });
-})();
+});
 </script>
 </th:block>
 </body>

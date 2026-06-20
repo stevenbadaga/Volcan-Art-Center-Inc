@@ -21,4 +21,5 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     Optional<Review> findByUserAndProductId(User user, Long productId);
     Optional<Review> findByUserAndExperienceId(User user, Long experienceId);
+    long countByApprovedFalse();
 }

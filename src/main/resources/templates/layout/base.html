@@ -8,16 +8,24 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <!-- SEO -->
-    <title layout:title-pattern="$CONTENT_TITLE — Volcano Arts Center">Volcano Arts Center</title>
-    <meta name="description" th:content="${metaDescription != null ? metaDescription : 'Experience Rwanda through Arts, Culture, and People. Volcano Arts Center Inc — your gateway to authentic community-based tourism near Volcanoes National Park.'}" />
+    <title layout:title-pattern="$CONTENT_TITLE">Volcano Arts Center</title>
+    <meta name="description" th:content="${metaDescription != null ? metaDescription : 'Experience Rwanda through arts, culture, wildlife, local talent, conservation, and unforgettable experiences near Volcanoes National Park.'}" />
     <meta name="author" content="Volcano Arts Center Inc" />
-    <meta name="theme-color" content="#00A259" />
+    <meta name="theme-color" content="#004d26" />
 
-    <!-- Open Graph -->
+    <!-- Open Graph & Twitter Cards -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Volcano Arts Center" />
-    <meta property="og:title" th:content="${pageTitle != null ? pageTitle : 'Volcano Arts Center — Art & Community Based Tourism'}" />
-    <meta property="og:description" th:content="${metaDescription != null ? metaDescription : 'Experience Rwanda through Arts, Culture, and People.'}" />
+    <meta property="og:title" th:content="${pageTitle != null ? pageTitle : 'Volcano Arts Center | Arts, Culture & Experiences in Rwanda'}" />
+    <meta property="og:description" th:content="${metaDescription != null ? metaDescription : 'Discover Rwanda through art, culture, wildlife, local talent, conservation, and unforgettable experiences near Volcanoes National Park.'}" />
+    <meta property="og:image" th:content="${ogImage != null ? ogImage : '/uploads/wildlife-gorillas.jpeg'}" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" th:content="${pageTitle != null ? pageTitle : 'Volcano Arts Center | Arts, Culture & Experiences in Rwanda'}" />
+    <meta name="twitter:description" th:content="${metaDescription != null ? metaDescription : 'Discover Rwanda through art, culture, wildlife, local talent, conservation, and unforgettable experiences near Volcanoes National Park.'}" />
+    <meta name="twitter:image" th:content="${ogImage != null ? ogImage : '/uploads/wildlife-gorillas.jpeg'}" />
+
+    <!-- Child template metadata overrides -->
+    <th:block layout:fragment="meta"></th:block>
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" th:href="@{/images/favicon.png}" />
@@ -28,19 +36,21 @@
 
     <!-- Styles -->
     <link rel="stylesheet" th:href="@{/css/main.css}" />
-    <link rel="stylesheet" th:href="@{/css/vac-overhaul.css}" />
+    <link rel="stylesheet" th:href="@{/css/vac-overhaul.css?v=2026.06.19}" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,700;1,300&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600;700&family=Roboto+Slab:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&family=Syne:wght@400;600;700;800&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,700;1,300&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400&display=swap" rel="stylesheet" />
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- Light theme is the default. Persisted preference via localStorage still wins. -->
+    <!-- Theme management: Light, Dark, or System preference. -->
     <script>
         (function () {
             try {
-                var savedTheme = localStorage.getItem('vac-theme');
-                document.documentElement.setAttribute('data-theme',
-                    savedTheme === 'dark' ? 'dark' : 'light');
+                var savedTheme = localStorage.getItem('vac-theme') || 'system';
+                var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                var theme = savedTheme === 'system' ? (systemDark ? 'dark' : 'light') : savedTheme;
+                document.documentElement.setAttribute('data-theme', theme);
+                document.documentElement.setAttribute('data-user-preference', savedTheme);
             } catch (e) {
                 document.documentElement.setAttribute('data-theme', 'light');
             }
@@ -59,45 +69,50 @@
     <nav class="nav nav--premium site-nav" id="main-nav" th:classappend="${#strings.equals(currentPage, 'home')} ? ' nav--home' : ' nav--solid'">
         <div class="nav__inner site-nav__inner">
             <a href="/" class="logo logo--brand" th:href="@{/}">
-                <img class="logo-image" th:src="@{/images/volcano-logo.png}" alt="Volcano Arts Center logo" width="48" height="48" loading="eager" />
-                <div class="logo-text">
-                    <div class="logo-name">VOLCANO ARTS</div>
-                    <div class="logo-sub">Center Inc · Rwanda</div>
-                </div>
+                <img class="logo-image logo-image--desktop" th:src="@{/uploads/logo-white-transparent.png}" alt="Volcano Arts Center logo" width="160" height="48" loading="eager" />
+                <img class="logo-image logo-image--mobile" th:src="@{/images/mobile-white-logo.png}" alt="Volcano Arts Center logo" width="48" height="48" loading="eager" />
             </a>
 
             <ul class="nav__links nav-links" id="nav-links">
                 <li><a class="nav-link" th:href="@{/}" th:classappend="${#strings.equals(currentPage, 'home')} ? 'active'">Home</a></li>
 
                 <li class="nav-item nav-item--mega">
-                    <a class="nav-link" th:href="@{/art-store}" th:classappend="${#strings.equals(currentPage, 'art-store')} ? 'active'">Shop</a>
-                    <div class="nav-mega">
-                        <div class="nav-mega__panel nav-mega__panel--grid">
-                            <p class="nav-mega__title">Explore the Art Store</p>
-                            <div class="nav-mega__cards">
-                                <a class="nav-mega__card" th:href="@{/art-store}">
-                                    <img src="/uploads/arthomepage.jpeg" alt="All artworks" loading="lazy" />
-                                    <div><h4>All Artworks</h4><p>Browse the full premium collection.</p></div>
+                    <div class="nav-item__trigger">
+                        <a class="nav-link" th:href="@{/art-store}" th:classappend="${#strings.equals(currentPage, 'art-store')} ? 'active'">Shop</a>
+                        <button type="button" class="nav-mega__mobile-toggle" aria-label="Toggle Shop menu" aria-expanded="false" aria-controls="nav-mega-shop" style="display: none;">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="m6 9 6 6 6-6"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="nav-mega" id="nav-mega-shop">
+                        <div class="nav-mega__panel nav-mega__panel--editorial">
+                            <div class="nav-mega__menu">
+                                <span class="nav-mega__menu-title">Art Categories</span>
+                                <a class="nav-mega__menu-link" th:href="@{/art-store}">All Artworks</a>
+                                <a class="nav-mega__menu-link" th:href="@{/art-store(category='visual-arts')}">Visual Arts Collection</a>
+                                <a class="nav-mega__menu-link" th:href="@{/art-store(category='handicrafts')}">Handicrafts &amp; Cultural Crafts</a>
+                                <a class="nav-mega__menu-link" th:href="@{/experiences(category='CULTURAL')}">Cultural Experience Packages</a>
+                                <a class="nav-mega__menu-link" th:href="@{/art-store}">New Arrivals</a>
+                            </div>
+                            <div class="nav-mega__feature-rail">
+                                <a class="nav-mega__feature-card" th:href="@{/art-store}">
+                                    <div class="nav-mega__feature-media">
+                                        <img src="/uploads/Art.jpeg" alt="All artworks" loading="lazy" />
+                                    </div>
+                                    <span class="nav-mega__feature-label">All Artworks</span>
                                 </a>
-                                <a class="nav-mega__card" th:href="@{/art-store(category='visual-arts')}">
-                                    <img src="/uploads/art-gallery-interior.jpeg" alt="Visual arts" loading="lazy" />
-                                    <div><h4>Visual Arts</h4><p>Paintings, portraits, and mixed media.</p></div>
+                                <a class="nav-mega__feature-card" th:href="@{/art-store(category='visual-arts')}">
+                                    <div class="nav-mega__feature-media">
+                                        <img src="/uploads/7881368095630241.jpeg" alt="Visual arts" loading="lazy" />
+                                    </div>
+                                    <span class="nav-mega__feature-label">Visual Arts</span>
                                 </a>
-                                <a class="nav-mega__card" th:href="@{/art-store(category='handicrafts')}">
-                                    <img src="/uploads/arthomepage2.jpeg" alt="Handicrafts" loading="lazy" />
-                                    <div><h4>Handicrafts</h4><p>Authentic cultural craft objects.</p></div>
-                                </a>
-                                <a class="nav-mega__card" th:href="@{/art-store(minPrice=0,maxPrice=200)}">
-                                    <img src="/uploads/530932243590381348.jpeg" alt="Affordable art" loading="lazy" />
-                                    <div><h4>Affordable Picks</h4><p>Collector-friendly pieces under $200.</p></div>
-                                </a>
-                                <a class="nav-mega__card" th:href="@{/talent}">
-                                    <img src="/uploads/talent-portrait.jpeg" alt="Meet artists" loading="lazy" />
-                                    <div><h4>Meet the Artists</h4><p>See creators behind the collections.</p></div>
-                                </a>
-                                <a class="nav-mega__card" th:href="@{/contact}">
-                                    <img src="/uploads/4600427105964790400.jpeg" alt="Commission art" loading="lazy" />
-                                    <div><h4>Commissions</h4><p>Request custom pieces for your space.</p></div>
+                                <a class="nav-mega__feature-card" th:href="@{/art-store(category='handicrafts')}">
+                                    <div class="nav-mega__feature-media">
+                                        <img src="/uploads/Start up home page.jpeg" alt="Handicrafts" loading="lazy" />
+                                    </div>
+                                    <span class="nav-mega__feature-label">Handicrafts</span>
                                 </a>
                             </div>
                         </div>
@@ -105,34 +120,42 @@
                 </li>
 
                 <li class="nav-item nav-item--mega">
-                    <a class="nav-link" th:href="@{/experiences}" th:classappend="${#strings.equals(currentPage, 'experiences')} ? 'active'">Experiences</a>
-                    <div class="nav-mega">
-                        <div class="nav-mega__panel nav-mega__panel--grid">
-                            <p class="nav-mega__title">Tours &amp; Journeys</p>
-                            <div class="nav-mega__cards">
-                                <a class="nav-mega__card" th:href="@{/experiences}">
-                                    <img src="/uploads/experiences-bisoke.jpeg" alt="All journeys" loading="lazy" />
-                                    <div><h4>All Journeys</h4><p>See every curated route and package.</p></div>
+                    <div class="nav-item__trigger">
+                        <a class="nav-link" th:href="@{/experiences}" th:classappend="${#strings.equals(currentPage, 'experiences')} ? 'active'">Experiences</a>
+                        <button type="button" class="nav-mega__mobile-toggle" aria-label="Toggle Experiences menu" aria-expanded="false" aria-controls="nav-mega-experiences" style="display: none;">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="m6 9 6 6 6-6"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="nav-mega" id="nav-mega-experiences">
+                        <div class="nav-mega__panel nav-mega__panel--editorial">
+                            <div class="nav-mega__menu">
+                                <span class="nav-mega__menu-title">Experience Types</span>
+                                <a class="nav-mega__menu-link" th:href="@{/experiences}">All Journeys</a>
+                                <a class="nav-mega__menu-link" th:href="@{/experiences(category='CULTURAL')}">Cultural Tours</a>
+                                <a class="nav-mega__menu-link" th:href="@{/experiences(category='CONSERVATION')}">Wildlife Routes</a>
+                                <a class="nav-mega__menu-link" th:href="@{/experiences(category='VILLAGE')}">Village Life</a>
+                                <a class="nav-mega__menu-link" th:href="@{/experiences(category='CUSTOM')}">Custom Itineraries</a>
+                            </div>
+                            <div class="nav-mega__feature-rail">
+                                <a class="nav-mega__feature-card" th:href="@{/experiences}">
+                                    <div class="nav-mega__feature-media">
+                                        <img src="/uploads/Mayon Volcano, Albay Philippines.jpeg" alt="All journeys" loading="lazy" />
+                                    </div>
+                                    <span class="nav-mega__feature-label">All Journeys</span>
                                 </a>
-                                <a class="nav-mega__card" th:href="@{/experiences(category='CULTURAL')}">
-                                    <img src="/uploads/experiences-village.jpeg" alt="Cultural tours" loading="lazy" />
-                                    <div><h4>Cultural Tours</h4><p>Village stories, dance, and traditions.</p></div>
+                                <a class="nav-mega__feature-card" th:href="@{/experiences(category='CULTURAL')}">
+                                    <div class="nav-mega__feature-media">
+                                        <img src="/uploads/25332816648714928.jpeg" alt="Cultural tours" loading="lazy" />
+                                    </div>
+                                    <span class="nav-mega__feature-label">Cultural Tours</span>
                                 </a>
-                                <a class="nav-mega__card" th:href="@{/experiences(category='CONSERVATION')}">
-                                    <img src="/uploads/wildlife-gorillas.jpeg" alt="Wildlife routes" loading="lazy" />
-                                    <div><h4>Wildlife Routes</h4><p>Gorilla and savanna experiences.</p></div>
-                                </a>
-                                <a class="nav-mega__card" th:href="@{/experiences(category='VILLAGE')}">
-                                    <img src="/uploads/experiences-waterfall.jpeg" alt="Nature adventures" loading="lazy" />
-                                    <div><h4>Nature Adventures</h4><p>Waterfalls, crater lakes, and hikes.</p></div>
-                                </a>
-                                <a class="nav-mega__card" th:href="@{/experiences(category='CUSTOM')}">
-                                    <img src="/uploads/___1_.jpeg" alt="Custom itineraries" loading="lazy" />
-                                    <div><h4>Custom Itineraries</h4><p>Tailored plans for groups and families.</p></div>
-                                </a>
-                                <a class="nav-mega__card" th:href="@{/contact}">
-                                    <img src="/uploads/884324076848170852.jpeg" alt="Plan with team" loading="lazy" />
-                                    <div><h4>Plan with Our Team</h4><p>Get direct itinerary support.</p></div>
+                                <a class="nav-mega__feature-card" th:href="@{/experiences(category='CONSERVATION')}">
+                                    <div class="nav-mega__feature-media">
+                                        <img src="/uploads/wildlife-gorillas.jpeg" alt="Wildlife routes" loading="lazy" />
+                                    </div>
+                                    <span class="nav-mega__feature-label">Wildlife Routes</span>
                                 </a>
                             </div>
                         </div>
@@ -140,34 +163,41 @@
                 </li>
 
                 <li class="nav-item nav-item--mega">
-                    <a class="nav-link" th:href="@{/conservation}" th:classappend="${#strings.equals(currentPage, 'conservation')} ? 'active'">Conservation</a>
-                    <div class="nav-mega">
-                        <div class="nav-mega__panel nav-mega__panel--grid">
-                            <p class="nav-mega__title">Protect &amp; Give</p>
-                            <div class="nav-mega__cards">
-                                <a class="nav-mega__card" th:href="@{/conservation}">
-                                    <img src="/uploads/conservationhomepage.jpeg" alt="Overview" loading="lazy" />
-                                    <div><h4>Program Overview</h4><p>See impact priorities and outcomes.</p></div>
+                    <div class="nav-item__trigger">
+                        <a class="nav-link" th:href="@{/conservation}" th:classappend="${#strings.equals(currentPage, 'conservation')} ? 'active'">Conservation</a>
+                        <button type="button" class="nav-mega__mobile-toggle" aria-label="Toggle Conservation menu" aria-expanded="false" aria-controls="nav-mega-conservation" style="display: none;">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="m6 9 6 6 6-6"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="nav-mega" id="nav-mega-conservation">
+                        <div class="nav-mega__panel nav-mega__panel--editorial">
+                            <div class="nav-mega__menu">
+                                <span class="nav-mega__menu-title">Conservation</span>
+                                <a class="nav-mega__menu-link" th:href="@{/conservation}">Our Impact</a>
+                                <a class="nav-mega__menu-link" th:href="@{/experiences(category='CONSERVATION')}">Gorilla &amp; Wildlife</a>
+                                <a class="nav-mega__menu-link" th:href="@{/conservation#projects}">Community Projects</a>
+                                <a class="nav-mega__menu-link" th:href="@{/conservation#donate}">Support Conservation</a>
+                            </div>
+                            <div class="nav-mega__feature-rail">
+                                <a class="nav-mega__feature-card" th:href="@{/conservation}">
+                                    <div class="nav-mega__feature-media">
+                                        <img src="/uploads/64457838418348827.jpeg" alt="Program overview" loading="lazy" />
+                                    </div>
+                                    <span class="nav-mega__feature-label">Our Impact</span>
                                 </a>
-                                <a class="nav-mega__card" th:href="@{/conservation#projects}">
-                                    <img src="/uploads/conservation-planting.jpeg" alt="Projects" loading="lazy" />
-                                    <div><h4>Active Projects</h4><p>Tree planting and habitat restoration.</p></div>
+                                <a class="nav-mega__feature-card" th:href="@{/conservation#projects}">
+                                    <div class="nav-mega__feature-media">
+                                        <img src="/uploads/17099673582559833.jpeg" alt="Active projects" loading="lazy" />
+                                    </div>
+                                    <span class="nav-mega__feature-label">Active Projects</span>
                                 </a>
-                                <a class="nav-mega__card" th:href="@{/conservation#donate}">
-                                    <img src="/uploads/conservation.jpeg" alt="Donate" loading="lazy" />
-                                    <div><h4>Donate Now</h4><p>Fund campaigns with transparent goals.</p></div>
-                                </a>
-                                <a class="nav-mega__card" th:href="@{/conservation#projects}">
-                                    <img src="/uploads/wildlife-gorillas.jpeg" alt="Wildlife protection" loading="lazy" />
-                                    <div><h4>Wildlife Protection</h4><p>Support biodiversity near the park.</p></div>
-                                </a>
-                                <a class="nav-mega__card" th:href="@{/blog}">
-                                    <img src="/uploads/conservation3.jpg" alt="Impact stories" loading="lazy" />
-                                    <div><h4>Impact Stories</h4><p>Read updates from field programs.</p></div>
-                                </a>
-                                <a class="nav-mega__card" th:href="@{/conservation#projects}">
-                                    <img src="/uploads/conservation-planting.jpeg" alt="Track progress" loading="lazy" />
-                                    <div><h4>Track Progress</h4><p>Follow your support over time.</p></div>
+                                <a class="nav-mega__feature-card" th:href="@{/conservation#donate}">
+                                    <div class="nav-mega__feature-media">
+                                        <img src="/uploads/64457838418348827.jpeg" alt="Donate now" loading="lazy" />
+                                    </div>
+                                    <span class="nav-mega__feature-label">Support Conservation</span>
                                 </a>
                             </div>
                         </div>
@@ -175,34 +205,42 @@
                 </li>
 
                 <li class="nav-item nav-item--mega">
-                    <a class="nav-link" th:href="@{/blog}" th:classappend="${#strings.equals(currentPage, 'blog')} ? 'active'">Blog &amp; Stories</a>
-                    <div class="nav-mega">
-                        <div class="nav-mega__panel nav-mega__panel--grid">
-                            <p class="nav-mega__title">The Journal</p>
-                            <div class="nav-mega__cards">
-                                <a class="nav-mega__card" th:href="@{/blog}">
-                                    <img src="/uploads/blog-talent-bg.jpeg" alt="Latest stories" loading="lazy" />
-                                    <div><h4>Latest Stories</h4><p>New posts from Musanze and beyond.</p></div>
+                    <div class="nav-item__trigger">
+                        <a class="nav-link" th:href="@{/blog}" th:classappend="${#strings.equals(currentPage, 'blog')} ? 'active'">Blog &amp; Stories</a>
+                        <button type="button" class="nav-mega__mobile-toggle" aria-label="Toggle Blog and Stories menu" aria-expanded="false" aria-controls="nav-mega-blog" style="display: none;">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="m6 9 6 6 6-6"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="nav-mega" id="nav-mega-blog">
+                        <div class="nav-mega__panel nav-mega__panel--editorial">
+                            <div class="nav-mega__menu">
+                                <span class="nav-mega__menu-title">Stories</span>
+                                <a class="nav-mega__menu-link" th:href="@{/blog}">Latest Stories</a>
+                                <a class="nav-mega__menu-link" th:href="@{/blog}">Artist Stories</a>
+                                <a class="nav-mega__menu-link" th:href="@{/blog}">Culture</a>
+                                <a class="nav-mega__menu-link" th:href="@{/blog}">Travel Guides</a>
+                                <a class="nav-mega__menu-link" th:href="@{/blog}">Conservation Updates</a>
+                            </div>
+                            <div class="nav-mega__feature-rail">
+                                <a class="nav-mega__feature-card" th:href="@{/blog}">
+                                    <div class="nav-mega__feature-media">
+                                        <img src="/uploads/7881368095630241.jpeg" alt="Latest stories" loading="lazy" />
+                                    </div>
+                                    <span class="nav-mega__feature-label">Latest Stories</span>
                                 </a>
-                                <a class="nav-mega__card" th:href="@{/blog}">
-                                    <img src="/uploads/experiences-village.jpeg" alt="Travel insights" loading="lazy" />
-                                    <div><h4>Travel Insights</h4><p>Planning tips for your Rwanda journey.</p></div>
+                                <a class="nav-mega__feature-card" th:href="@{/blog}">
+                                    <div class="nav-mega__feature-media">
+                                        <img src="/uploads/Mayon Volcano, Albay Philippines.jpeg" alt="Travel insights" loading="lazy" />
+                                    </div>
+                                    <span class="nav-mega__feature-label">Travel Insights</span>
                                 </a>
-                                <a class="nav-mega__card" th:href="@{/blog}">
-                                    <img src="/uploads/16184879907687165.jpeg" alt="Culture stories" loading="lazy" />
-                                    <div><h4>Culture &amp; Heritage</h4><p>Stories of art, dance, and identity.</p></div>
-                                </a>
-                                <a class="nav-mega__card" th:href="@{/blog}">
-                                    <img src="/uploads/4600427105964790400.jpeg" alt="Artist features" loading="lazy" />
-                                    <div><h4>Artist Features</h4><p>Meet creators shaping the platform.</p></div>
-                                </a>
-                                <a class="nav-mega__card" th:href="@{/blog}">
-                                    <img src="/uploads/conservationhomepage.jpeg" alt="Conservation updates" loading="lazy" />
-                                    <div><h4>Conservation Updates</h4><p>How community action protects nature.</p></div>
-                                </a>
-                                <a class="nav-mega__card" th:href="@{/contact}">
-                                    <img src="/uploads/727472146099993210.jpeg" alt="Share story" loading="lazy" />
-                                    <div><h4>Share Your Story</h4><p>Pitch guest stories and collaborations.</p></div>
+                                <a class="nav-mega__feature-card" th:href="@{/blog}">
+                                    <div class="nav-mega__feature-media">
+                                        <img src="/uploads/Celebrate heritage, strength, and beauty with this….jpeg" alt="Culture and heritage" loading="lazy" />
+                                    </div>
+                                    <span class="nav-mega__feature-label">Culture &amp; Heritage</span>
                                 </a>
                             </div>
                         </div>
@@ -210,42 +248,100 @@
                 </li>
 
                 <li class="nav-item nav-item--mega">
-                    <a class="nav-link" th:href="@{/talent}" th:classappend="${#strings.equals(currentPage, 'talent')} ? 'active'">Talent</a>
-                    <div class="nav-mega">
-                        <div class="nav-mega__panel nav-mega__panel--grid">
-                            <p class="nav-mega__title">Talent Program</p>
-                            <div class="nav-mega__cards">
-                                <a class="nav-mega__card" th:href="@{/talent}">
-                                    <img src="/uploads/blog-talent-bg.jpeg" alt="Program overview" loading="lazy" />
-                                    <div><h4>Program Overview</h4><p>Understand the full talent pathway.</p></div>
+                    <div class="nav-item__trigger">
+                        <a class="nav-link" th:href="@{/talent}" th:classappend="${#strings.equals(currentPage, 'talent')} ? 'active'">Talent</a>
+                        <button type="button" class="nav-mega__mobile-toggle" aria-label="Toggle Talent menu" aria-expanded="false" aria-controls="nav-mega-talent" style="display: none;">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="m6 9 6 6 6-6"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="nav-mega" id="nav-mega-talent">
+                        <div class="nav-mega__panel nav-mega__panel--editorial">
+                            <div class="nav-mega__menu">
+                                <span class="nav-mega__menu-title">Talent</span>
+                                <a class="nav-mega__menu-link" th:href="@{/talent}">Talent Pipeline</a>
+                                <a class="nav-mega__menu-link" th:href="@{/talent#profiles}">Artists</a>
+                                <a class="nav-mega__menu-link" th:href="@{/talent}">Media</a>
+                                <a class="nav-mega__menu-link" th:href="@{/talent/register}">Join the Program</a>
+                            </div>
+                            <div class="nav-mega__feature-rail">
+                                <a class="nav-mega__feature-card" th:href="@{/talent}">
+                                    <div class="nav-mega__feature-media">
+                                        <img src="/uploads/55028426690959709.jpeg" alt="Program overview" loading="lazy" />
+                                    </div>
+                                    <span class="nav-mega__feature-label">Talent Program</span>
                                 </a>
-                                <a class="nav-mega__card" th:href="@{/talent/register}">
-                                    <img src="/uploads/talent-portrait.jpeg" alt="Apply now" loading="lazy" />
-                                    <div><h4>Apply Now</h4><p>Submit your profile and creative goals.</p></div>
+                                <a class="nav-mega__feature-card" th:href="@{/talent/register}">
+                                    <div class="nav-mega__feature-media">
+                                        <img src="/uploads/Celebrate heritage, strength, and beauty with this….jpeg" alt="Apply now" loading="lazy" />
+                                    </div>
+                                    <span class="nav-mega__feature-label">Apply Now</span>
                                 </a>
-                                <a class="nav-mega__card" th:href="@{/talent#profiles}">
-                                    <img src="/uploads/talent-silhouette.jpeg" alt="Featured talent" loading="lazy" />
-                                    <div><h4>Featured Talent</h4><p>Discover artists on the platform.</p></div>
-                                </a>
-                                <a class="nav-mega__card" th:href="@{/art-store}">
-                                    <img src="/uploads/art-layered-sculpture.jpeg" alt="Market access" loading="lazy" />
-                                    <div><h4>Market Access</h4><p>Pathways into the global art store.</p></div>
-                                </a>
-                                <a class="nav-mega__card" th:href="@{/talent}">
-                                    <img src="/uploads/Media and dance 2.jpg" alt="Mentorship" loading="lazy" />
-                                    <div><h4>Mentorship &amp; Media</h4><p>Guidance, exposure, and collaboration.</p></div>
-                                </a>
-                                <a class="nav-mega__card" th:href="@{/contact}">
-                                    <img src="/uploads/talent-tree-art.jpeg" alt="Partnerships" loading="lazy" />
-                                    <div><h4>Partnerships</h4><p>Book talent for projects and events.</p></div>
+                                <a class="nav-mega__feature-card" th:href="@{/talent#profiles}">
+                                    <div class="nav-mega__feature-media">
+                                        <img src="/uploads/25332816648714928.jpeg" alt="Featured talent" loading="lazy" />
+                                    </div>
+                                    <span class="nav-mega__feature-label">Meet Current Talent</span>
                                 </a>
                             </div>
                         </div>
+                    </div>
+                </li>
+                <!-- Mobile-Only Action Links (visible only on mobile) -->
+                <li class="nav-mobile-actions">
+                    <hr class="nav-mobile-divider" />
+                    <!-- Unauthenticated: Sign In -->
+                    <a th:if="${!navContext.authenticated}" th:href="@{/login}" class="nav-mobile-link">
+                        <i data-lucide="log-in"></i> <span>Sign In</span>
+                    </a>
+                    <!-- Authenticated: Account links -->
+                    <div class="nav-mobile-auth-links" th:if="${navContext.authenticated}">
+                        <a th:href="${navContext.superAdmin or navContext.contentManager or navContext.opsManager ? '/admin/messages' : '/account/messages'}" class="nav-mobile-link">
+                            <i data-lucide="mail"></i> <span>Messages</span>
+                        </a>
+                        <a th:href="@{/account/notifications}" class="nav-mobile-link">
+                            <i data-lucide="bell"></i> <span>Notifications</span>
+                        </a>
+                        <a th:href="@{/account/settings}" class="nav-mobile-link">
+                            <i data-lucide="settings"></i> <span>Settings</span>
+                        </a>
+                        <a th:if="${navContext.registeredClient}" th:href="@{/client/dashboard}" class="nav-mobile-link">
+                            <i data-lucide="user"></i> <span>My Account</span>
+                        </a>
+                        <a th:if="${!navContext.registeredClient}" th:href="${navContext.dashboardUrl}" class="nav-mobile-link">
+                            <i data-lucide="layout-dashboard"></i> <span th:text="${navContext.roleLabel}">Dashboard</span>
+                        </a>
+                        <form th:action="@{/logout}" method="post" class="nav-mobile-logout-form">
+                            <button type="submit" class="nav-mobile-link nav-mobile-link--logout">
+                                <i data-lucide="log-out"></i> <span>Logout</span>
+                            </button>
+                        </form>
                     </div>
                 </li>
             </ul>
 
             <div class="nav__cta nav-actions">
+                <!-- Theme Switcher -->
+                <div class="nav-theme-switcher dropdown">
+                    <button type="button" class="nav-icon nav-icon-btn" id="theme-toggle" aria-label="Switch Theme" aria-expanded="false" aria-haspopup="true">
+                        <i data-lucide="sun" class="theme-icon-light" aria-hidden="true"></i>
+                        <i data-lucide="moon" class="theme-icon-dark" aria-hidden="true"></i>
+                        <i data-lucide="monitor" class="theme-icon-system" aria-hidden="true"></i>
+                    </button>
+                    <div class="dropdown-menu theme-dropdown" id="theme-menu" style="display: none;">
+                        <button class="theme-option" data-theme-value="light" aria-label="Light Theme">
+                            <i data-lucide="sun" width="16" height="16" aria-hidden="true"></i> <span>Light</span>
+                        </button>
+                        <button class="theme-option" data-theme-value="dark" aria-label="Dark Theme">
+                            <i data-lucide="moon" width="16" height="16" aria-hidden="true"></i> <span>Dark</span>
+                        </button>
+                        <button class="theme-option" data-theme-value="system" aria-label="System Theme">
+                            <i data-lucide="monitor" width="16" height="16" aria-hidden="true"></i> <span>System</span>
+                        </button>
+                    </div>
+                </div>
+
                 <a th:if="${navContext.authenticated}"
                    th:href="${navContext.superAdmin or navContext.contentManager or navContext.opsManager ? '/admin/messages' : '/account/messages'}"
                    class="nav-icon nav-icon-btn" aria-label="Messages">
@@ -415,7 +511,7 @@
                 <div class="site-footer__legal">
                     <a th:href="@{/contact}">Privacy</a>
                     <a th:href="@{/contact}">Terms</a>
-                    <span>Built by CODAFRIQA</span>
+                    <span>Built by <a href="https://www.codafriqa.rw" target="_blank" rel="noopener noreferrer" class="site-footer__credit-link">CODAFRIQA</a></span>
                 </div>
             </div>
         </div>
@@ -525,8 +621,8 @@
     <!-- Motion One (vanilla-JS animation lib by the Framer Motion team) -->
     <script src="https://cdn.jsdelivr.net/npm/motion@10.18.0/dist/motion.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script th:src="@{/js/main.js}"></script>
-    <script th:src="@{/js/vac-overhaul.js}"></script>
+    <script th:src="@{/js/main.js?v=2026.06.19}"></script>
+    <script th:src="@{/js/vac-overhaul.js?v=2026.06.19}"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             lucide.createIcons();

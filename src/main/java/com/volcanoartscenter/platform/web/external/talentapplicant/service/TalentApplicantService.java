@@ -69,7 +69,7 @@ public class TalentApplicantService {
 
     public Optional<TalentApplication> latestFor(User user) {
         List<TalentApplication> list = applicationsFor(user);
-        return list.isEmpty() ? Optional.empty() : Optional.of(list.getFirst());
+        return list.isEmpty() ? Optional.empty() : Optional.of(list.get(0));
     }
 
     public User saveProfile(User user) {

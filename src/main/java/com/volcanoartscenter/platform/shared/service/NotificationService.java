@@ -25,15 +25,30 @@ public class NotificationService {
     }
 
     @Async("notificationTaskExecutor")
-    public void sendWhatsAppAsync(String phone, String phoneNumber, String message) {
-        log.info("Starting async WhatsApp dispatch to: {}", phoneNumber);
+    public void sendWhatsAppAsync(String recipient, String subject, String body) {
+        String normalizedRecipient = normalizeWhatsappRecipient(recipient);
+        log.info("Starting async WhatsApp dispatch to: {}", normalizedRecipient);
         try {
-            // Note: Currently IntegrationFacadeService doesn't have a direct WhatsApp method exposed
-            // but for spec compliance, we route it through the integration facade or mock it here.
-            log.info("WhatsApp payload delivered via IntegrationFacade for phone: {}", phoneNumber);
-            // Replace with actual integration logic once provider (Twilio/Meta) SDK is wired.
+            integrationFacadeService.sendWhatsApp(normalizedRecipient, subject, body);
+            log.info("Successfully dispatched WhatsApp asynchronously to: {}", normalizedRecipient);
         } catch (Exception e) {
-            log.error("Failed to dispatch async WhatsApp message to: {}", phoneNumber, e);
+            log.error("Failed to dispatch async WhatsApp message to: {}", normalizedRecipient, e);
         }
+    }
+
+    @Async("notificationTaskExecutor")
+    public void sendWhatsAppAsync(String recipient, String message) {
+        sendWhatsAppAsync(recipient, null, message);
+    }
+
+    private String normalizeWhatsappRecipient(String value) {
+        if (value == null || value.isBlank()) {
+            throw new IllegalArgumentException("WhatsApp recipient is required.");
+        }
+        String normalized = value.replaceAll("[^0-9]", "");
+        if (normalized.isBlank()) {
+            throw new IllegalArgumentException("WhatsApp recipient must contain digits.");
+        }
+        return normalized;
     }
 }

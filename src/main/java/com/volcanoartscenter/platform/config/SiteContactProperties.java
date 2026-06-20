@@ -6,6 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class SiteContactProperties {
 
     private String whatsappNumber = "";
+    private String contactEmail = "hello@volcanoartsandhospes.com";
     private String inquiryMessage =
             "Hello Volcano Arts Center! I would like to inquire about your artworks, experiences, and cultural collections.";
     private String siteUrl = "https://volcanoartscenter.rw";
@@ -13,6 +14,9 @@ public class SiteContactProperties {
 
     public String getWhatsappNumber() { return whatsappNumber; }
     public void setWhatsappNumber(String whatsappNumber) { this.whatsappNumber = whatsappNumber; }
+
+    public String getContactEmail() { return contactEmail; }
+    public void setContactEmail(String contactEmail) { this.contactEmail = contactEmail; }
 
     public String getInquiryMessage() { return inquiryMessage; }
     public void setInquiryMessage(String inquiryMessage) { this.inquiryMessage = inquiryMessage; }

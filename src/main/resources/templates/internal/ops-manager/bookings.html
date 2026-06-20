@@ -236,7 +236,7 @@
                     <tr th:each="b : ${items}">
                         <td>
                             <div class="bookings-table-title">
-                                <div class="cell-mono" th:text="${b.bookingReference}">BOOK-REF</div>
+                                <a th:href="@{/admin/ops/bookings/{ref}(ref=${b.bookingReference})}" class="cell-mono" style="text-decoration: none; color: var(--color-primary); font-weight: 700;" th:text="${b.bookingReference}">BOOK-REF</a>
                                 <div class="bookings-table-meta"
                                      th:text="${b.createdAt == null ? 'Created time unavailable' : 'Created ' + #temporals.format(b.createdAt, 'yyyy-MM-dd HH:mm')}">
                                     Created 2026-01-01 12:00
@@ -281,13 +281,17 @@
                         </td>
                         <td>
                             <div class="bookings-action-stack">
+                                <a th:href="@{/admin/ops/bookings/{ref}(ref=${b.bookingReference})}" class="btn btn--outline btn--sm" style="margin-bottom: 0.5rem; text-decoration: none;">View Details</a>
                                 <form th:action="@{|/admin/ops/bookings/${b.id}/status|}" method="post" class="bookings-action-card">
                                     <span class="bookings-action-card__label">Booking Status</span>
                                     <div class="bookings-action-grid">
                                         <select class="form-select" name="status">
                                             <option th:each="s : ${bookingStatuses}" th:value="${s}" th:text="${s}" th:selected="${s == b.status}">STATUS</option>
                                         </select>
-                                        <input class="form-input" name="adminNotes" th:value="${b.adminNotes}" placeholder="Internal note for ops follow-up" />
+                                        <select class="form-select" name="paymentStatus">
+                                            <option th:each="ps : ${paymentStatuses}" th:value="${ps}" th:text="${ps}" th:selected="${ps == b.paymentStatus}">PAYMENT</option>
+                                        </select>
+                                        <input class="form-input" name="adminNotes" th:value="${b.adminNotes}" placeholder="Internal note" />
                                         <button class="btn btn--outline btn--sm" type="submit">Apply</button>
                                     </div>
                                     <div class="bookings-action-grid bookings-action-grid--notify">

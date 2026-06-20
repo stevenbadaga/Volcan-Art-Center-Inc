@@ -9,4 +9,5 @@ public interface TourOperatorRequestRepository extends JpaRepository<TourOperato
     List<TourOperatorRequest> findByOwnerEmailOrderByCreatedAtDesc(String ownerEmail);
     List<TourOperatorRequest> findByOwnerEmailIgnoreCaseOrderByCreatedAtDesc(String ownerEmail);
     List<TourOperatorRequest> findByContactEmailIgnoreCaseOrderByCreatedAtDesc(String contactEmail);
+    long countByStatusNotIn(java.util.Collection<com.volcanoartscenter.platform.shared.model.TourOperatorRequest.RequestStatus> statuses);
 }

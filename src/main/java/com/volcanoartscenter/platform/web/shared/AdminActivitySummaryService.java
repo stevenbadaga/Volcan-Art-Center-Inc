@@ -31,27 +31,15 @@ public class AdminActivitySummaryService {
 
     @Transactional(readOnly = true)
     public AdminActivitySummary summarize() {
-        long pendingBookings = bookingRepository.findAll().stream()
-                .filter(b -> b.getStatus() == Booking.BookingStatus.PENDING)
-                .count();
-        long pendingOrders = shippingOrderRepository.findAll().stream()
-                .filter(o -> o.getStatus() == ShippingOrder.OrderStatus.PENDING
-                        || o.getStatus() == ShippingOrder.OrderStatus.PROCESSING)
-                .count();
-        long openInquiries = contactInquiryRepository.findAll().stream()
-                .filter(i -> i.getStatus() != ContactInquiry.InquiryStatus.CLOSED)
-                .count();
-        long openOperatorRequests = tourOperatorRequestRepository.findAll().stream()
-                .filter(r -> r.getStatus() != TourOperatorRequest.RequestStatus.CONFIRMED
-                        && r.getStatus() != TourOperatorRequest.RequestStatus.DECLINED)
-                .count();
-        long pendingTalentApplications = talentApplicationRepository.findAll().stream()
-                .filter(a -> a.getStatus() == TalentApplication.ApplicationStatus.PENDING
-                        || a.getStatus() == TalentApplication.ApplicationStatus.AWAITING_INFO)
-                .count();
-        long pendingReviews = reviewRepository.findAll().stream()
-                .filter(r -> !Boolean.TRUE.equals(r.getApproved()))
-                .count();
+        long pendingBookings = bookingRepository.countByStatus(Booking.BookingStatus.PENDING);
+        long pendingOrders = shippingOrderRepository.countByStatusIn(java.util.List.of(
+                ShippingOrder.OrderStatus.PENDING, ShippingOrder.OrderStatus.PROCESSING));
+        long openInquiries = contactInquiryRepository.countByStatusNot(ContactInquiry.InquiryStatus.CLOSED);
+        long openOperatorRequests = tourOperatorRequestRepository.countByStatusNotIn(java.util.List.of(
+                TourOperatorRequest.RequestStatus.CONFIRMED, TourOperatorRequest.RequestStatus.DECLINED));
+        long pendingTalentApplications = talentApplicationRepository.countByStatusIn(java.util.List.of(
+                TalentApplication.ApplicationStatus.PENDING, TalentApplication.ApplicationStatus.AWAITING_INFO));
+        long pendingReviews = reviewRepository.countByApprovedFalse();
         long awaitingStaffMessages = messagingService.countAwaitingStaffThreads();
 
         return new AdminActivitySummary(

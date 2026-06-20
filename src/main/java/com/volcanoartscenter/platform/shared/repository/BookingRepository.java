@@ -27,6 +27,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @EntityGraph(attributePaths = {"experience", "user"})
     java.util.Optional<Booking> findById(Long id);
 
+    long countByStatus(Booking.BookingStatus status);
+
     /** Review eligibility: has this user completed a booking for this experience? */
     @Query("SELECT COUNT(b) > 0 FROM Booking b " +
            "WHERE b.user.id = :userId AND b.experience.id = :experienceId " +

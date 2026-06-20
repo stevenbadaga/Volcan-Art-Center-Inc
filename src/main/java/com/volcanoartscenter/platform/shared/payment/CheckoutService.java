@@ -144,8 +144,8 @@ public class CheckoutService {
         order.setOrderItems(items);
         order.setProductTotal(productTotal);
         if (!items.isEmpty()) {
-            order.setProduct(items.getFirst().getProduct());
-            order.setQuantity(items.getFirst().getQuantity());
+            order.setProduct(items.get(0).getProduct());
+            order.setQuantity(items.get(0).getQuantity());
         }
 
         BigDecimal shipping;

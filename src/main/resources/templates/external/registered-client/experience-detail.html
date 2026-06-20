@@ -2,15 +2,26 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/base}">
-<head><title>Experience | Volcano Arts Center</title></head>
+<head>
+    <title th:text="${experience.title + ' | Volcano Arts Center'}">Experience | Volcano Arts Center</title>
+    <th:block layout:fragment="meta">
+        <meta name="description" th:content="${experience.shortDescription != null ? experience.shortDescription : 'Book authentic art, culture, and community experiences near Volcanoes National Park.'}" />
+        <meta property="og:title" th:content="${experience.title + ' | Volcano Arts Center'}" />
+        <meta property="og:description" th:content="${experience.shortDescription != null ? experience.shortDescription : 'Book authentic art, culture, and community experiences near Volcanoes National Park.'}" />
+        <meta property="og:image" th:content="${experience.displayPrimaryImageUrl != null ? experience.displayPrimaryImageUrl : '/uploads/wildlife-gorillas.jpeg'}" />
+        <meta name="twitter:title" th:content="${experience.title + ' | Volcano Arts Center'}" />
+        <meta name="twitter:description" th:content="${experience.shortDescription != null ? experience.shortDescription : 'Book authentic art, culture, and community experiences near Volcanoes National Park.'}" />
+        <meta name="twitter:image" th:content="${experience.displayPrimaryImageUrl != null ? experience.displayPrimaryImageUrl : '/uploads/wildlife-gorillas.jpeg'}" />
+    </th:block>
+</head>
 <body>
 <main layout:fragment="content" class="vac-xp">
 
     <!-- ───────── Hero ───────── -->
     <section class="vac-xp-hero reveal">
         <img class="vac-xp-hero__img"
-             th:src="${experience.displayPrimaryImageUrl != null ? experience.displayPrimaryImageUrl : '/uploads/experiences-safari-hero.jpeg'}"
-             alt="Experience" onerror="this.onerror=null;this.src='/uploads/wildlife-gorillas.jpeg';" />
+             th:src="${experience.displayPrimaryImageUrl != null ? experience.displayPrimaryImageUrl : '/uploads/Mayon Volcano, Albay Philippines.jpeg'}"
+             alt="Experience" onerror="this.onerror=null;this.src='/uploads/25332816648714928.jpeg';" />
         <div class="vac-xp-hero__veil"></div>
         <div class="vac-xp-hero__inner container">
             <nav class="vac-xp-crumb" aria-label="Breadcrumb">
@@ -69,7 +80,7 @@
             <img th:src="${experience.displayPrimaryImageUrl}"
                  th:alt="${experience.title} + ' flyer'"
                  loading="eager"
-                 onerror="this.onerror=null;this.src='/uploads/experiences-safari-hero.jpeg';" />
+                 onerror="this.onerror=null;this.src='/uploads/Mayon Volcano, Albay Philippines.jpeg';" />
         </div>
         <p class="vac-xp-flyer__caption">Official experience imagery — as posted by Volcano Arts Center</p>
     </section>

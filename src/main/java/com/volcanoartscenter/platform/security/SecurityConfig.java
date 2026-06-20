@@ -70,8 +70,9 @@ public class SecurityConfig {
                     "/", "/about", "/departments/**",
                     "/art-store/**", "/experiences/**",
                     "/conservation/**", "/conservation",
-                    "/talent/**",
+                    "/talent", "/talent/apply",
                     "/blog/**", "/contact",
+                    "/error",
                     "/register", "/forgot-password", "/login/verify-2fa",
                     "/oauth2/**", "/login/oauth2/**",
                     "/tour-operators/request", "/tour-operators/register",
@@ -109,8 +110,8 @@ public class SecurityConfig {
                 .permitAll()
             );
 
-        // Enable OAuth login only when a client registration exists.
-        if (clientRegistrationRepository.getIfAvailable() != null) {
+        // Enable OAuth login only when the Google registration exists.
+        if (hasGoogleRegistration(clientRegistrationRepository.getIfAvailable())) {
             http.oauth2Login(oauth -> oauth
                     .loginPage("/login")
                     .userInfoEndpoint(userInfo -> userInfo.userService(googleOAuth2UserService))
@@ -246,5 +247,9 @@ public class SecurityConfig {
 
     private static boolean isSafeRedirect(String redirect) {
         return redirect != null && redirect.startsWith("/") && !redirect.startsWith("//");
+    }
+
+    private static boolean hasGoogleRegistration(ClientRegistrationRepository repository) {
+        return repository != null && repository.findByRegistrationId("google") != null;
     }
 }

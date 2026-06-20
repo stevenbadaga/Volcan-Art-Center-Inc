@@ -73,11 +73,23 @@ public class OpsManagerController {
         model.addAttribute("unpaidBookingsCount", bookings.stream().filter(b -> b.getPaymentStatus() != Booking.PaymentStatus.PAID).count());
         model.addAttribute("items", bookings);
         model.addAttribute("bookingStatuses", Booking.BookingStatus.values());
+        model.addAttribute("paymentStatuses", Booking.PaymentStatus.values());
         model.addAttribute("bookingExperienceTitles", bookings.stream().collect(java.util.stream.Collectors.toMap(
                 Booking::getId,
                 booking -> booking.getExperience() == null || booking.getExperience().getTitle() == null ? "-" : booking.getExperience().getTitle()
         )));
         return "internal/ops-manager/bookings";
+    }
+
+    @GetMapping("/admin/ops/bookings/{reference}")
+    public String opsBookingDetail(@PathVariable String reference, Model model) {
+        var booking = opsManagerService.getBookingByReference(reference);
+        model.addAttribute("adminPage", "bookings");
+        model.addAttribute("pageTitle", "Booking: " + reference);
+        model.addAttribute("booking", booking);
+        model.addAttribute("bookingStatuses", Booking.BookingStatus.values());
+        model.addAttribute("paymentStatuses", Booking.PaymentStatus.values());
+        return "internal/ops-manager/booking-detail";
     }
 
     @GetMapping("/admin/ops/donations")
@@ -231,21 +243,25 @@ public class OpsManagerController {
 
     @PostMapping("/admin/ops/bookings/{id}/status")
     public String updateOpsBookingStatus(@PathVariable Long id,
-                                         @RequestParam Booking.BookingStatus status,
-                                         @RequestParam(required = false) String adminNotes,
-                                         @RequestParam(required = false) String notifyChannel,
-                                         Authentication authentication,
-                                         RedirectAttributes redirectAttributes) {
+                                          @RequestParam Booking.BookingStatus status,
+                                          @RequestParam(required = false) Booking.PaymentStatus paymentStatus,
+                                          @RequestParam(required = false) String adminNotes,
+                                          @RequestParam(required = false) String notifyChannel,
+                                          @RequestParam(required = false) String origin,
+                                          Authentication authentication,
+                                          RedirectAttributes redirectAttributes) {
         String actor = authentication == null ? "system" : authentication.getName();
         try {
-            opsManagerService.updateBookingStatus(id, status, adminNotes, notifyChannel, actor);
+            var booking = opsManagerService.updateBookingStatus(id, status, paymentStatus, adminNotes, notifyChannel, actor);
             redirectAttributes.addFlashAttribute("successMessage", "Booking status updated.");
+            if ("detail".equals(origin)) {
+                return "redirect:/admin/ops/bookings/" + booking.getBookingReference();
+            }
         } catch (IllegalArgumentException | IllegalStateException ex) {
             redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
         }
         return "redirect:/admin/ops/bookings";
     }
-
     @PostMapping("/admin/ops/contact-inquiries/{id}/status")
     public String updateOpsInquiryStatus(@PathVariable Long id,
                                          @RequestParam ContactInquiry.InquiryStatus status,
@@ -288,6 +304,28 @@ public class OpsManagerController {
             redirectAttributes.addFlashAttribute("successMessage", "Shipping order updated.");
         } catch (IllegalArgumentException | IllegalStateException ex) {
             redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+        }
+        return "redirect:/admin/ops/shipping-orders";
+    }
+
+    @PostMapping("/admin/ops/shipping-orders/manual")
+    public String createManualOrder(@RequestParam Long userId,
+                                    @RequestParam Long productId,
+                                    @RequestParam Integer quantity,
+                                    @RequestParam java.math.BigDecimal totalAmount,
+                                    @RequestParam(required = false) ShippingOrder.OrderStatus status,
+                                    @RequestParam(required = false) ShippingOrder.PaymentStatus paymentStatus,
+                                    @RequestParam(required = false) String adminNotes,
+                                    Authentication authentication,
+                                    RedirectAttributes redirectAttributes) {
+        String actor = authentication == null ? "system" : authentication.getName();
+        try {
+            ShippingOrder.OrderStatus initialStatus = status != null ? status : ShippingOrder.OrderStatus.PENDING;
+            ShippingOrder.PaymentStatus initialPaymentStatus = paymentStatus != null ? paymentStatus : ShippingOrder.PaymentStatus.UNPAID;
+            opsManagerService.createManualOrder(userId, productId, quantity, totalAmount, initialStatus, initialPaymentStatus, adminNotes, actor);
+            redirectAttributes.addFlashAttribute("successMessage", "Manual order created successfully.");
+        } catch (Exception ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to create order: " + ex.getMessage());
         }
         return "redirect:/admin/ops/shipping-orders";
     }

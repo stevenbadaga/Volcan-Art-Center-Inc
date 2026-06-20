@@ -96,6 +96,23 @@ public class AccountMessagesController {
         return "redirect:/account/messages/" + id;
     }
 
+    @PostMapping("/account/messages/new")
+    public String newConversation(Authentication authentication,
+                                  @RequestParam(required = false) String subject,
+                                  @RequestParam String body,
+                                  RedirectAttributes redirect) {
+        User user = currentUser(authentication);
+        if (user == null) return "redirect:/login";
+        try {
+            Conversation c = messaging.openConversation(user, null, subject, body);
+            redirect.addFlashAttribute("successMessage", "Message sent. Our team will respond shortly.");
+            return "redirect:/account/messages/" + c.getId();
+        } catch (Exception ex) {
+            redirect.addFlashAttribute("errorMessage", ex.getMessage());
+            return "redirect:/client/dashboard";
+        }
+    }
+
     private User currentUser(Authentication a) {
         if (a == null || !a.isAuthenticated() || "anonymousUser".equals(a.getName())) return null;
         return userRepository.findByEmail(a.getName()).orElse(null);

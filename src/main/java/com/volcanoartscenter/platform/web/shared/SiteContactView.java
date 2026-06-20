@@ -7,11 +7,17 @@ import java.nio.charset.StandardCharsets;
 
 public record SiteContactView(
         String whatsappUrl,
+        String phoneDisplay,
+        String phoneUrl,
+        String emailDisplay,
+        String emailUrl,
         String youtubeUrl,
         String twitterUrl,
         String instagramUrl,
         String facebookUrl,
         boolean hasWhatsapp,
+        boolean hasPhone,
+        boolean hasEmail,
         boolean hasYoutube,
         boolean hasTwitter,
         boolean hasInstagram,
@@ -23,6 +29,10 @@ public record SiteContactView(
         String siteUrl = props.getSiteUrl() == null ? "" : props.getSiteUrl().trim();
         String encodedSite = URLEncoder.encode(siteUrl, StandardCharsets.UTF_8);
 
+        String phoneDisplay = formatPhoneDisplay(props.getWhatsappNumber());
+        String phoneUrl = buildPhoneUrl(props.getWhatsappNumber());
+        String emailDisplay = trim(props.getContactEmail());
+        String emailUrl = buildEmailUrl(emailDisplay);
         String whatsappUrl = buildWhatsappUrl(props.getWhatsappNumber(), encodedMessage);
         SiteContactProperties.Social social = props.getSocial() == null ? new SiteContactProperties.Social() : props.getSocial();
 
@@ -33,11 +43,17 @@ public record SiteContactView(
 
         return new SiteContactView(
                 whatsappUrl,
+                phoneDisplay,
+                phoneUrl,
+                emailDisplay.isEmpty() ? null : emailDisplay,
+                emailUrl,
                 youtubeUrl,
                 twitterUrl,
                 instagramUrl,
                 facebookUrl,
                 whatsappUrl != null,
+                phoneUrl != null,
+                emailUrl != null,
                 youtubeUrl != null,
                 twitterUrl != null,
                 instagramUrl != null,
@@ -49,15 +65,53 @@ public record SiteContactView(
         return value == null ? "" : value.trim();
     }
 
-    private static String buildWhatsappUrl(String number, String encodedMessage) {
+    private static String normalizePhoneDigits(String number) {
         if (number == null || number.isBlank()) {
-            return null;
+            return "";
         }
         String digits = number.replaceAll("\\D", "");
+        if (digits.length() == 10 && digits.startsWith("0")) {
+            return "250" + digits.substring(1);
+        }
+        if (digits.length() == 9) {
+            return "250" + digits;
+        }
+        return digits;
+    }
+
+    private static String buildWhatsappUrl(String number, String encodedMessage) {
+        String digits = normalizePhoneDigits(number);
         if (digits.isEmpty()) {
             return null;
         }
         return "https://wa.me/" + digits + "?text=" + encodedMessage;
+    }
+
+    private static String buildPhoneUrl(String number) {
+        String digits = normalizePhoneDigits(number);
+        if (digits.isEmpty()) {
+            return null;
+        }
+        return "tel:+" + digits;
+    }
+
+    private static String buildEmailUrl(String email) {
+        String normalized = trim(email);
+        if (normalized.isEmpty()) {
+            return null;
+        }
+        return "mailto:" + normalized;
+    }
+
+    private static String formatPhoneDisplay(String number) {
+        String digits = normalizePhoneDigits(number);
+        if (digits.isEmpty()) {
+            return null;
+        }
+        if (digits.length() == 12 && digits.startsWith("250")) {
+            return "+250 " + digits.substring(3, 6) + " " + digits.substring(6, 9) + " " + digits.substring(9);
+        }
+        return number.trim();
     }
 
     private static String buildYoutubeUrl(String handle) {

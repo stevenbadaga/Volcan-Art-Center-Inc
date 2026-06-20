@@ -232,6 +232,74 @@
             <h1>Shipping Orders</h1>
             <p>Track fulfillment, see what each order contains, and keep shipping, payment, and tracking updates in one operations view.</p>
         </div>
+        <div class="admin-page-header__actions">
+            <button class="btn btn--primary" onclick="document.getElementById('manual-order-form-container').style.display = document.getElementById('manual-order-form-container').style.display === 'none' ? 'block' : 'none'">
+                <i data-lucide="plus-circle" style="width:18px; margin-right:6px;"></i> Create Manual Order
+            </button>
+        </div>
+    </div>
+
+    <div th:if="${successMessage}" class="alert-success" style="margin-bottom:1.25rem;" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert-error" style="margin-bottom:1.25rem; background:rgba(220,53,69,0.1); color:#dc3545; padding:1rem; border-radius:8px; border:1px solid rgba(220,53,69,0.2);" th:text="${errorMessage}"></div>
+
+    <!-- Manual Order Form Container (Hidden by default) -->
+    <div id="manual-order-form-container" class="admin-card reveal" style="display:none; margin-bottom:2.5rem; border: 2px solid var(--vac-gold);">
+        <div class="admin-card__header" style="background: var(--vac-gold); color: var(--vac-ink);">
+            <h3 style="margin:0; font-weight:800; text-transform:uppercase; letter-spacing:1px;">Create Manual Order</h3>
+        </div>
+        <div class="admin-card__body" style="padding: 2.5rem;">
+            <form th:action="@{/admin/ops/shipping-orders/manual}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Select Client *</label>
+                        <select class="form-select" name="userId" required>
+                            <option value="">Select a registered client...</option>
+                            <option th:each="client : ${clientProfiles}" th:value="${client.id}" th:text="${client.fullName + ' (' + client.email + ')'}">Client Name</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Product ID *</label>
+                        <input type="number" class="form-input" name="productId" required placeholder="Numeric ID of the product..." />
+                        <!-- Assuming the admin knows the product ID, or we could pass a list of products to the model -->
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Quantity *</label>
+                        <input type="number" class="form-input" name="quantity" value="1" min="1" required />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Total Amount (USD) *</label>
+                        <input type="number" step="0.01" class="form-input" name="totalAmount" required placeholder="0.00" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Initial Order Status</label>
+                        <select class="form-select" name="status">
+                            <option th:each="s : ${T(com.volcanoartscenter.platform.shared.model.ShippingOrder.OrderStatus).values()}" th:value="${s}" th:text="${s}">PENDING</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Payment Status</label>
+                        <select class="form-select" name="paymentStatus">
+                            <option th:each="s : ${T(com.volcanoartscenter.platform.shared.model.ShippingOrder.PaymentStatus).values()}" th:value="${s}" th:text="${s}">UNPAID</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row--full">
+                    <div class="form-group">
+                        <label class="form-label">Admin Notes</label>
+                        <textarea class="form-input" name="adminNotes" rows="2" placeholder="Private internal notes regarding this manual order..."></textarea>
+                    </div>
+                </div>
+                <div class="form-actions" style="margin-top:2rem;">
+                    <button type="button" class="btn btn--outline" onclick="document.getElementById('manual-order-form-container').style.display='none'">Cancel</button>
+                    <button type="submit" class="btn btn--primary">Create Order</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <div class="shipping-summary-grid">

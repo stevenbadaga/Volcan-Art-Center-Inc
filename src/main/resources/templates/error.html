@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}">
+<head>
+    <title>Something Went Wrong</title>
+</head>
+<body>
+<main layout:fragment="content" style="padding: 10rem 2rem; text-align: center;">
+    <div class="container" style="max-width: 600px; margin: 0 auto;">
+        <div style="font-size: 5rem; margin-bottom: 2rem;">🌿</div>
+        <h1 style="font-family: var(--font-display); font-size: 3rem; color: var(--vac-green-900); margin-bottom: 1rem;">Oops! Something went wrong.</h1>
+        <p style="font-size: 1.25rem; color: var(--vac-muted); margin-bottom: 3rem;">
+            We've encountered an unexpected error. Our team has been notified and we're working to get things back on track.
+        </p>
+        <div style="display: flex; gap: 1rem; justify-content: center;">
+            <a th:href="@{/}" class="btn btn--primary">Return Home</a>
+            <a href="javascript:history.back()" class="btn btn--outline">Go Back</a>
+        </div>
+        
+        <div th:if="${error}" style="margin-top: 4rem; padding: 2rem; background: var(--vac-canvas); border-radius: 12px; text-align: left;">
+            <h3 style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: var(--vac-muted); margin-bottom: 1rem;">Technical Details</h3>
+            <code style="font-family: var(--font-mono); font-size: 0.85rem; display: block; word-break: break-all; color: var(--vac-green-700);">
+                <span th:text="${status}">500</span>: <span th:text="${error}">Internal Server Error</span>
+            </code>
+            <p th:if="${message}" style="margin-top: 0.5rem; font-size: 0.85rem;" th:text="${message}">Error message details</p>
+        </div>
+    </div>
+</main>
+</body>
+</html>

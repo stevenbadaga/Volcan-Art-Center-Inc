@@ -92,6 +92,7 @@ public class Experience {
     private Long primaryMediaId;
 
     @ElementCollection
+    @org.hibernate.annotations.Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
     @CollectionTable(name = "experience_images", joinColumns = @JoinColumn(name = "experience_id"))
     @Column(name = "image_url")
     @Builder.Default
@@ -155,7 +156,7 @@ public class Experience {
 
     @Transient
     public String getAdditionalImagesText() {
-        List<String> images = additionalImages == null ? Collections.emptyList() : additionalImages;
+        List<String> images = additionalImages == null ? java.util.Collections.emptyList() : additionalImages;
         return String.join(System.lineSeparator(), images);
     }
 

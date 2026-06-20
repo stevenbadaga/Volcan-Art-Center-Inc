@@ -9,4 +9,5 @@ import java.util.List;
 public interface TalentApplicationRepository extends JpaRepository<TalentApplication, Long> {
     List<TalentApplication> findByUserOrderByCreatedAtDesc(User user);
     List<TalentApplication> findByEmailIgnoreCaseOrderByCreatedAtDesc(String email);
+    long countByStatusIn(java.util.Collection<com.volcanoartscenter.platform.shared.model.TalentApplication.ApplicationStatus> statuses);
 }

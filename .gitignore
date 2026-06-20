@@ -48,3 +48,5 @@ tmp-*.txt
 *.jks
 /uploads/
 /logs/
+.claude/
+.qodo/

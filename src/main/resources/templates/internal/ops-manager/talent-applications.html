@@ -4,30 +4,141 @@
 <body>
 <th:block layout:fragment="breadcrumb"><a th:href="@{/admin/dashboard}">Admin</a><span class="sep">›</span><span>Talent Applications</span></th:block>
 <main layout:fragment="content">
-    <div class="admin-page-header"><div class="admin-page-header__info"><h1>Talent Applications</h1><p>Review and manage talent program applications.</p></div></div>
-    <div class="admin-card">
-        <div class="admin-card__header"><h3>All Applications</h3><span class="chip chip--info" th:text="${#lists.size(items)} + ' total'">0</span></div>
-        <div class="admin-card__body--flush"><div class="admin-table-wrap">
-            <table class="admin-table"><thead><tr><th>Applicant</th><th>Category</th><th>Specialty</th><th>Experience</th><th>Status</th><th>Applied</th><th>Actions</th></tr></thead>
-            <tbody>
-            <tr th:each="a : ${items}">
-                <td><div class="cell-primary" th:text="${a.fullName}">Name</div><div style="font-size:.72rem;color:var(--color-gray-500);" th:text="${a.email}">email</div></td>
-                <td><span class="chip chip--primary" th:text="${a.applicantCategory}">CAT</span></td>
-                <td th:text="${a.primarySpecialty ?: '-'}">-</td>
-                <td th:text="${a.yearsOfExperience ?: '-'}">-</td>
-                <td><span class="chip" th:data-status="${a.status}" th:text="${a.status}">PENDING</span></td>
-                <td th:text="${a.createdAt}">2026-01-01</td>
-                <td>
-                    <form th:action="@{|/admin/ops/talent-applications/${a.id}/status|}" method="post" style="display:flex;gap:.35rem;align-items:center;">
-                        <select class="form-select" name="status" style="min-width:120px;padding:.4rem;"><option th:each="s : ${T(com.volcanoartscenter.platform.shared.model.TalentApplication.ApplicationStatus).values()}" th:value="${s}" th:text="${s}" th:selected="${s == a.status}">S</option></select>
-                        <input class="form-input" name="adminNotes" placeholder="Note" style="max-width:120px;padding:.4rem;" />
-                        <button class="btn btn--outline btn--xs" type="submit">Update</button>
-                    </form>
-                </td>
-            </tr>
-            <tr th:if="${#lists.isEmpty(items)}"><td colspan="7" class="admin-empty"><div class="admin-empty__icon">🎨</div><div class="admin-empty__text">No talent applications yet</div></td></tr>
-            </tbody></table>
-        </div></div>
+    <div class="admin-page-header">
+        <div class="admin-page-header__info">
+            <h1>Talent Applications</h1>
+            <p>Review and manage talent program applications from aspiring creatives.</p>
+        </div>
+    </div>
+    
+    <div th:if="${successMessage}" class="alert-success" style="margin-bottom:1.25rem;" th:text="${successMessage}"></div>
+
+    <div class="admin-card reveal">
+        <div class="admin-card__header">
+            <h3>All Applications</h3>
+            <span class="chip chip--info" th:text="${#lists.size(items)} + ' total'">0</span>
+        </div>
+        <div class="admin-card__body--flush">
+            <div class="admin-table-wrap">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Ref / Date</th>
+                            <th>Applicant</th>
+                            <th>Category</th>
+                            <th>Area</th>
+                            <th>Status</th>
+                            <th style="text-align:right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <th:block th:each="a : ${items}">
+                            <tr th:classappend="${a.status.name() == 'PENDING'} ? 'highlight-row'">
+                                <td>
+                                    <code style="font-size:0.8rem; font-weight:700; color:var(--vac-ink);" th:text="${a.referenceNumber != null ? a.referenceNumber : 'N/A'}">VAC-000</code>
+                                    <div style="font-size:0.75rem; color:var(--vac-muted);" th:text="${#temporals.format(a.createdAt, 'MMM d, yyyy')}">Date</div>
+                                </td>
+                                <td>
+                                    <div class="cell-primary" th:text="${a.fullName}">Name</div>
+                                    <div style="font-size:0.75rem; color:var(--vac-muted);" th:text="${a.email}">email</div>
+                                </td>
+                                <td><span class="chip chip--primary" th:text="${a.applicantCategory}">CAT</span></td>
+                                <td th:text="${a.talentArea != null ? #strings.replace(a.talentArea.name(),'_',' ') : '-'}">-</td>
+                                <td>
+                                    <span class="chip" 
+                                          th:classappend="${a.status.name() == 'APPROVED' ? 'chip--success' : (a.status.name() == 'REJECTED' ? 'chip--danger' : (a.status.name() == 'AWAITING_INFO' ? 'chip--warning' : 'chip--info'))}"
+                                          th:text="${a.status}">PENDING</span>
+                                </td>
+                                <td style="text-align:right;">
+                                    <button class="btn btn--outline btn--xs" 
+                                            th:onclick="'document.getElementById(\'details-'+${a.id}+'\').style.display=document.getElementById(\'details-'+${a.id}+'\').style.display===\'none\'?\'table-row\':\'none\''">
+                                        Review
+                                    </button>
+                                </td>
+                            </tr>
+                            
+                            <!-- Expandable Review Details Row -->
+                            <tr th:id="'details-'+${a.id}" style="display:none; background: var(--vac-mint); border-top: 1px dashed var(--vac-line); border-bottom: 2px solid var(--vac-green-300);">
+                                <td colspan="6" style="padding: 2rem;">
+                                    <div style="display:grid; grid-template-columns: 1fr 350px; gap: 2rem; align-items: start;">
+                                        
+                                        <!-- Application Data -->
+                                        <div>
+                                            <h4 style="font-family:var(--font-display); font-size:1.2rem; color:var(--vac-green-900); margin-bottom:1rem;">Application Details</h4>
+                                            
+                                            <div style="display:grid; gap:1.25rem;">
+                                                <div style="background:#fff; padding:1rem; border-radius:8px; border:1px solid var(--vac-line);">
+                                                    <strong style="display:block; font-size:0.75rem; text-transform:uppercase; color:var(--vac-muted); margin-bottom:0.25rem;">Location</strong>
+                                                    <span th:text="${a.location != null and !a.location.isBlank() ? a.location : 'Not provided'}">Location</span>
+                                                </div>
+                                                
+                                                <div style="background:#fff; padding:1rem; border-radius:8px; border:1px solid var(--vac-line);">
+                                                    <strong style="display:block; font-size:0.75rem; text-transform:uppercase; color:var(--vac-muted); margin-bottom:0.25rem;">Motivation</strong>
+                                                    <p style="margin:0; font-size:0.9rem; line-height:1.5; color:var(--vac-ink);" th:text="${a.motivation != null and !a.motivation.isBlank() ? a.motivation : 'No motivation provided.'}"></p>
+                                                </div>
+                                                
+                                                <div style="background:#fff; padding:1rem; border-radius:8px; border:1px solid var(--vac-line);">
+                                                    <strong style="display:block; font-size:0.75rem; text-transform:uppercase; color:var(--vac-muted); margin-bottom:0.25rem;">Experience & Skills</strong>
+                                                    <p style="margin:0; font-size:0.9rem; line-height:1.5; color:var(--vac-ink);" th:text="${a.experienceDescription != null and !a.experienceDescription.isBlank() ? a.experienceDescription : 'No experience details provided.'}"></p>
+                                                </div>
+
+                                                <div th:if="${a.accessibilityNeeds != null and !a.accessibilityNeeds.isBlank()}" style="background:#fff; padding:1rem; border-radius:8px; border:1px solid var(--vac-line); border-left:4px solid var(--vac-gold);">
+                                                    <strong style="display:block; font-size:0.75rem; text-transform:uppercase; color:var(--vac-muted); margin-bottom:0.25rem;">Accessibility Needs</strong>
+                                                    <p style="margin:0; font-size:0.9rem; color:var(--vac-ink);" th:text="${a.accessibilityNeeds}"></p>
+                                                </div>
+                                            </div>
+                                            
+                                            <div style="margin-top: 1.5rem; padding: 1rem; background:rgba(0,0,0,0.02); border-radius:8px; display:flex; align-items:center; justify-content:space-between;">
+                                                <span style="font-size:0.85rem; color:var(--vac-muted);">
+                                                    <i data-lucide="info" style="width:16px; margin-right:4px;"></i> To view the applicant's portfolio, use the <strong>Media Library</strong> or <strong>Staff & Accounts</strong> directory.
+                                                </span>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Review Form -->
+                                        <div style="background:#fff; padding:1.5rem; border-radius:12px; box-shadow:var(--vac-shadow); border:1px solid var(--vac-line);">
+                                            <h4 style="margin:0 0 1rem; font-size:1rem; font-weight:800;">Review Action</h4>
+                                            <form th:action="@{|/admin/ops/talent-applications/${a.id}/status|}" method="post">
+                                                <div class="form-group">
+                                                    <label class="form-label">Update Status</label>
+                                                    <select class="form-select" name="status" style="width:100%;">
+                                                        <option th:each="s : ${T(com.volcanoartscenter.platform.shared.model.TalentApplication.ApplicationStatus).values()}" 
+                                                                th:value="${s}" th:text="${s}" th:selected="${s == a.status}">S</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="form-label">Internal Admin Notes</label>
+                                                    <textarea class="form-input" name="adminNotes" rows="3" placeholder="Private notes for staff..." th:text="${a.adminNotes}"></textarea>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="form-label">Notify Applicant</label>
+                                                    <select class="form-select" name="notifyChannel" style="width:100%;">
+                                                        <option value="NONE">Do not notify</option>
+                                                        <option value="EMAIL">Send Email</option>
+                                                        <option value="IN_APP">In-App Notification</option>
+                                                    </select>
+                                                </div>
+                                                <div style="display:flex; justify-content:flex-end; gap:0.5rem; margin-top:1.5rem;">
+                                                    <button type="button" class="btn btn--ghost btn--sm" th:onclick="'document.getElementById(\'details-'+${a.id}+'\').style.display=\'none\''">Close</button>
+                                                    <button type="submit" class="btn btn--primary btn--sm">Save Decision</button>
+                                                </div>
+                                            </form>
+                                        </div>
+
+                                    </div>
+                                </td>
+                            </tr>
+                        </th:block>
+                        <tr th:if="${#lists.isEmpty(items)}">
+                            <td colspan="6" class="admin-empty" style="padding: 4rem 0;">
+                                <div class="admin-empty__icon" style="font-size:3rem; margin-bottom:1rem;">🧑‍🎨</div>
+                                <div class="admin-empty__text">No talent applications on record.</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </main>
 </body>
