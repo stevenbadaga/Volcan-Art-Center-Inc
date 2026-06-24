@@ -3,8 +3,10 @@ package com.volcanoartscenter.platform.web.external.api;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.model.Event;
 import com.stripe.model.EventDataObjectDeserializer;
+import com.stripe.model.Invoice;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.StripeObject;
+import com.stripe.model.checkout.Session;
 import com.stripe.net.Webhook;
 import com.volcanoartscenter.platform.shared.service.WebhookProcessingService;
 import com.volcanoartscenter.platform.shared.service.integration.impl.StripePaymentService;
@@ -77,6 +79,18 @@ public class WebhookController {
                         webhookProcessingService.processStripePaymentFailed(event.getId(), intent.getId(), reason);
                     }
                 }
+                case "checkout.session.completed" -> {
+                    Session session = extract(event, Session.class);
+                    if (session != null && session.getPaymentIntent() != null) {
+                        webhookProcessingService.processStripePaymentSucceeded(event.getId(), session.getPaymentIntent());
+                    }
+                }
+                case "invoice.paid", "invoice.payment_succeeded" -> {
+                    Invoice invoice = extract(event, Invoice.class);
+                    if (invoice != null && invoice.getSubscription() != null) {
+                        webhookProcessingService.processStripeSubscriptionInvoicePaid(event.getId(), invoice.getSubscription());
+                    }
+                }
                 default -> log.debug("Stripe event {} ignored.", event.getType());
             }
             return ResponseEntity.ok("ok");
@@ -87,12 +101,20 @@ public class WebhookController {
     }
 
     private PaymentIntent extractPaymentIntent(Event event) {
-        EventDataObjectDeserializer deserializer = event.getDataObjectDeserializer();
-        StripeObject obj = deserializer.getObject().orElse(null);
-        if (obj instanceof PaymentIntent intent) {
+        PaymentIntent intent = extract(event, PaymentIntent.class);
+        if (intent != null) {
             return intent;
         }
         log.warn("Stripe event {} did not contain a PaymentIntent payload.", event.getId());
+        return null;
+    }
+
+    private <T extends StripeObject> T extract(Event event, Class<T> type) {
+        EventDataObjectDeserializer deserializer = event.getDataObjectDeserializer();
+        StripeObject obj = deserializer.getObject().orElse(null);
+        if (type.isInstance(obj)) {
+            return type.cast(obj);
+        }
         return null;
     }
 }

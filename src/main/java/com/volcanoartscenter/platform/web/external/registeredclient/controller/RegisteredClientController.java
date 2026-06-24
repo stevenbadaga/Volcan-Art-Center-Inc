@@ -9,6 +9,7 @@ import com.volcanoartscenter.platform.shared.service.CaptchaService;
 import com.volcanoartscenter.platform.web.external.registeredclient.service.RegisteredClientService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -29,6 +30,9 @@ public class RegisteredClientController {
     private final CaptchaService captchaService;
     private final ProductReservationService productReservationService;
     private final MessagingService messagingService;
+
+    @Value("${platform.integrations.clerk.publishable-key:}")
+    private String clerkPublishableKey;
 
     @GetMapping("/art-store")
     public String artStore(@RequestParam(required = false) String category,
@@ -276,21 +280,12 @@ public class RegisteredClientController {
     public String forgotPassword(Model model) {
         model.addAttribute("currentPage", "login");
         model.addAttribute("pageTitle", "Reset Password — Volcano Arts Center");
+        model.addAttribute("clerkPublishableKey", clerkPublishableKey);
         return "external/guest/forgot-password";
     }
 
     @PostMapping("/forgot-password")
-    public String submitForgotPassword(@RequestParam String email,
-                                       @RequestParam(required = false) String captchaToken,
-                                       RedirectAttributes redirectAttributes) {
-        // Log a support-actionable request without revealing whether the account exists.
-        if (email != null && !email.isBlank()) {
-            registeredClientService.createContactInquiry(
-                    email.trim(), email.trim(), null, "password-reset",
-                    "Password reset requested from the sign-in page. Please verify the account and help this user reset their password.");
-        }
-        redirectAttributes.addFlashAttribute("successMessage",
-                "If an account exists for that email, our team will send reset instructions shortly.");
+    public String submitForgotPassword() {
         return "redirect:/forgot-password";
     }
 

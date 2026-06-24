@@ -16,21 +16,13 @@
 
 <main layout:fragment="content">
     <div class="vac-admin-dashboard-new">
-        <!-- 1. Header Area -->
-        <header class="admin-page-header">
-            <div class="admin-page-header__info">
-                <span class="admin-page-header__eyebrow" style="font-size:0.75rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--vac-green, #00A651); font-weight:700; margin-bottom:0.35rem; display:block;">SUPER ADMIN COMMAND CENTER</span>
-                <h1 style="margin:0; font-size:1.85rem; font-weight:800; color:var(--color-ink);">Overview</h1>
-                <p style="margin:0.25rem 0 0; color:var(--color-ink-soft); font-size:0.9rem;">Unified visibility across commerce, journeys, conservation, content, and staff operations.</p>
+        <header class="admin-page-header vac-admin-dashboard__header">
+            <div class="admin-page-header__info vac-admin-dashboard__heading">
+                <h1>Overview</h1>
             </div>
-            <div class="admin-page-header__actions" style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap; margin-top:0.5rem;">
-                <div class="vac-admin-dashboard__live" style="display:inline-flex; align-items:center; gap:0.5rem; font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--color-ink-soft); margin-right:1rem;">
-                    <span class="vac-admin-dashboard__live-dot" style="width:8px; height:8px; border-radius:50%; background-color:#00A651; box-shadow:0 0 10px #00A651; display:inline-block;" aria-hidden="true"></span>
-                    <span>Live</span>
-                    <span data-live-updated style="font-weight:500; text-transform:none; letter-spacing:normal; opacity:0.85; margin-left:0.25rem;">(Updated just now)</span>
-                </div>
-                <button id="kpi-refresh" class="btn btn--outline btn--sm" type="button" style="padding:0.5rem 1rem;">Refresh data</button>
-                <a class="btn btn--primary btn--sm" th:href="@{/admin/users}" style="padding:0.5rem 1rem;">Manage Staff</a>
+            <div class="admin-page-header__actions vac-admin-dashboard__actions">
+                <button id="kpi-refresh" class="btn btn--outline btn--sm vac-admin-dashboard__btn vac-admin-dashboard__btn--ghost" type="button">Refresh data</button>
+                <a class="btn btn--primary btn--sm vac-admin-dashboard__btn vac-admin-dashboard__btn--primary" th:href="@{/admin/users}">Manage Staff</a>
             </div>
         </header>
 
@@ -159,18 +151,18 @@
                 </section>
 
                 <!-- Store Activity & Audit Trail -->
-                <section class="admin-card">
-                    <div class="admin-card__header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
-                        <div>
-                            <h3 style="margin:0;">Recent Store Activity</h3>
-                            <p style="margin:0.15rem 0 0;">Real-time audit log of database and platform events.</p>
+                <section class="admin-card vac-activity-card">
+                    <div class="admin-card__header vac-activity-card__header">
+                        <div class="vac-activity-card__heading">
+                            <h3>Recent Store Activity</h3>
+                            <p>Real-time audit log of database and platform events.</p>
                         </div>
-                        <a class="btn btn--outline btn--sm" th:href="@{/admin/audit-log}">View Audit Log</a>
+                        <a class="btn btn--outline btn--sm vac-activity-card__action" th:href="@{/admin/audit-log}">View Audit Log</a>
                     </div>
                     <div class="admin-card__body">
                         <div class="vac-activity-timeline">
                             <div class="vac-activity-item" th:each="event, stat : ${auditEvents}" th:if="${stat.index < 5}">
-                                <div class="vac-activity-icon"><i data-lucide="activity"></i></div>
+                                <div class="vac-activity-icon" aria-hidden="true"><i data-lucide="activity"></i></div>
                                 <div class="vac-activity-details">
                                     <div class="vac-activity-title">
                                         <strong th:text="${#strings.replace(event.eventType, '_', ' ')}">EVENT</strong>
@@ -246,34 +238,6 @@
                                 <div class="vac-attention-title">Talent Applications</div>
                                 <span class="vac-attention-badge" th:text="${totalTalentApplications}">0</span>
                             </a>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Notifications / Inbox -->
-                <section class="admin-card">
-                    <div class="admin-card__header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
-                        <div>
-                            <h3 style="margin:0;">System Notifications</h3>
-                            <p style="margin:0.15rem 0 0;">Latest messages and platform alerts.</p>
-                        </div>
-                        <a class="btn btn--outline btn--sm" th:href="@{/account/notifications}">Open All</a>
-                    </div>
-                    <div class="admin-card__body" style="padding:0;">
-                        <div class="vac-inbox-list">
-                            <a class="vac-inbox-item"
-                               th:each="n : ${notificationSummary != null ? notificationSummary.recent : {}}"
-                               th:href="${n.ctaUrl != null ? n.ctaUrl : '/account/notifications'}"
-                               th:classappend="${n.unread} ? 'is-unread'">
-                                <div class="vac-inbox-meta">
-                                    <strong th:text="${n.title}">Notification Title</strong>
-                                    <span class="vac-inbox-time" th:text="${n.createdAt != null ? #temporals.format(n.createdAt, 'MMM d, HH:mm') : ''}">Time</span>
-                                </div>
-                                <p th:text="${n.body}">Message content...</p>
-                            </a>
-                            <div class="vac-admin-empty-state" th:if="${notificationSummary == null or #lists.isEmpty(notificationSummary.recent)}">
-                                No unread notifications.
-                            </div>
                         </div>
                     </div>
                 </section>

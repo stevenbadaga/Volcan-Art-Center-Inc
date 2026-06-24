@@ -10,8 +10,8 @@
             <img src="/uploads/experiences-safari-hero.jpeg" alt="Rwanda safari experience" loading="eager" onerror="this.onerror=null;this.src='/uploads/wildlife-gorillas.jpeg';" />
             <div class="vac-auth-split__media-veil"></div>
             <div class="vac-auth-split__media-copy">
-                <p class="vac-eyebrow vac-eyebrow--light">B2B Partnership</p>
-                <h1>Partner with Volcano Arts Center</h1>
+                <p class="vac-eyebrow vac-eyebrow--light">B2B PARTNERSHIP</p>
+                <h1>PARTNER WITH VOLCANO ARTS CENTER</h1>
                 <ul>
                     <li>Submit and track group booking requests</li>
                     <li>Access partner rates and curated itineraries</li>
@@ -22,21 +22,21 @@
         </div>
         <div class="vac-auth-split__form-wrap reveal">
             <div class="vac-auth-formhead">
-                <h2>Create operator account</h2>
+                <h2>CREATE OPERATOR ACCOUNT</h2>
                 <p>Register once to submit, track, and manage all partner booking requests. Fields marked with an asterisk are required.</p>
             </div>
             <div th:if="${successMessage}" class="vac-auth-notice" th:text="${successMessage}"></div>
             <form method="post" th:action="@{/tour-operators/register}" class="vac-auth-grid">
-                <div class="form-group vac-span-2"><label class="form-label">Company name *</label><input class="form-input" name="companyName" placeholder="e.g. Virunga Travel Ltd" required/></div>
-                <div class="form-group"><label class="form-label">First name *</label><input class="form-input" name="firstName" placeholder="e.g. Jean" required/></div>
-                <div class="form-group"><label class="form-label">Last name *</label><input class="form-input" name="lastName" placeholder="e.g. Mukasa" required/></div>
-                <div class="form-group"><label class="form-label">Business email *</label><input class="form-input" name="email" type="email" placeholder="bookings@yourcompany.com" required/></div>
-                <div class="form-group"><label class="form-label">Phone</label><input class="form-input" name="phone" type="tel" placeholder="+250 7xx xxx xxx"/></div>
-                <div class="form-group"><label class="form-label">Country</label><input class="form-input" name="country" placeholder="e.g. Rwanda"/></div>
-                <div class="form-group"><label class="form-label">Password *</label><input class="form-input" name="password" type="password" minlength="8" placeholder="Minimum 8 characters" required/></div>
-                <button class="btn btn--primary vac-span-2" type="submit">Create operator account</button>
+                <div class="form-group vac-span-2"><label class="form-label">COMPANY NAME *</label><input class="form-input" name="companyName" placeholder="e.g. Virunga Travel Ltd" required/></div>
+                <div class="form-group"><label class="form-label">FIRST NAME *</label><input class="form-input" name="firstName" placeholder="e.g. Jean" required/></div>
+                <div class="form-group"><label class="form-label">LAST NAME *</label><input class="form-input" name="lastName" placeholder="e.g. Mukasa" required/></div>
+                <div class="form-group"><label class="form-label">BUSINESS EMAIL *</label><input class="form-input" name="email" type="email" placeholder="bookings@yourcompany.com" required/></div>
+                <div class="form-group"><label class="form-label">PHONE</label><input class="form-input" name="phone" type="tel" placeholder="+250 7xx xxx xxx"/></div>
+                <div class="form-group"><label class="form-label">COUNTRY</label><input class="form-input" name="country" placeholder="e.g. Rwanda"/></div>
+                <div class="form-group"><label class="form-label">PASSWORD *</label><input class="form-input" name="password" type="password" minlength="8" placeholder="Minimum 8 characters" required/></div>
+                <button class="btn btn--primary vac-auth-submit vac-span-2" type="submit">CREATE OPERATOR ACCOUNT</button>
             </form>
-            <p class="vac-client-register__sign-in">Already a partner? <a th:href="@{/login}">Sign in</a></p>
+            <p class="vac-client-register__sign-in">ALREADY A PARTNER? <a th:href="@{/login}">SIGN IN</a></p>
         </div>
     </section>
 </main>

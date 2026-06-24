@@ -25,6 +25,7 @@ import java.time.LocalDate;
 public class OpsManagerController {
 
     private final OpsManagerService opsManagerService;
+    private final com.volcanoartscenter.platform.shared.repository.MediaAssetRepository mediaAssetRepository;
 
     @GetMapping("/admin/ops/dashboard")
     public String opsDashboard(Model model) {
@@ -102,9 +103,21 @@ public class OpsManagerController {
 
     @GetMapping("/admin/ops/talent-applications")
     public String opsTalentApplications(Model model) {
+        var items = opsManagerService.listTalentApplications();
         model.addAttribute("adminPage", "talent-applications");
         model.addAttribute("pageTitle", "Talent Applications");
-        model.addAttribute("items", opsManagerService.listTalentApplications());
+        model.addAttribute("items", items);
+
+        // Fetch media assets for each application based on email
+        java.util.Map<Long, java.util.List<com.volcanoartscenter.platform.shared.model.MediaAsset>> mediaMap = new java.util.HashMap<>();
+        for (var a : items) {
+            if (a.getEmail() != null && !a.getEmail().isBlank()) {
+                var assets = mediaAssetRepository.searchForCms(a.getEmail(), null);
+                mediaMap.put(a.getId(), assets);
+            }
+        }
+        model.addAttribute("mediaMap", mediaMap);
+
         return "internal/ops-manager/talent-applications";
     }
     @GetMapping("/admin/ops/shipping-orders")

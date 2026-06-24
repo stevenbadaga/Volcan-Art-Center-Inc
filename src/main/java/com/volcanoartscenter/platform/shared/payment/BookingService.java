@@ -151,6 +151,9 @@ public class BookingService {
                 guestEmail);
 
         saved.setPaymentReference(dispatch.gatewayRef());
+        if (req.paymentMethod() == PaymentGateway.STRIPE_CARD) {
+            saved.setStripePaymentIntentId(dispatch.gatewayRef());
+        }
         bookingRepository.save(saved);
 
         complianceService.recordConsent(guestEmail, "BOOKING_TERMS", true, "api-booking");

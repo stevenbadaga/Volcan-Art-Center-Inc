@@ -38,10 +38,6 @@
         <div class="admin-sidebar__header">
             <a th:href="@{/talent/dashboard}" class="admin-sidebar__logo">
                 <img class="logo-image logo-image--white" th:src="@{/uploads/logo-white-transparent.png}" alt="Volcano Arts Center logo" width="130" height="40" />
-                <img class="logo-image logo-image--green" th:src="@{/uploads/logo-green-transparent.png}" alt="Volcano Arts Center logo" width="130" height="40" />
-                <div class="admin-sidebar__logo-text">
-                    <span style="color:var(--sand);">Talent Console</span>
-                </div>
             </a>
             <button class="admin-sidebar__close" id="sidebar-close" aria-label="Close sidebar">✕</button>
         </div>
@@ -82,14 +78,14 @@
             </div>
         </nav>
 
-        <div class="admin-sidebar__footer" style="padding:1rem; border-top:1px solid rgba(255,255,255,0.1); margin-top:auto;">
-            <a th:href="@{/}" class="admin-sidebar__link" style="margin-bottom:4px;">
+        <div class="admin-sidebar__footer">
+            <a th:href="@{/}" class="admin-sidebar__link admin-sidebar__footer-link">
                 <i data-lucide="globe"></i>
                 View Public Site
             </a>
-            <form th:action="@{/logout}" method="post" class="admin-sidebar__logout" style="margin:0;">
+            <form th:action="@{/logout}" method="post" class="admin-sidebar__logout">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                <button type="submit" class="admin-sidebar__link admin-sidebar__link--logout" style="width:100%; text-align:left; background:none; border:none; cursor:pointer; color:rgba(255,100,80,0.8);">
+                <button type="submit" class="admin-sidebar__link admin-sidebar__link--logout">
                     <i data-lucide="log-out"></i>
                     Sign Out
                 </button>
@@ -161,16 +157,20 @@
                         <a class="admin-notif-center__all" th:href="@{/account/notifications}">Open Notification Center →</a>
                     </div>
                 </details>
-                <div class="admin-topbar__user">
-                    <div class="admin-topbar__avatar" style="background:var(--vac-gold);"
-                         th:text="${navContext.userName != null and !#strings.isEmpty(navContext.userName) ? navContext.userName.substring(0,1) : 'T'}">T</div>
+                <a class="admin-topbar__user" th:href="@{/account/settings}" aria-label="Open account settings">
+                    <div class="admin-topbar__avatar">
+                        <img th:if="${navContext.profileImageUrl != null and !#strings.isEmpty(navContext.profileImageUrl)}"
+                             th:src="${navContext.profileImageUrl}" alt="Profile image" />
+                        <span th:unless="${navContext.profileImageUrl != null and !#strings.isEmpty(navContext.profileImageUrl)}"
+                              th:text="${navContext.userName != null and !#strings.isEmpty(navContext.userName) ? navContext.userName.substring(0,1) : 'T'}">T</span>
+                    </div>
                     <div class="admin-topbar__user-info">
                         <span class="admin-topbar__user-name"
                               th:text="${navContext.userName != null ? navContext.userName : 'Applicant'}">Applicant</span>
                         <span class="admin-topbar__user-role"
                               th:text="${navContext.roleLabel}">Talent Applicant</span>
                     </div>
-                </div>
+                </a>
             </div>
         </header>
 

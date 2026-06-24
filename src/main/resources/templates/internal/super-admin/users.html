@@ -810,7 +810,17 @@
                                         <span class="staff-row-email__meta" th:text="${staffAccount} ? 'Internal account' : 'External account'">Internal account</span>
                                     </div>
                                 </td>
-                                <td class="cell-primary" th:text="${u.fullName}">Name</td>
+                                <td class="cell-primary">
+                                    <div class="staff-user-identity">
+                                        <span class="staff-user-avatar">
+                                            <img th:if="${u.profileImageUrl != null and !#strings.isEmpty(u.profileImageUrl)}"
+                                                 th:src="${u.profileImageUrl}" th:alt="${u.fullName + ' profile image'}" />
+                                            <span th:unless="${u.profileImageUrl != null and !#strings.isEmpty(u.profileImageUrl)}"
+                                                  th:text="${u.firstName != null and !#strings.isEmpty(u.firstName) ? u.firstName.substring(0,1) : 'U'}">U</span>
+                                        </span>
+                                        <span th:text="${u.fullName}">Name</span>
+                                    </div>
+                                </td>
                                 <td th:text="${u.phone ?: '-'}">-</td>
                                 <td th:text="${u.country ?: '-'}">-</td>
                                 <td>

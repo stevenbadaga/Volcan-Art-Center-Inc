@@ -12,7 +12,9 @@ import com.volcanoartscenter.platform.shared.repository.TourOperatorRequestRepos
 import com.volcanoartscenter.platform.shared.repository.UserRepository;
 import com.volcanoartscenter.platform.shared.service.ComplianceService;
 import com.volcanoartscenter.platform.shared.service.integration.IntegrationFacadeService;
+import com.volcanoartscenter.platform.security.clerk.ClerkBackendClient;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +39,9 @@ public class TourOperatorService {
     private final ComplianceService complianceService;
     private final IntegrationFacadeService integrationFacadeService;
     private final PasswordEncoder passwordEncoder;
+
+    @Autowired(required = false)
+    private ClerkBackendClient clerkBackendClient;
 
     public List<TourOperatorRequest> listOwnerRequests(String ownerEmail) {
         String owner = normalize(ownerEmail);
@@ -77,8 +82,11 @@ public class TourOperatorService {
         }
         Role tourOperatorRole = roleRepository.findByName("TOUR_OPERATOR")
                 .orElseThrow(() -> new IllegalStateException("TOUR_OPERATOR role is missing."));
+        String clerkUserId = clerkBackendClient == null ? null
+                : clerkBackendClient.createUser(normalizedEmail, rawPassword, firstName, lastName, "TOUR_OPERATOR");
         User user = User.builder()
                 .email(normalizedEmail)
+                .clerkUserId(clerkUserId)
                 .firstName(firstName)
                 .lastName(lastName)
                 .phone(phone)

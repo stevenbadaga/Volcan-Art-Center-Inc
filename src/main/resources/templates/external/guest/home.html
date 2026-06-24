@@ -779,7 +779,6 @@
                     <div class="vac-dept-pillar__body">
                     <span class="vac-dept-pillar__num">01</span>
                     <h3>Art Store</h3>
-                    <p>Original paintings, sculpture, and craft — curated for global collectors. Built to scale beyond 5,000 pieces.</p>
                     <span class="vac-dept-pillar__link">Browse collection →</span>
                     </div>
                 </a>
@@ -800,7 +799,6 @@
                     <div class="vac-dept-pillar__body">
                     <span class="vac-dept-pillar__num">02</span>
                     <h3>Experiences</h3>
-                    <p>Community-led cultural journeys, village life, and volcano routes near Musanze.</p>
                     <span class="vac-dept-pillar__link">Plan your visit →</span>
                     </div>
                 </a>
@@ -821,7 +819,6 @@
                     <div class="vac-dept-pillar__body">
                     <span class="vac-dept-pillar__num">03</span>
                     <h3>Conservation</h3>
-                    <p>Fund reforestation, education, and stewardship projects with transparent impact.</p>
                     <span class="vac-dept-pillar__link">Support impact →</span>
                     </div>
                 </a>
@@ -842,7 +839,6 @@
                     <div class="vac-dept-pillar__body">
                     <span class="vac-dept-pillar__num">04</span>
                     <h3>Talent &amp; Media</h3>
-                    <p>Discover emerging Rwandan artists and apply to the mentorship pipeline.</p>
                     <span class="vac-dept-pillar__link">Meet talent →</span>
                     </div>
                 </a>
@@ -894,53 +890,45 @@
                 <p class="vac-lead vac-lead--center">Beyond the gallery canvas, see where the inspiration begins. Journey into the misty volcanic forests, savanna wildlife corridors, and community villages that local Rwandan artists call home.</p>
             </div>
             
-            <div class="vac-showcase-container">
-                <button class="vac-showcase-nav vac-showcase-nav--prev" id="showcase-prev" aria-label="Previous image">
-                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-                </button>
-                
-                <div class="vac-showcase-stack" id="showcase-stack">
-                    <div class="vac-showcase-slide active">
+            <div class="vac-nature-grid">
+                <div class="vac-nature-card">
+                    <div class="vac-nature-card__media">
                         <img src="/uploads/wildlife-gorillas.jpeg" alt="Mountain gorillas in Volcanoes National Park" loading="lazy" />
-                        <div class="vac-showcase-caption">
-                            <h3>Gorilla &amp; Forest Trails</h3>
-                        </div>
                     </div>
-                    <div class="vac-showcase-slide">
-                        <img src="/uploads/Mayon Volcano, Albay Philippines.jpeg" alt="Luxury safari at golden hour" loading="lazy" />
-                        <div class="vac-showcase-caption">
-                            <h3>Golden Hour Savanna</h3>
-                        </div>
-                    </div>
-                    <div class="vac-showcase-slide">
-                        <img src="/uploads/17099673582559833.jpeg" alt="Community reforestation project" loading="lazy" />
-                        <div class="vac-showcase-caption">
-                            <h3>Volcano Stewardship</h3>
-                        </div>
-                    </div>
-                    <div class="vac-showcase-slide">
-                        <img src="/uploads/experiences-safari-hero.jpeg" alt="Safari Experience" loading="lazy" />
-                        <div class="vac-showcase-caption">
-                            <h3>Savanna Journeys</h3>
-                        </div>
-                    </div>
-                    <div class="vac-showcase-slide">
-                        <img src="/uploads/experiences-waterfall.jpeg" alt="Rwanda Waterfalls" loading="lazy" />
-                        <div class="vac-showcase-caption">
-                            <h3>Misty Falls</h3>
-                        </div>
-                    </div>
-                    <div class="vac-showcase-slide">
-                        <img src="/uploads/experiences-bisoke.jpeg" alt="Mount Bisoke" loading="lazy" />
-                        <div class="vac-showcase-caption">
-                            <h3>Bisoke Summit</h3>
-                        </div>
+                    <div class="vac-nature-card__copy">
+                        <span>Forests</span>
+                        <h3>Gorilla &amp; Forest Trails</h3>
                     </div>
                 </div>
-                
-                <button class="vac-showcase-nav vac-showcase-nav--next" id="showcase-next" aria-label="Next image">
-                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-                </button>
+                <div class="vac-nature-card">
+                    <div class="vac-nature-card__media">
+                        <img src="/uploads/experiences-bisoke.jpeg" alt="Mount Bisoke Summit" loading="lazy"
+                             onerror="this.onerror=null;this.src='/uploads/Mayon Volcano, Albay Philippines.jpeg';" />
+                    </div>
+                    <div class="vac-nature-card__copy">
+                        <span>Volcanoes</span>
+                        <h3>Bisoke Summit Routes</h3>
+                    </div>
+                </div>
+                <div class="vac-nature-card">
+                    <div class="vac-nature-card__media">
+                        <img src="/uploads/experiences-safari-hero.jpeg" alt="Community art village landscape" loading="lazy" />
+                    </div>
+                    <div class="vac-nature-card__copy">
+                        <span>Villages</span>
+                        <h3>Community Art Villages</h3>
+                    </div>
+                </div>
+                <div class="vac-nature-card">
+                    <div class="vac-nature-card__media">
+                        <img src="/uploads/17099673582559833.jpeg" alt="Community reforestation and stewardship project" loading="lazy"
+                             onerror="this.onerror=null;this.src='/uploads/64457838418348827.jpeg';" />
+                    </div>
+                    <div class="vac-nature-card__copy">
+                        <span>Conservation</span>
+                        <h3>Stewardship Corridors</h3>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -950,12 +938,13 @@
         <div class="journey-section__inner">
             <p class="vac-eyebrow vac-eyebrow--center">Explore the Journeys</p>
             <h2 class="vac-heading-xl vac-heading-xl--center">Plan Your Cultural Experience</h2>
+            <p class="journey-section__sub">Choose your budget, destination, and duration to find the right Musanze journey.</p>
             <div class="journey-cards">
                 <a th:href="@{/art-store}" class="journey-card">
                     <span class="journey-card__icon" aria-hidden="true">
                         <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
                     </span>
-                    <span>
+                    <span class="journey-card__content">
                         <span class="journey-card__label">Budget</span>
                         <span class="journey-card__value">$0 — $5,000</span>
                     </span>
@@ -964,7 +953,7 @@
                     <span class="journey-card__icon" aria-hidden="true">
                         <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                     </span>
-                    <span>
+                    <span class="journey-card__content">
                         <span class="journey-card__label">Destination</span>
                         <span class="journey-card__value">Musanze · Volcanoes NP</span>
                     </span>
@@ -973,13 +962,14 @@
                     <span class="journey-card__icon" aria-hidden="true">
                         <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                     </span>
-                    <span>
+                    <span class="journey-card__content">
                         <span class="journey-card__label">Duration</span>
                         <span class="journey-card__value">Half day — 3 days</span>
                     </span>
                 </a>
                 <a th:href="@{/experiences}" class="journey-card journey-card--search" aria-label="Search experiences">
-                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" class="journey-card__search-icon"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <span class="journey-card__search-text">Search</span>
                 </a>
             </div>
         </div>
@@ -990,7 +980,6 @@
         <div class="container">
             <div class="vac-section-head">
                 <div>
-                    <p class="vac-eyebrow">Cultural Tourism</p>
                     <h2 class="vac-heading-xl">Immersive experiences.</h2>
                 </div>
                 <a th:href="@{/experiences}" class="btn btn--outline">View all journeys</a>
@@ -1031,10 +1020,10 @@
     </section>
 
     <!-- 8. Conservation Impact (Art-Funded campaigns) -->
-    <section class="vac-section vac-conservation-spotlight" th:if="${featuredCampaign != null}" id="conservation-spotlight">
+    <section class="vac-section vac-conservation-spotlight reveal" th:if="${featuredCampaign != null}" id="conservation-spotlight">
         <div class="container vac-conservation-spotlight__grid">
             <div class="vac-conservation-spotlight__media">
-                <img th:src="${featuredCampaign.imageUrl != null ? featuredCampaign.imageUrl : '/uploads/conservationhomepage.jpeg'}"
+                <img src="/uploads/conservation-planting.jpeg"
                      th:alt="${featuredCampaign.name}" loading="lazy" />
             </div>
             <div class="vac-conservation-spotlight__copy">
@@ -1044,7 +1033,7 @@
                 <p th:if="${featuredCampaign.impactStatement != null}" class="vac-impact-statement" th:text="${featuredCampaign.impactStatement}">Impact statement</p>
                 <div th:if="${featuredCampaign.goalAmount != null}" class="vac-campaign-progress" style="margin-top:1rem;">
                     <div class="vac-campaign-progress__fill"
-                         th:style="'width:' + ${featuredCampaign.goalAmount.doubleValue() > 0 ? ((featuredCampaign.raisedAmount != null ? featuredCampaign.raisedAmount.doubleValue() : 0) / featuredCampaign.goalAmount.doubleValue() * 100) : 0} + '%'"></div>
+                          th:style="'width:' + ${featuredCampaign.goalAmount.doubleValue() > 0 ? ((featuredCampaign.raisedAmount != null ? featuredCampaign.raisedAmount.doubleValue() : 0) / featuredCampaign.goalAmount.doubleValue() * 100) : 0} + '%'"></div>
                 </div>
                 <p th:if="${featuredCampaign.goalAmount != null}" class="vac-muted-note" style="margin-top:0.5rem;">
                     Raised <strong th:text="'$' + ${#numbers.formatDecimal(featuredCampaign.raisedAmount != null ? featuredCampaign.raisedAmount : 0, 1, 2)}">$0</strong>
@@ -1088,7 +1077,7 @@
                             <div class="vac-campaign-progress__fill"
                                  th:style="'width:' + ${campaign.goalAmount.doubleValue() > 0 ? ((campaign.raisedAmount != null ? campaign.raisedAmount.doubleValue() : 0) / campaign.goalAmount.doubleValue() * 100) : 0} + '%'"></div>
                         </div>
-                        <a th:href="@{/conservation#donate}" class="vac-dept-pillar__link" style="margin-top:0.75rem;display:inline-block;">Support this campaign →</a>
+                        <a th:href="@{/conservation#donate}" class="vac-dept-pillar__link" style="margin-top:0.75rem;display:inline-block;">Support this campaign</a>
                     </div>
                 </article>
             </div>
@@ -1096,76 +1085,49 @@
     </section>
 
     <!-- Fallback Conservation block when campaigns are empty -->
-    <section class="vac-section vac-section--ivory" th:unless="${featuredCampaign != null}" id="conservation-fallback">
+    <section class="vac-section vac-conservation-spotlight reveal" th:unless="${featuredCampaign != null}" id="conservation-fallback">
         <div class="container vac-conservation-spotlight__grid">
             <div class="vac-conservation-spotlight__media">
-                <img src="/uploads/64457838418348827.jpeg" alt="Conservation" loading="lazy"
-                     onerror="this.onerror=null;this.src='/uploads/conservationhomepage.jpeg';" />
+                <img src="/uploads/conservation-planting.jpeg" alt="Conservation" loading="lazy" />
             </div>
             <div class="vac-conservation-spotlight__copy">
                 <p class="vac-eyebrow">Conservation Impact</p>
                 <h2 class="vac-heading-lg">Protect what makes Rwanda extraordinary.</h2>
                 <p class="vac-lead">Fund reforestation, youth education, and sustainable art practices with transparent reporting.</p>
-                <a th:href="@{/conservation}" class="btn btn--primary btn--lg">Support Conservation</a>
+                <div class="vac-conservation-spotlight__actions">
+                    <a th:href="@{/conservation}" class="btn btn--primary btn--lg">Support Conservation</a>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- 9. Talent Mentorship & Media Pipeline -->
-    <section class="vac-section vac-section--white" id="talent">
-        <div class="container">
-            <div class="vac-section-head">
-                <div>
-                    <p class="vac-eyebrow">Talent &amp; Media</p>
-                    <h2 class="vac-heading-xl">The next generation of Rwandan artists.</h2>
-                </div>
-                <a th:href="@{/talent/register}" class="btn btn--outline">Apply to program</a>
-            </div>
-            <div class="vac-talent-teaser">
-                <div class="vac-talent-teaser__copy">
-                    <p class="vac-lead">Portfolio development, mentorship, commissions, and a route into our international art store — for dancers, visual artists, and media creators.</p>
-                    <div class="vac-talent-steps">
-                        <span>Apply online</span>
-                        <span>Get visibility</span>
-                        <span>Reach the market</span>
-                    </div>
+    <section class="reveal talent-split-section" id="talent">
+        <div class="talent-split-inner">
+            <div class="talent-split-copy">
+                <p class="vac-eyebrow">Talent &amp; Media</p>
+                <h2 class="vac-heading-xl">The next generation of Rwandan artists.</h2>
+                <p class="vac-lead">Portfolio development, mentorship, paid commissions, and a route into our global art store — for dancers, visual artists, and media creators.</p>
+                <div class="talent-split-actions">
+                    <a th:href="@{/talent/register}" class="btn btn--outline">Apply to program</a>
                     <a th:href="@{/talent}" class="btn btn--primary">Explore Talent Program</a>
                 </div>
-                <div class="vac-talent-teaser__grid" th:if="${talentProfiles != null and !#lists.isEmpty(talentProfiles)}">
-                    <article class="vac-talent-card reveal" th:each="profile : ${talentProfiles}">
-                        <div class="vac-talent-card__media">
-                            <img th:if="${profile.primaryImageUrl != null}" th:src="${profile.primaryImageUrl}" th:alt="${profile.displayName}" loading="lazy" />
-                            <div th:unless="${profile.primaryImageUrl != null}" class="vac-talent-card__fallback">T</div>
-                        </div>
-                        <div class="vac-talent-card__body">
-                            <span class="vac-badge" th:text="${profile.category}">Category</span>
-                            <h3 th:text="${profile.displayName}">Talent Name</h3>
-                            <p th:text="${profile.headline != null ? profile.headline : 'Featured program participant'}">Headline</p>
-                        </div>
-                    </article>
-                </div>
-                <div class="vac-talent-teaser__grid vac-talent-teaser__grid--fallback" th:if="${talentProfiles == null or #lists.isEmpty(talentProfiles)}">
-                    <article class="vac-talent-card">
-                        <div class="vac-talent-card__media"><img src="/uploads/55028426690959709.jpeg" alt="Talent" loading="lazy"
-                             onerror="this.onerror=null;this.src='/uploads/talent-portrait.jpeg';" /></div>
-                        <div class="vac-talent-card__body"><h3>Emerging Artists</h3><p>Mentorship and market access for Rwandan creatives.</p></div>
-                    </article>
-                    <article class="vac-talent-card">
-                        <div class="vac-talent-card__media"><img src="/uploads/Celebrate heritage, strength, and beauty with this….jpeg" alt="Performance" loading="lazy"
-                             onerror="this.onerror=null;this.src='/uploads/talent-silhouette.jpeg';" /></div>
-                        <div class="vac-talent-card__body"><h3>Cultural Performance</h3><p>Dance, music, and storytelling on global stages.</p></div>
-                    </article>
-                </div>
+            </div>
+            <div class="talent-split-media">
+                <img th:src="${talentProfiles != null and !#lists.isEmpty(talentProfiles) and talentProfiles[0].primaryImageUrl != null ? talentProfiles[0].primaryImageUrl : '/uploads/volcano.jpg'}" 
+                     alt="Rwandan Artists Program" loading="lazy"
+                     onerror="this.onerror=null;this.src='/uploads/experiences-bisoke.jpeg';" />
+                <div class="talent-split-overlay"></div>
             </div>
         </div>
     </section>
 
     <!-- 10. Testimonials (Global collector voices) -->
-    <section class="vac-section vac-testimonials" th:if="${topReviews != null and !#lists.isEmpty(topReviews)}" id="testimonials">
+    <section class="vac-section vac-testimonials reveal" th:if="${topReviews != null and !#lists.isEmpty(topReviews)}" id="testimonials">
         <div class="container">
             <div class="vac-section-head vac-section-head--center">
                 <p class="vac-eyebrow">Global Voices</p>
-                <h2 class="vac-heading-lg">Trusted by collectors &amp; visitors worldwide.</h2>
+                <h2 class="vac-heading-lg">TRUSTED BY COLLECTORS &amp;<br />VISITORS WORLDWIDE.</h2>
             </div>
             <div class="vac-review-list vac-review-list--home">
                 <article class="vac-review-card reveal" th:each="review,iter : ${topReviews}" th:if="${iter.index < 3}">
@@ -1183,7 +1145,7 @@
     </section>
 
     <!-- 11. The Journal (Musanze stories) -->
-    <section class="vac-section vac-section--ivory" th:if="${latestPosts != null and !#lists.isEmpty(latestPosts)}" id="journal-stories">
+    <section class="vac-section vac-section--ivory reveal" th:if="${latestPosts != null and !#lists.isEmpty(latestPosts)}" id="journal-stories">
         <div class="container">
             <div class="vac-section-head">
                 <div>
@@ -1195,13 +1157,14 @@
             <div class="vac-premium-story-grid">
                 <article class="vac-premium-story-card reveal" th:each="post : ${latestPosts}">
                     <a th:href="@{/blog/{slug}(slug=${post.slug})}">
-                        <img th:src="${post.displayFeaturedImageUrl != null ? post.displayFeaturedImageUrl : '/uploads/experiences-village.jpeg'}" th:alt="${post.title}" loading="lazy"
+                        <img th:src="${post.displayFeaturedImageUrl == '/uploads/conservation.png' ? '/uploads/conservation-planting.jpeg' : (post.displayFeaturedImageUrl == '/uploads/conservation2.png' ? '/uploads/experiences-village.jpeg' : (post.displayFeaturedImageUrl != null ? post.displayFeaturedImageUrl : '/uploads/experiences-village.jpeg'))}" th:alt="${post.title}" loading="lazy"
                              onerror="this.onerror=null;this.src='/uploads/conservationhomepage.jpeg';" />
                     </a>
                     <div>
                         <p th:text="${post.publishedAt != null ? #temporals.format(post.publishedAt, 'MMM d, yyyy') : 'Latest'}">Date</p>
                         <h3><a th:href="@{/blog/{slug}(slug=${post.slug})}" th:text="${post.title}">Title</a></h3>
                         <span th:text="${post.excerpt != null ? post.excerpt : 'Read the full story from Volcano Arts Center.'}">Excerpt</span>
+                        <div class="vac-story-card__action">Read story &rarr;</div>
                     </div>
                 </article>
             </div>

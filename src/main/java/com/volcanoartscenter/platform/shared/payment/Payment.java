@@ -65,6 +65,12 @@ public class Payment {
     @Column(name = "captured_at")
     private LocalDateTime capturedAt;
 
+    @Column(name = "receipt_url", length = 500)
+    private String receiptUrl;
+
+    @Column(name = "email_sent_at")
+    private LocalDateTime emailSentAt;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 

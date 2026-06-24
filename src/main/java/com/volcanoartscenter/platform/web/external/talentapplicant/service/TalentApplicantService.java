@@ -7,7 +7,9 @@ import com.volcanoartscenter.platform.shared.repository.RoleRepository;
 import com.volcanoartscenter.platform.shared.repository.TalentApplicationRepository;
 import com.volcanoartscenter.platform.shared.repository.UserRepository;
 import com.volcanoartscenter.platform.shared.service.ComplianceService;
+import com.volcanoartscenter.platform.security.clerk.ClerkBackendClient;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +28,9 @@ public class TalentApplicantService {
     private final ComplianceService complianceService;
     private final PasswordEncoder passwordEncoder;
 
+    @Autowired(required = false)
+    private ClerkBackendClient clerkBackendClient;
+
     public User registerApplicantAccount(String firstName, String lastName, String email, String phone, String country, String rawPassword) {
         String normalizedEmail = normalizeEmail(email);
         if (normalizedEmail == null) {
@@ -39,8 +44,11 @@ public class TalentApplicantService {
         }
         Role role = roleRepository.findByName("TALENT_APPLICANT")
                 .orElseThrow(() -> new IllegalStateException("TALENT_APPLICANT role is missing."));
+        String clerkUserId = clerkBackendClient == null ? null
+                : clerkBackendClient.createUser(normalizedEmail, rawPassword, firstName, lastName, "TALENT_APPLICANT");
         User user = User.builder()
                 .email(normalizedEmail)
+                .clerkUserId(clerkUserId)
                 .firstName(firstName)
                 .lastName(lastName)
                 .phone(phone)

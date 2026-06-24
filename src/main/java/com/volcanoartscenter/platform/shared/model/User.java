@@ -20,6 +20,12 @@ public class User {
     @Column(nullable = false, unique = true, length = 100)
     private String email;
 
+    @Column(name = "clerk_user_id", unique = true, length = 120)
+    private String clerkUserId;
+
+    @Column(name = "stripe_customer_id", length = 120)
+    private String stripeCustomerId;
+
     @Column(nullable = false)
     private String password;
 

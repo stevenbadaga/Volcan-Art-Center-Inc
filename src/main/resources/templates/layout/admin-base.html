@@ -49,10 +49,6 @@
         <div class="admin-sidebar__header">
             <a th:href="@{/}" class="admin-sidebar__logo">
                 <img class="logo-image logo-image--white" th:src="@{/uploads/logo-white-transparent.png}" alt="Volcano Arts Center logo" width="130" height="40" />
-                <img class="logo-image logo-image--green" th:src="@{/uploads/logo-green-transparent.png}" alt="Volcano Arts Center logo" width="130" height="40" />
-                <div class="admin-sidebar__logo-text">
-                    <span style="color:var(--sand);">Admin Console</span>
-                </div>
             </a>
             <button class="admin-sidebar__close" id="sidebar-close" aria-label="Close sidebar">✕</button>
         </div>
@@ -241,13 +237,13 @@
             </div>
         </nav>
 
-        <div class="admin-sidebar__footer" style="padding:1rem; border-top:1px solid rgba(255,255,255,0.1); margin-top:auto;">
-            <a th:href="@{/}" class="admin-sidebar__link" style="margin-bottom:4px;">
+        <div class="admin-sidebar__footer">
+            <a th:href="@{/}" class="admin-sidebar__link admin-sidebar__footer-link">
                 <i data-lucide="globe"></i>
                 View Public Site
             </a>
-            <form th:action="@{/logout}" method="post" class="admin-sidebar__logout" style="margin:0;">
-                <button type="submit" class="admin-sidebar__link admin-sidebar__link--logout" style="width:100%; text-align:left; background:none; border:none; cursor:pointer; color:rgba(255,100,80,0.8);">
+            <form th:action="@{/logout}" method="post" class="admin-sidebar__logout">
+                <button type="submit" class="admin-sidebar__link admin-sidebar__link--logout">
                     <i data-lucide="log-out"></i>
                     Sign Out
                 </button>
@@ -259,7 +255,7 @@
     <div class="admin-main" id="admin-main">
         <!-- Topbar -->
         <header class="admin-topbar admin-topbar--premium">
-            <div class="admin-topbar__left" style="display:flex; align-items:center; gap:1rem;">
+            <div class="admin-topbar__left">
                 <button class="admin-topbar__toggle" id="sidebar-toggle" aria-label="Toggle sidebar">
                     <span></span><span></span><span></span>
                 </button>
@@ -271,7 +267,7 @@
                 <i data-lucide="search"></i>
                 <input type="search" id="admin-search" placeholder="Search orders, bookings, donations…" />
             </div>
-            <div class="admin-topbar__right" style="display:flex; align-items:center; gap:1rem;">
+            <div class="admin-topbar__right">
                 <!-- Theme Switcher -->
                 <div class="nav-theme-switcher dropdown">
                     <button type="button" class="nav-icon nav-icon-btn" id="theme-toggle" aria-label="Switch Theme" aria-expanded="false" aria-haspopup="true">
@@ -318,16 +314,19 @@
                         <a class="admin-notif-center__all" th:href="@{/account/notifications}">OPEN NOTIFICATION CENTER →</a>
                     </div>
                 </details>
-                <div class="admin-topbar__user" style="display:flex; align-items:center; gap:.7rem;">
-                    <div class="admin-topbar__avatar"
-                         style="width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg, var(--vac-green), var(--vac-green-700)); color:#fff; display:flex; align-items:center; justify-content:center; font-family:var(--font-heading); font-weight:800; font-size:0.95rem; flex-shrink:0;"
-                         th:text="${navContext.roleLabel != null ? navContext.roleLabel.substring(0,1) : 'A'}">A</div>
-                    <div class="admin-topbar__user-info" style="display:flex; flex-direction:column; line-height:1.2;">
-                        <span class="admin-topbar__user-name" style="font-family:var(--font-body); font-weight:700; font-size:0.9rem; color:var(--color-ink);"
-                            th:text="${navContext.userName != null ? navContext.userName : 'Admin'}">Admin</span>
-                        <span class="admin-topbar__user-role" style="font-family:var(--font-body); font-size:0.7rem; font-weight:600; letter-spacing:0.5px; color:var(--color-ink-faint); text-transform:uppercase;" th:text="${navContext.roleLabel}">Super Admin</span>
+                <a class="admin-topbar__user" th:href="@{/account/settings}" aria-label="Open account settings">
+                    <div class="admin-topbar__avatar">
+                        <img th:if="${navContext.profileImageUrl != null and !#strings.isEmpty(navContext.profileImageUrl)}"
+                             th:src="${navContext.profileImageUrl}" alt="Profile image" />
+                        <span th:unless="${navContext.profileImageUrl != null and !#strings.isEmpty(navContext.profileImageUrl)}"
+                              th:text="${navContext.userName != null and !#strings.isEmpty(navContext.userName) ? navContext.userName.substring(0,1) : 'A'}">A</span>
                     </div>
-                </div>
+                    <div class="admin-topbar__user-info">
+                        <span class="admin-topbar__user-name"
+                            th:text="${navContext.userName != null ? navContext.userName : 'Admin'}">Admin</span>
+                        <span class="admin-topbar__user-role" th:text="${navContext.roleLabel}">Super Admin</span>
+                    </div>
+                </a>
             </div>
         </header>
 

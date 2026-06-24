@@ -64,6 +64,9 @@ public class TalentApplicantController {
         }
 
         try {
+            // Validate file format and size
+            validateUploads(java.util.List.of(file), "any");
+
             java.nio.file.Path uploadRoot = java.nio.file.Path.of(localUploadDir).toAbsolutePath().normalize();
             java.nio.file.Files.createDirectories(uploadRoot);
 
@@ -82,14 +85,14 @@ public class TalentApplicantController {
                     .publicUrl("/uploads/" + storageKey)
                     .contentType(file.getContentType())
                     .title(title != null && !title.isBlank() ? title : "Portfolio: " + originalName)
-                    .altText("Portfolio piece for " + user.getFullName())
-                    .fileSizeBytes(file.getSize())
-                    // We tag the asset with user email in title or alt text for searching if we don't have a direct link
                     .altText("OWNER:" + user.getEmail())
+                    .fileSizeBytes(file.getSize())
                     .build();
 
             mediaAssetRepository.save(asset);
             redirectAttributes.addFlashAttribute("successMessage", "Portfolio piece uploaded successfully.");
+        } catch (IllegalArgumentException ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
         } catch (java.io.IOException e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Upload failed: " + e.getMessage());
         }
@@ -151,6 +154,17 @@ public class TalentApplicantController {
             redirectAttributes.addFlashAttribute("successMessage", "Captcha validation failed.");
             return "redirect:/talent/dashboard";
         }
+
+        // Validate file type & size limits
+        try {
+            validateUploads(portfolioImages, "image");
+            validateUploads(performanceVideos, "video");
+            validateUploads(artworkSamples, "any");
+        } catch (IllegalArgumentException ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+            return "redirect:/talent/dashboard#applications";
+        }
+
         talentApplicantService.createApplication(user, fullName, email, phone, ageRange, gender, location, applicantCategory, talentArea,
                 experienceDescription, motivation, availabilityDetails, accessibilityNeeds, preferredContactChannel);
                 
@@ -171,6 +185,48 @@ public class TalentApplicantController {
         return "redirect:/talent/dashboard";
     }
 
+    private void validateUploads(java.util.List<org.springframework.web.multipart.MultipartFile> files, String type) {
+        if (files == null) return;
+        for (org.springframework.web.multipart.MultipartFile file : files) {
+            if (file != null && !file.isEmpty()) {
+                String originalName = file.getOriginalFilename();
+                if (originalName == null) continue;
+                String ext = "";
+                if (originalName.lastIndexOf('.') >= 0) {
+                    ext = originalName.substring(originalName.lastIndexOf('.')).toLowerCase(java.util.Locale.ROOT);
+                }
+                
+                // Validate extension and size
+                if ("image".equals(type)) {
+                    if (!ext.equals(".jpg") && !ext.equals(".jpeg") && !ext.equals(".png") && !ext.equals(".webp")) {
+                        throw new IllegalArgumentException("Invalid file type: " + originalName + ". Only JPG, JPEG, PNG, and WEBP images are allowed.");
+                    }
+                    if (file.getSize() > 10 * 1024 * 1024) {
+                        throw new IllegalArgumentException("File size limit exceeded: " + originalName + ". Images must be under 10MB.");
+                    }
+                } else if ("video".equals(type)) {
+                    if (!ext.equals(".mp4") && !ext.equals(".mov") && !ext.equals(".webm")) {
+                        throw new IllegalArgumentException("Invalid file type: " + originalName + ". Only MP4, MOV, and WEBM videos are allowed.");
+                    }
+                    if (file.getSize() > 50 * 1024 * 1024) {
+                        throw new IllegalArgumentException("File size limit exceeded: " + originalName + ". Videos must be under 50MB.");
+                    }
+                } else {
+                    // Any allowed media
+                    boolean isImg = ext.equals(".jpg") || ext.equals(".jpeg") || ext.equals(".png") || ext.equals(".webp");
+                    boolean isVid = ext.equals(".mp4") || ext.equals(".mov") || ext.equals(".webm");
+                    if (!isImg && !isVid) {
+                        throw new IllegalArgumentException("Invalid file type: " + originalName + ". Only JPG, JPEG, PNG, WEBP images and MP4, MOV, WEBM videos are allowed.");
+                    }
+                    long maxAllowed = isImg ? 10 * 1024 * 1024 : 50 * 1024 * 1024;
+                    if (file.getSize() > maxAllowed) {
+                        throw new IllegalArgumentException("File size limit exceeded: " + originalName + ". Limit is 10MB for images and 50MB for videos.");
+                    }
+                }
+            }
+        }
+    }
+
     private void processUploads(java.util.List<org.springframework.web.multipart.MultipartFile> files, String prefix, User user, java.nio.file.Path uploadRoot) throws java.io.IOException {
         if (files == null) return;
         for (org.springframework.web.multipart.MultipartFile file : files) {
@@ -189,7 +245,7 @@ public class TalentApplicantController {
                         .storageKey(storageKey)
                         .publicUrl("/uploads/" + storageKey)
                         .contentType(file.getContentType())
-                        .title(prefix + " - Submission")
+                        .title(prefix + " - Submission: " + originalName)
                         .altText("OWNER:" + user.getEmail())
                         .fileSizeBytes(file.getSize())
                         .build();

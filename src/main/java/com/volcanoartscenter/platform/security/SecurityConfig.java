@@ -73,13 +73,14 @@ public class SecurityConfig {
                     "/talent", "/talent/apply",
                     "/blog/**", "/contact",
                     "/error",
+                    "/login", "/signin", "/internal/login",
                     "/register", "/forgot-password", "/login/verify-2fa",
                     "/oauth2/**", "/login/oauth2/**",
                     "/tour-operators/request", "/tour-operators/register",
                     "/talent/register",
                     "/cart", "/cart/add", "/cart/remove",
                     "/css/**", "/js/**", "/images/**", "/fonts/**", "/uploads/**",
-                    "/api/public/**", "/api/v1/public/**", "/api/v1/webhooks/**",
+                    "/api/public/**", "/api/v1/public/**", "/api/v1/webhooks/**", "/api/v1/auth/clerk/**",
                     "/actuator/health/**", "/actuator/info"
                 ).permitAll()
 
@@ -97,6 +98,7 @@ public class SecurityConfig {
                 .requestMatchers("/tour-operators/portal/**").hasRole("TOUR_OPERATOR")
                 .requestMatchers("/talent/dashboard/**").hasRole("TALENT_APPLICANT")
                 .requestMatchers("/api/v1/talent/**").hasAnyRole("TALENT_APPLICANT", "OPS_MANAGER", "SUPER_ADMIN")
+                .requestMatchers("/client/dashboard").authenticated()
                 .requestMatchers("/client/**").hasRole("REGISTERED_CLIENT")
                 .requestMatchers("/api/v1/client/**").hasAnyRole("REGISTERED_CLIENT", "OPS_MANAGER", "SUPER_ADMIN")
 

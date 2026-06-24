@@ -88,10 +88,41 @@
                                                 </div>
                                             </div>
                                             
-                                            <div style="margin-top: 1.5rem; padding: 1rem; background:rgba(0,0,0,0.02); border-radius:8px; display:flex; align-items:center; justify-content:space-between;">
-                                                <span style="font-size:0.85rem; color:var(--vac-muted);">
-                                                    <i data-lucide="info" style="width:16px; margin-right:4px;"></i> To view the applicant's portfolio, use the <strong>Media Library</strong> or <strong>Staff & Accounts</strong> directory.
-                                                </span>
+                                            <!-- Media Section -->
+                                            <div style="margin-top: 2rem; border-top: 1px dashed var(--vac-line); padding-top: 1.5rem;" th:with="assets=${mediaMap[a.id]}">
+                                                <h5 style="font-family:var(--font-display); font-size:1rem; color:var(--vac-green-900); margin-bottom:0.75rem; display:flex; align-items:center; gap:0.5rem;">
+                                                    <i data-lucide="folder-open" style="width:18px; height:18px;"></i> Uploaded Media & Portfolio
+                                                </h5>
+                                                
+                                                <div th:if="${assets != null and !#lists.isEmpty(assets)}" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                                                    <div th:each="asset : ${assets}" style="background:#fff; padding:0.75rem; border-radius:8px; border:1px solid var(--vac-line); display:flex; flex-direction:column; justify-content:space-between; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                                                        <div>
+                                                            <!-- Image Preview -->
+                                                            <div th:if="${asset.contentType != null and asset.contentType.startsWith('image')}" style="width:100%; height:110px; overflow:hidden; border-radius:6px; background:#f5f5f5; display:flex; align-items:center; justify-content:center;">
+                                                                <img th:src="${asset.publicUrl}" th:alt="${asset.title}" style="width:100%; height:100%; object-fit:cover;" />
+                                                            </div>
+                                                            <!-- Video Preview (Interactive HTML5 Player) -->
+                                                            <div th:if="${asset.contentType != null and asset.contentType.startsWith('video')}" style="width:100%; height:110px; border-radius:6px; overflow:hidden; background:#000;">
+                                                                <video style="width:100%; height:100%; object-fit:cover;" controls>
+                                                                    <source th:src="${asset.publicUrl}" th:type="${asset.contentType}" />
+                                                                </video>
+                                                            </div>
+                                                            
+                                                            <div style="font-size:0.75rem; font-weight:700; margin-top:0.5rem; color:var(--vac-ink); text-overflow:ellipsis; overflow:hidden; white-space:nowrap;" th:text="${asset.title}">Title</div>
+                                                            <div style="font-size:0.68rem; color:var(--vac-muted); margin-top:0.15rem;" th:text="${asset.contentType} + ' · ' + ${#numbers.formatDecimal(asset.fileSizeBytes / 1024.0 / 1024.0, 1, 2)} + ' MB'">Type</div>
+                                                        </div>
+                                                        <div style="margin-top:0.75rem;">
+                                                            <a th:href="${asset.publicUrl}" target="_blank" class="btn btn--outline btn--xs" style="width:100%; text-align:center; display:block;">
+                                                                Open File
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div th:if="${assets == null or #lists.isEmpty(assets)}" style="padding: 1.5rem; background: rgba(0,0,0,0.01); border-radius: 8px; border: 1px dashed var(--vac-line); display:flex; align-items:center; gap:0.5rem; color:var(--vac-muted);">
+                                                    <i data-lucide="alert-circle" style="width:16px;"></i>
+                                                    <span style="font-size:0.85rem;">No media files uploaded for this applicant yet.</span>
+                                                </div>
                                             </div>
                                         </div>
                                         

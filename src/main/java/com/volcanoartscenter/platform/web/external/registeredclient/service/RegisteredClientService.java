@@ -1,6 +1,7 @@
 package com.volcanoartscenter.platform.web.external.registeredclient.service;
 
 import com.volcanoartscenter.platform.shared.model.*;
+import com.volcanoartscenter.platform.shared.email.TransactionalEmailService;
 import com.volcanoartscenter.platform.shared.notification.NotificationCategory;
 import com.volcanoartscenter.platform.shared.notification.NotificationEvent;
 import com.volcanoartscenter.platform.shared.notification.StaffNotificationPublisher;
@@ -10,6 +11,8 @@ import com.volcanoartscenter.platform.shared.service.ComplianceService;
 import com.volcanoartscenter.platform.shared.service.NotificationService;
 import com.volcanoartscenter.platform.shared.service.integration.IntegrationFacadeService;
 import com.volcanoartscenter.platform.shared.service.integration.PaymentGatewayService;
+import com.volcanoartscenter.platform.security.clerk.ClerkBackendClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -50,8 +53,12 @@ public class RegisteredClientService {
     private final NotificationService notificationService;
     private final ApplicationEventPublisher eventPublisher;
     private final StaffNotificationPublisher staffNotificationPublisher;
+    private final TransactionalEmailService transactionalEmailService;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+
+    @Autowired(required = false)
+    private ClerkBackendClient clerkBackendClient;
 
     @Transactional
     public User registerClientAccount(String firstName, String lastName, String email, String phone, String country, String rawPassword) {
@@ -67,8 +74,10 @@ public class RegisteredClientService {
         }
         Role role = roleRepository.findByName("REGISTERED_CLIENT")
                 .orElseThrow(() -> new IllegalStateException("REGISTERED_CLIENT role is missing."));
+        String clerkUserId = createClerkUser(normalizedEmail, rawPassword, firstName, lastName, "REGISTERED_CLIENT");
         User user = User.builder()
                 .email(normalizedEmail)
+                .clerkUserId(clerkUserId)
                 .firstName(firstName)
                 .lastName(lastName)
                 .phone(phone)
@@ -586,6 +595,10 @@ public class RegisteredClientService {
         return paymentMethod.trim().toUpperCase(Locale.ROOT);
     }
 
+    private String createClerkUser(String email, String rawPassword, String firstName, String lastName, String role) {
+        return clerkBackendClient == null ? null : clerkBackendClient.createUser(email, rawPassword, firstName, lastName, role);
+    }
+
     private String normalizeEmail(String value) {
         if (value == null || value.isBlank()) {
             return null;
@@ -638,6 +651,7 @@ public class RegisteredClientService {
                 "/admin/ops/talent-applications",
                 "TalentApplication",
                 saved.getId());
+        transactionalEmailService.sendTalentApplication(saved);
         return saved;
     }
 
@@ -673,6 +687,7 @@ public class RegisteredClientService {
                 "/admin/ops/contact-inquiries",
                 "ContactInquiry",
                 inquiry.getId());
+        transactionalEmailService.sendContactInquiry(inquiry);
     }
 
     private String previewMessage(String message) {

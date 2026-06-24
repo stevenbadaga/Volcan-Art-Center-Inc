@@ -16,31 +16,23 @@
 </head>
 
 <body>
-<main layout:fragment="content">
+<main layout:fragment="content" class="vac-experiences-page">
 
-    <section class="hero-golden hero-golden--compact hero-golden--experiences hero-golden--fitted hero-golden--frame-fill hero-golden--portrait-source vac-cinematic-hero vac-experience-hero-ref reveal">
-        <div class="hero-golden__bg vac-cinematic-hero__bg">
-            <img class="hero-slide-backdrop" src="/uploads/Mayon Volcano, Albay Philippines.jpeg" alt="" aria-hidden="true" />
-            <img class="hero-slide active vac-cinematic-hero__img" src="/uploads/Mayon Volcano, Albay Philippines.jpeg" alt="Young mountain gorilla in Volcanoes National Park"
-                 onerror="this.onerror=null;this.src='/uploads/experiences-safari-hero.jpeg';" />
-            <div class="hero-golden__veil vac-cinematic-hero__veil vac-cinematic-hero__veil--light"></div>
-        </div>
-        <div class="hero-golden__content container vac-experience-hero-ref__content">
-            <div class="vac-experience-hero-ref__panel">
-                <div class="vac-experience-hero-ref__main">
-                    <p class="hero-golden__kicker vac-experience-hero-ref__kicker">Discover Rwanda from the inside</p>
-                    <h1 class="hero-golden__title hero-golden__title--compact vac-experience-hero-ref__title">Cultural Journeys</h1>
-                    <p class="hero-golden__sub vac-experience-hero-ref__sub">Immerse yourself in authentic community-led experiences and conservation journeys led by Musanze hosts.</p>
+    <section class="vac-page-hero reveal">
+        <div class="vac-page-hero__inner">
+            <div class="vac-page-hero__copy">
+                <span class="vac-page-hero__eyebrow">CULTURAL JOURNEYS</span>
+                <h1 class="vac-page-hero__title">EXPERIENCES IN MUSANZE</h1>
+                <p class="vac-page-hero__lead">Immerse yourself in authentic community-led experiences and conservation journeys led by Musanze hosts.</p>
+                <div class="vac-page-hero__actions">
+                    <a href="#experiences" class="btn btn-page-primary">EXPLORE EXPERIENCES</a>
+                    <a th:href="@{/contact}" class="btn btn-page-outline">PLAN WITH OUR TEAM</a>
                 </div>
-                <div class="vac-experience-hero-ref__aside">
-                    <p class="vac-eyebrow vac-experience-hero-ref__eyebrow">Experience Value</p>
-                    <h2 class="vac-experience-hero-ref__aside-title">Trip details that are easy to trust.</h2>
-                    <p class="vac-experience-hero-ref__aside-copy">Guests can scan options faster with clearer duration, group size, location, and pricing &mdash; built for international travellers.</p>
-                    <div class="hero-golden__actions vac-experience-hero-ref__actions">
-                        <a href="#experiences" class="btn-hero-primary">View All Journeys</a>
-                        <a th:href="@{/contact}" class="btn-hero-outline">Custom Request</a>
-                    </div>
-                </div>
+            </div>
+            <div class="vac-page-hero__media">
+                <img src="/uploads/experiences-safari-hero.jpeg" alt="Cultural Journeys in Musanze"
+                     onerror="this.onerror=null;this.src='/uploads/wildlife-gorillas.jpeg';" />
+                <div class="vac-page-hero__overlay"></div>
             </div>
         </div>
     </section>

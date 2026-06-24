@@ -11,17 +11,53 @@
     const main = document.getElementById('admin-main');
     const sidebarToggle = document.getElementById('sidebar-toggle');
     const sidebarClose = document.getElementById('sidebar-close');
-    const mobileBreakpoint = 1024;
+    const mobileBreakpoint = 768;
 
     function syncMobileSidebarState() {
         if (!document.body) return;
         var isMobileOpen = !!(sidebar && sidebar.classList.contains('mobile-open') && window.innerWidth <= mobileBreakpoint);
         document.body.classList.toggle('admin-mobile-nav-open', isMobileOpen);
+        if (sidebarToggle) {
+            var isDesktopCollapsed = !!(sidebar && sidebar.classList.contains('collapsed') && window.innerWidth > mobileBreakpoint);
+            var isDrawerOpen = !!(sidebar && sidebar.classList.contains('mobile-open') && window.innerWidth <= mobileBreakpoint);
+            var expanded = window.innerWidth > mobileBreakpoint ? !isDesktopCollapsed : isDrawerOpen;
+            var label = window.innerWidth > mobileBreakpoint
+                ? (isDesktopCollapsed ? 'Expand sidebar' : 'Collapse sidebar')
+                : (isDrawerOpen ? 'Close sidebar' : 'Open sidebar');
+            sidebarToggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+            sidebarToggle.setAttribute('aria-label', label);
+            sidebarToggle.setAttribute('title', label);
+        }
+    }
+
+    function syncCollapsedSidebarTooltips() {
+        if (!sidebar) return;
+        var isCollapsedDesktop = !!(sidebar.classList.contains('collapsed') && window.innerWidth > mobileBreakpoint);
+        var items = sidebar.querySelectorAll('.admin-sidebar__link, .admin-sidebar__footer-link, .admin-sidebar__link--logout');
+
+        items.forEach(function (item) {
+            if (!item.dataset.originalTitle) {
+                item.dataset.originalTitle = (item.textContent || '').replace(/\s+/g, ' ').trim();
+            }
+            if (isCollapsedDesktop) {
+                var label = item.dataset.originalTitle || '';
+                if (label) {
+                    item.setAttribute('title', label);
+                    item.setAttribute('aria-label', label);
+                }
+            } else {
+                item.removeAttribute('title');
+                if (item.dataset.originalTitle) {
+                    item.setAttribute('aria-label', item.dataset.originalTitle);
+                }
+            }
+        });
     }
 
     function toggleSidebar() {
         if (sidebar) sidebar.classList.toggle('collapsed');
         if (main) main.classList.toggle('sidebar-collapsed');
+        syncCollapsedSidebarTooltips();
         try {
             localStorage.setItem('vac-sidebar', sidebar.classList.contains('collapsed') ? 'collapsed' : 'expanded');
         } catch (e) { /* ignore */ }
@@ -39,12 +75,20 @@
                 syncMobileSidebarState();
             } else {
                 toggleSidebar();
+                syncMobileSidebarState();
             }
         });
     }
 
     if (sidebarClose) {
-        sidebarClose.addEventListener('click', closeSidebarMobile);
+        sidebarClose.addEventListener('click', function () {
+            if (window.innerWidth <= mobileBreakpoint) {
+                closeSidebarMobile();
+            } else {
+                toggleSidebar();
+                syncMobileSidebarState();
+            }
+        });
     }
 
     // Restore sidebar state
@@ -56,13 +100,26 @@
         }
     } catch (e) { /* ignore */ }
 
+    syncCollapsedSidebarTooltips();
+
     window.addEventListener('resize', function () {
         if (!sidebar) return;
         if (window.innerWidth > mobileBreakpoint) {
             sidebar.classList.remove('mobile-open');
         }
         syncMobileSidebarState();
+        syncCollapsedSidebarTooltips();
     });
+
+    if (sidebar) {
+        sidebar.querySelectorAll('.admin-sidebar__link, .admin-sidebar__footer-link, .admin-sidebar__link--logout').forEach(function (link) {
+            link.addEventListener('click', function () {
+                if (window.innerWidth <= mobileBreakpoint) {
+                    closeSidebarMobile();
+                }
+            });
+        });
+    }
 
     document.addEventListener('click', function (event) {
         if (window.innerWidth > mobileBreakpoint || !sidebar || !sidebar.classList.contains('mobile-open')) return;
@@ -71,6 +128,7 @@
     });
 
     syncMobileSidebarState();
+    syncCollapsedSidebarTooltips();
 
     /* ── Admin Theme Toggle ── */
     const themeToggle = document.getElementById('admin-theme-toggle');

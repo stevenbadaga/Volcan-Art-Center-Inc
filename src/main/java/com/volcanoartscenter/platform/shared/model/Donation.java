@@ -88,6 +88,15 @@ public class Donation {
     @Column(name = "stripe_subscription_id", length = 120)
     private String stripeSubscriptionId;
 
+    @Column(name = "stripe_payment_intent_id", length = 200)
+    private String stripePaymentIntentId;
+
+    @Column(name = "receipt_url", length = 500)
+    private String receiptUrl;
+
+    @Column(name = "confirmation_email_sent_at")
+    private LocalDateTime confirmationEmailSentAt;
+
     // Timestamps
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

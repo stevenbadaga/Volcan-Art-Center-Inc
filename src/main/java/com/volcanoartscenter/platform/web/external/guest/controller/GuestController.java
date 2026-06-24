@@ -13,7 +13,7 @@ import com.volcanoartscenter.platform.shared.repository.TalentProfileRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,7 +32,9 @@ public class GuestController {
     private final DonationCampaignRepository donationCampaignRepository;
     private final ReviewRepository reviewRepository;
     private final TalentProfileRepository talentProfileRepository;
-    private final ObjectProvider<ClientRegistrationRepository> clientRegistrationRepository;
+
+    @Value("${platform.integrations.clerk.publishable-key:}")
+    private String clerkPublishableKey;
 
     @GetMapping("/")
     public String home(Model model) {
@@ -101,8 +103,7 @@ public class GuestController {
     @GetMapping("/login")
     public String login(@RequestParam(required = false) String redirect, HttpServletRequest request, Model model) {
         model.addAttribute("pageTitle", "Sign In — Volcano Arts Center");
-        ClientRegistrationRepository registrations = clientRegistrationRepository.getIfAvailable();
-        model.addAttribute("googleOauthEnabled", registrations != null && registrations.findByRegistrationId("google") != null);
+        model.addAttribute("clerkPublishableKey", clerkPublishableKey);
         String safeRedirect = null;
         if (redirect != null && redirect.startsWith("/") && !redirect.startsWith("//")) {
             safeRedirect = redirect;
@@ -112,5 +113,10 @@ public class GuestController {
         }
         model.addAttribute("loginRedirect", safeRedirect);
         return "internal/super-admin/login";
+    }
+
+    @GetMapping({"/signin", "/internal/login"})
+    public String loginAlias() {
+        return "redirect:/login";
     }
 }

@@ -23,8 +23,8 @@ EMAIL_NOTIFICATIONS_ENABLED=true
 
 Important:
 
-- This project does not automatically load `.env` files by default in Spring Boot.
-- Put the values in the environment used to start the app, or add dotenv support if you want `.env` loading.
+- The local Spring profile now imports `.env` automatically with `spring.config.import: optional:file:.env[.properties]`.
+- If you run a non-local profile or a custom launcher, put the values in the environment used to start the app.
 - `MAIL_FROM` is used as a fallback, but `RESEND_FROM_EMAIL` is the preferred value.
 
 ## 2. Set up Clerk
@@ -113,6 +113,12 @@ Common role values used by the app include:
 - `TOUR_OPERATOR`
 - `TALENT_APPLICANT`
 
+## 2b. Google login through Clerk
+
+The Google button on the sign-in page now uses Clerk SSO. You do not need separate `GOOGLE_OAUTH_*` environment variables for that button.
+
+If the Clerk dashboard has Google enabled under SSO connections and the app has the Clerk publishable key, secret key, issuer, and webhook secret configured, the Google flow should start from the login and register pages.
+
 ## 3. Set up Resend
 
 ### Step 1: Create or open your Resend account
@@ -160,6 +166,7 @@ EMAIL_NOTIFICATIONS_ENABLED=true
 After setting the variables, restart the backend so Spring Boot reads the new environment.
 
 If you are running locally, make sure the process that launches the app can actually see those variables.
+When the local profile starts, it also logs a masked integration diagnostics line with yes/no presence checks.
 
 ## 5. Verify the flows
 
@@ -194,4 +201,3 @@ Check these first:
 - Resend email sending: `src/main/java/com/volcanoartscenter/platform/shared/service/integration/impl/EmailMessagingService.java`
 - Email notifications: `src/main/java/com/volcanoartscenter/platform/shared/email/TransactionalEmailService.java`
 - Environment wiring: `src/main/resources/application.yml`
-

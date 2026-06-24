@@ -182,6 +182,7 @@ public class CheckoutService {
                 normalizedEmail);
 
         saved.setPaymentTransactionId(intent.id());
+        saved.setStripePaymentIntentId(intent.id());
         shippingOrderRepository.save(saved);
 
         orderStatusHistoryRepository.save(OrderStatusHistory.builder()

@@ -41,7 +41,9 @@
             '.vac-premium-exp-card',
             '.vac-premium-story-card',
             '.vac-home-polaroid',
-            '.vac-home-proof-grid span'
+            '.vac-home-proof-grid span',
+            '.vac-home-rating-card',
+            '.vac-home-why__copy .btn'
         ];
 
         $$(selectors.join(',')).forEach(function (el) {

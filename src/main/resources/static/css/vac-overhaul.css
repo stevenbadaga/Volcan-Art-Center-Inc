@@ -6648,7 +6648,8 @@ html[data-theme="dark"] .admin-body {
 }
 
 html[data-theme="dark"] .admin-body .admin-topbar.admin-topbar--premium {
-    background: rgba(7, 18, 12, 0.94) !important;
+    background:
+        linear-gradient(180deg, rgba(0, 166, 81, 0.12) 0%, rgba(7, 18, 12, 0.96) 38%, rgba(7, 18, 12, 0.94) 100%) !important;
 }
 
 html[data-theme="dark"] .admin-body .admin-topbar__search input,
@@ -6671,16 +6672,45 @@ html[data-theme="dark"] .admin-body .vac-admin-table__row:hover {
 }
 
 @media (max-width: 980px) {
-    .admin-body .admin-sidebar.admin-sidebar--premium {
-        width: min(290px, 86vw) !important;
-    }
-
     .admin-body .admin-content {
         padding: 1.1rem 1rem 2.5rem !important;
     }
 
     .admin-body .admin-topbar.admin-topbar--premium {
         padding-inline: 1rem !important;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .admin-body.admin-mobile-nav-open {
+        overflow: hidden !important;
+    }
+
+    .admin-body.admin-mobile-nav-open::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: rgba(5, 15, 10, 0.42);
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
+        z-index: 999;
+        pointer-events: auto;
+    }
+
+    .admin-body .admin-sidebar.admin-sidebar--premium {
+        width: min(290px, 86vw) !important;
+    }
+
+    .admin-body .admin-main {
+        margin-left: 0 !important;
+    }
+
+    .admin-body .admin-main.sidebar-collapsed {
+        margin-left: 0 !important;
+    }
+
+    .admin-body .admin-sidebar.admin-sidebar--premium.mobile-open {
+        transform: translateX(0) !important;
     }
 }
 
@@ -13040,6 +13070,220 @@ input[type="file"].form-input:hover {
     font-weight: 600;
 }
 
+.vac-reset-stage {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin: 0 0 1rem;
+    padding: 0.38rem 0.78rem;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 162, 89, 0.16);
+    background: rgba(0, 162, 89, 0.08);
+    color: #0b5a36;
+    font-family: var(--font-ui);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.vac-reset-stack {
+    margin-top: 1.35rem;
+    display: grid;
+    gap: 1rem;
+}
+
+.vac-reset-panel {
+    display: grid;
+    gap: 1rem;
+    padding: 1.05rem;
+    border-radius: 18px;
+    border: 1px solid rgba(13, 58, 36, 0.12);
+    background: linear-gradient(180deg, rgba(247, 251, 248, 0.9), rgba(241, 247, 243, 0.96));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+.vac-reset-panel__head {
+    display: grid;
+    gap: 0.28rem;
+}
+
+.vac-reset-panel__head strong {
+    font-family: var(--font-ui);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #0c5e39;
+}
+
+.vac-reset-panel__head p {
+    margin: 0;
+    color: var(--vac-muted);
+    font-size: 0.9rem;
+    line-height: 1.52;
+}
+
+.vac-reset-step-note {
+    margin: 0;
+    color: var(--vac-muted);
+    font-size: 0.84rem;
+    line-height: 1.45;
+}
+
+.vac-reset-step-note strong {
+    color: #0c5e39;
+    font-weight: 700;
+}
+
+.vac-reset-code {
+    text-align: center;
+    letter-spacing: 0.36em;
+    font-size: clamp(1.15rem, 2vw, 1.4rem);
+    font-weight: 800;
+}
+
+.vac-reset-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.85rem;
+    flex-wrap: wrap;
+}
+
+.vac-reset-timer {
+    font-family: var(--font-ui);
+    font-weight: 800;
+    font-size: 0.76rem;
+    letter-spacing: 0.16em;
+    color: #0b5a36;
+    text-transform: uppercase;
+}
+
+.vac-reset-action-link {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    color: var(--g);
+    font-family: var(--font-ui);
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.vac-reset-action-link:hover {
+    text-decoration: underline;
+}
+
+.vac-reset-action-link:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    text-decoration: none;
+}
+
+.vac-reset-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.85rem;
+    flex-wrap: wrap;
+}
+
+.vac-password-field {
+    position: relative;
+}
+
+.vac-password-field .form-input {
+    padding-right: 3.1rem;
+}
+
+.vac-password-toggle {
+    position: absolute;
+    right: 0.7rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 10px;
+    border: 1px solid rgba(13, 58, 36, 0.12);
+    background: rgba(255, 255, 255, 0.88);
+    color: #0c5e39;
+    box-shadow: 0 6px 18px rgba(6, 36, 22, 0.08);
+    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.vac-password-toggle:hover {
+    transform: translateY(-50%) scale(1.03);
+    border-color: rgba(0, 162, 89, 0.28);
+    box-shadow: 0 10px 22px rgba(6, 36, 22, 0.12);
+}
+
+.vac-password-toggle i {
+    width: 16px;
+    height: 16px;
+}
+
+html[data-theme="dark"] .vac-reset-stage {
+    border-color: rgba(169, 231, 191, 0.22);
+    background: rgba(0, 162, 89, 0.12);
+    color: #c8f1d8;
+}
+
+html[data-theme="dark"] .vac-reset-panel {
+    border-color: rgba(169, 231, 191, 0.16);
+    background: linear-gradient(180deg, rgba(14, 24, 18, 0.92), rgba(10, 19, 14, 0.98));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+html[data-theme="dark"] .vac-reset-panel__head strong,
+html[data-theme="dark"] .vac-reset-timer,
+html[data-theme="dark"] .vac-reset-step-note strong {
+    color: #a9e7bf;
+}
+
+html[data-theme="dark"] .vac-reset-panel__head p,
+html[data-theme="dark"] .vac-reset-step-note {
+    color: #c7d6cc;
+}
+
+html[data-theme="dark"] .vac-password-toggle {
+    border-color: rgba(169, 231, 191, 0.16);
+    background: rgba(11, 23, 16, 0.86);
+    color: #d8fae6;
+}
+
+html[data-theme="dark"] .vac-password-toggle:hover {
+    border-color: rgba(169, 231, 191, 0.3);
+}
+
+@media (max-width: 700px) {
+    .vac-reset-stack {
+        gap: 0.85rem;
+    }
+
+    .vac-reset-panel {
+        padding: 0.95rem;
+        border-radius: 16px;
+    }
+
+    .vac-reset-meta,
+    .vac-reset-actions {
+        align-items: flex-start;
+    }
+
+    .vac-reset-code {
+        letter-spacing: 0.26em;
+        font-size: clamp(1.05rem, 5vw, 1.28rem);
+    }
+}
+
 @media (max-width: 980px) {
     .hero-golden--portrait-source.hero-golden--fitted {
         height: min(50vh, 460px) !important;
@@ -15588,6 +15832,14 @@ a.admin-kpi:hover .admin-kpi__label::after { color: #00a651; }
     box-shadow: 4px 0 40px rgba(0, 24, 12, 0.3) !important;
 }
 
+.admin-body .admin-sidebar.collapsed {
+    width: 68px !important;
+}
+
+.admin-body .admin-main.sidebar-collapsed {
+    margin-left: 68px !important;
+}
+
 .admin-body .admin-sidebar__header {
     padding: 1.5rem 1.25rem !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
@@ -15705,13 +15957,15 @@ a.admin-kpi:hover .admin-kpi__label::after { color: #00a651; }
 
 /* ── Premium Topbar (Unified Brand Green) ── */
 .admin-body .admin-topbar {
-    background: #004d26 !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
-    box-shadow: 0 4px 20px rgba(0, 24, 12, 0.2) !important;
+    background:
+        linear-gradient(180deg, rgba(0, 166, 81, 0.08) 0%, rgba(255, 254, 250, 0.96) 44%, rgba(248, 250, 248, 0.93) 100%),
+        rgba(248, 250, 248, 0.96) !important;
+    border-bottom: 1px solid rgba(0, 166, 81, 0.12) !important;
+    box-shadow: 0 4px 20px rgba(18, 53, 34, 0.06) !important;
 }
 
 .admin-body .admin-topbar__toggle span {
-    background: #ffffff !important;
+    background: #13261c !important;
 }
 
 .admin-body .admin-topbar__breadcrumb {
@@ -15720,11 +15974,11 @@ a.admin-kpi:hover .admin-kpi__label::after { color: #00a651; }
     font-size: 0.75rem !important;
     text-transform: uppercase !important;
     letter-spacing: 0.08em !important;
-    color: rgba(255, 255, 255, 0.75) !important;
+    color: rgba(19, 38, 28, 0.72) !important;
 }
 
 .admin-body .admin-topbar__breadcrumb a {
-    color: #e8d4b0 !important;
+    color: #0f2b1d !important;
     text-decoration: none !important;
 }
 
@@ -15740,7 +15994,7 @@ a.admin-kpi:hover .admin-kpi__label::after { color: #00a651; }
 .admin-body .admin-topbar__search i {
     position: absolute;
     left: 0.9rem;
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(19, 38, 28, 0.55);
     pointer-events: none;
     width: 15px;
     height: 15px;
@@ -15749,20 +16003,20 @@ a.admin-kpi:hover .admin-kpi__label::after { color: #00a651; }
 .admin-body .admin-topbar__search input {
     width: 100%;
     border-radius: 30px !important;
-    background: rgba(255, 255, 255, 0.12) !important;
-    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    background: rgba(255, 255, 255, 0.92) !important;
+    border: 1px solid rgba(0, 166, 81, 0.12) !important;
     padding: 0.45rem 1rem 0.45rem 2.4rem !important;
     font-size: 0.82rem !important;
-    color: #ffffff !important;
+    color: #13261c !important;
     font-family: 'Open Sans', sans-serif !important;
     transition: all 0.2s ease !important;
 }
 
 .admin-body .admin-topbar__search input:focus {
     background: #ffffff !important;
-    border-color: #cba86a !important;
+    border-color: var(--dashboard-primary) !important;
     color: #111111 !important;
-    box-shadow: 0 0 0 3px rgba(203, 168, 170, 0.25) !important;
+    box-shadow: 0 0 0 3px rgba(0, 166, 81, 0.12) !important;
     outline: none !important;
 }
 
@@ -15772,7 +16026,7 @@ a.admin-kpi:hover .admin-kpi__label::after { color: #00a651; }
 }
 
 .admin-body .admin-topbar__search input::placeholder {
-    color: rgba(255, 255, 255, 0.6) !important;
+    color: rgba(19, 38, 28, 0.42) !important;
 }
 
 /* User & Theme controls in Topbar */
@@ -15783,16 +16037,16 @@ a.admin-kpi:hover .admin-kpi__label::after { color: #00a651; }
     width: 36px !important;
     height: 36px !important;
     border-radius: 50% !important;
-    border: 1px solid rgba(255, 255, 255, 0.18) !important;
-    background: rgba(255, 255, 255, 0.1) !important;
-    color: #ffffff !important;
+    border: 1px solid rgba(0, 166, 81, 0.12) !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    color: #13261c !important;
     cursor: pointer !important;
     transition: all 0.2s ease !important;
     padding: 0 !important;
 }
 
 .admin-body .admin-theme-toggle:hover {
-    background: rgba(255, 255, 255, 0.2) !important;
+    background: rgba(255, 255, 255, 0.98) !important;
     transform: scale(1.05) !important;
 }
 
@@ -19211,9 +19465,9 @@ html[data-theme="dark"] .theme-option i {
 }
 
 #departments.vac-home-pillars .container {
-    max-width: 1180px !important;
+    max-width: 1500px !important;
     margin-inline: auto !important;
-    padding-inline: 24px !important;
+    padding-inline: 16px !important;
 }
 
 /* Designed premium dark forest green panel - full-bleed banner style */
@@ -19296,7 +19550,7 @@ html[data-theme="dark"] .theme-option i {
 #departments .vac-dept-nav {
     display: grid !important;
     grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-    gap: 24px !important;
+    gap: 14px !important;
     margin-top: 32px !important; /* Closer and better connected to the panel, no negative overlap */
     position: relative !important;
     z-index: 10 !important;
@@ -19420,7 +19674,7 @@ html[data-theme="dark"] .theme-option i {
     bottom: 0 !important;
     left: 0 !important;
     right: 0 !important;
-    padding: 32px 24px !important;
+    padding: 34px 26px 28px !important;
     z-index: 3 !important;
     display: flex !important;
     flex-direction: column !important;
@@ -19433,10 +19687,10 @@ html[data-theme="dark"] .theme-option i {
 #departments .vac-dept-pillar__body::after {
     content: '→' !important;
     position: absolute !important;
-    bottom: 30px !important;
-    right: 24px !important;
-    width: 42px !important;
-    height: 42px !important;
+    bottom: 26px !important;
+    right: 22px !important;
+    width: 44px !important;
+    height: 44px !important;
     background: #00A651 !important; /* Brand green details */
     border-radius: 50% !important;
     display: flex !important;
@@ -19475,13 +19729,14 @@ html[data-theme="dark"] .theme-option i {
 /* Card title */
 #departments .vac-dept-pillar h3 {
     font-family: var(--font-ui, sans-serif) !important;
-    font-size: 24px !important;
+    font-size: clamp(0.95rem, 1.08vw, 1.18rem) !important;
     font-weight: 800 !important;
-    line-height: 1.2 !important;
+    line-height: 1.05 !important;
     color: #ffffff !important;
     margin: 0 0 8px 0 !important;
     text-transform: uppercase !important;
-    letter-spacing: 0.02em !important;
+    letter-spacing: 0.01em !important;
+    white-space: nowrap !important;
 }
 
 /* Card description text */
@@ -19541,6 +19796,11 @@ html[data-theme="dark"] .theme-option i {
     #departments .vac-dept-pillar {
         height: 420px !important; /* Slightly smaller height on tablets */
     }
+
+    #departments .vac-dept-pillar h3 {
+        white-space: normal !important;
+        font-size: clamp(1.02rem, 2vw, 1.22rem) !important;
+    }
 }
 
 @media (max-width: 560px) {
@@ -19575,7 +19835,8 @@ html[data-theme="dark"] .theme-option i {
     }
     
     #departments .vac-dept-pillar h3 {
-        font-size: 20px !important;
+        font-size: 1.08rem !important;
+        white-space: normal !important;
     }
 }
 
@@ -22606,10 +22867,11 @@ html[data-theme="dark"] .admin-body .vac-admin-table__primary small {
 }
 
 .admin-body .admin-sidebar.admin-sidebar--premium .admin-sidebar__link.active {
-    background: #ffffff !important;
-    color: #0f2b1d !important;
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.16) !important;
-    border-left: 3px solid var(--vac-gold) !important;
+    background: var(--dashboard-surface) !important;
+    color: var(--dashboard-text) !important;
+    border-left: 0 !important;
+    border: 1px solid var(--dashboard-border) !important;
+    box-shadow: 0 10px 24px rgba(18, 53, 34, 0.08) !important;
 }
 
 .admin-body .admin-sidebar.admin-sidebar--premium .admin-sidebar__link.active::before {
@@ -22635,6 +22897,16 @@ html[data-theme="dark"] .admin-body .vac-admin-table__primary small {
     min-width: 0 !important;
 }
 
+.admin-body .admin-sidebar.admin-sidebar--premium .admin-sidebar__link {
+    white-space: nowrap !important;
+    overflow-wrap: normal !important;
+}
+
+.admin-body .admin-sidebar.admin-sidebar--premium .admin-sidebar__footer-link,
+.admin-body .admin-sidebar.admin-sidebar--premium .admin-sidebar__link--logout {
+    white-space: nowrap !important;
+}
+
 .admin-body .admin-sidebar.admin-sidebar--premium {
     display: flex !important;
     flex-direction: column !important;
@@ -22646,12 +22918,13 @@ html[data-theme="dark"] .admin-body .vac-admin-table__primary small {
     min-height: 0 !important;
     overflow-y: auto !important;
     overflow-x: hidden !important;
-    scrollbar-width: thin !important;
-    scrollbar-color: rgba(255, 255, 255, 0.18) transparent !important;
+    scrollbar-width: none !important;
+    scrollbar-color: transparent transparent !important;
 }
 
 .admin-body .admin-sidebar__nav::-webkit-scrollbar {
-    width: 8px !important;
+    width: 0 !important;
+    height: 0 !important;
 }
 
 .admin-body .admin-sidebar__nav::-webkit-scrollbar-track {
@@ -22659,17 +22932,17 @@ html[data-theme="dark"] .admin-body .vac-admin-table__primary small {
 }
 
 .admin-body .admin-sidebar__nav::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.18) !important;
+    background: transparent !important;
     border-radius: 999px !important;
 }
 
 .admin-body .admin-sidebar__nav::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.28) !important;
+    background: transparent !important;
 }
 
 .admin-body .admin-sidebar.admin-sidebar--premium .admin-sidebar__link {
-    white-space: normal !important;
-    overflow-wrap: anywhere !important;
+    white-space: nowrap !important;
+    overflow-wrap: normal !important;
 }
 
 .admin-body .admin-sidebar.admin-sidebar--premium .admin-sidebar__footer {
@@ -22689,14 +22962,80 @@ html[data-theme="dark"] .admin-body .vac-admin-table__primary small {
 
 .admin-body .admin-sidebar.admin-sidebar--premium .admin-sidebar__link.active svg,
 .admin-body .admin-sidebar.admin-sidebar--premium .admin-sidebar__link.active i {
-    color: #0f2b1d !important;
-    stroke: #0f2b1d !important;
+    color: var(--dashboard-text) !important;
+    stroke: var(--dashboard-text) !important;
 }
 
 .admin-body .admin-sidebar.admin-sidebar--premium .admin-sidebar__link.active .admin-sidebar__badge {
     background: rgba(0, 166, 81, 0.12) !important;
-    color: #0f2b1d !important;
+    color: var(--dashboard-text) !important;
     border-color: rgba(0, 166, 81, 0.18) !important;
+}
+
+.admin-body .admin-sidebar.collapsed .admin-sidebar__logo {
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.admin-body .admin-sidebar.collapsed .admin-sidebar__logo .logo-image--white {
+    width: 34px !important;
+    height: 34px !important;
+}
+
+.admin-body .admin-sidebar.collapsed .admin-sidebar__logo-text,
+.admin-body .admin-sidebar.collapsed .admin-sidebar__section-label,
+.admin-body .admin-sidebar.collapsed .admin-sidebar__link span,
+.admin-body .admin-sidebar.collapsed .admin-sidebar__footer-link span,
+.admin-body .admin-sidebar.collapsed .admin-sidebar__link--logout span {
+    display: none !important;
+}
+
+.admin-body .admin-sidebar.collapsed .admin-sidebar__link,
+.admin-body .admin-sidebar.collapsed .admin-sidebar__footer-link,
+.admin-body .admin-sidebar.collapsed .admin-sidebar__link--logout {
+    display: grid !important;
+    place-items: center !important;
+    justify-content: center !important;
+    gap: 0 !important;
+    width: calc(100% - 0.75rem) !important;
+    min-height: 44px !important;
+    margin-inline: 0.375rem !important;
+    padding: 0 !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
+    text-indent: 0 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+}
+
+.admin-body .admin-sidebar.collapsed .admin-sidebar__link svg,
+.admin-body .admin-sidebar.collapsed .admin-sidebar__footer-link svg,
+.admin-body .admin-sidebar.collapsed .admin-sidebar__link--logout svg {
+    margin: 0 !important;
+}
+
+.admin-body .admin-sidebar.collapsed .admin-sidebar__badge {
+    position: absolute !important;
+    top: 0.35rem !important;
+    right: 0.35rem !important;
+    margin-left: 0 !important;
+    font-size: 0.65rem !important;
+    line-height: 1 !important;
+}
+
+.admin-body .admin-sidebar.collapsed .admin-sidebar__link.active {
+    width: 44px !important;
+    height: 44px !important;
+    padding: 0 !important;
+    margin-inline: auto !important;
+    border-radius: 999px !important;
+    border-left: 0 !important;
+    border: 1px solid var(--dashboard-border) !important;
+    box-shadow: 0 0 0 1px rgba(0, 166, 81, 0.08), 0 10px 20px rgba(0, 0, 0, 0.14) !important;
+}
+
+.admin-body .admin-sidebar.collapsed .admin-sidebar__link.active::before {
+    display: none !important;
 }
 
 /* Public hero/header restoration: keep titles below the fixed navbar and restore the split-hero layout. */
@@ -23749,4 +24088,169 @@ html[data-theme="dark"] .vac-shop-market .vac-art-card__actions .vac-art-inquire
     .vac-shop-market .vac-catalog-card__media img,
     .vac-shop-market .vac-art-card__actions .cart-btn,
     .vac-shop-market .vac-art-card__actions .vac-art-inquire-btn { transition: none; }
+}
+
+/* Admin text contrast guard — keeps dashboard copy readable across shared shells and forms. */
+.admin-body {
+    --vac-ink: #050505;
+    --vac-muted: #4b4b4b;
+    --dashboard-text: #050505;
+    --dashboard-muted: #48584e;
+}
+
+html[data-theme="dark"] .admin-body {
+    --vac-ink: #f2f7f4;
+    --vac-muted: #9db0a5;
+    --dashboard-text: #f2f7f4;
+    --dashboard-muted: #9db0a5;
+}
+
+.admin-body .breadcrumb,
+.admin-body .breadcrumb a,
+.admin-body .breadcrumb span,
+.admin-body .breadcrumb__separator,
+.admin-body .admin-topbar__breadcrumb,
+.admin-body .admin-topbar__breadcrumb a,
+.admin-body .admin-topbar__breadcrumb span,
+.admin-body .admin-topbar__breadcrumb .sep {
+    color: var(--dashboard-muted) !important;
+}
+
+.admin-body .admin-topbar__breadcrumb a:hover,
+.admin-body .admin-topbar__breadcrumb a:focus-visible,
+.admin-body .breadcrumb a:hover,
+.admin-body .breadcrumb a:focus-visible {
+    color: var(--dashboard-primary) !important;
+}
+
+.admin-body .form-label,
+.admin-body .admin-sidebar__section-label,
+.admin-body .admin-card__header h3,
+.admin-body .admin-card__header h4,
+.admin-body .admin-page-header__info p,
+.admin-body .admin-card__header p,
+.admin-body .admin-panel__header p,
+.admin-body .vac-activity-card__heading p,
+.admin-body .product-edit-header p,
+.admin-body .product-edit-actions__note,
+.admin-body .product-form-help,
+.admin-body .product-meta-subtle,
+.admin-body .vac-notification-row strong,
+.admin-body .vac-notification-row p,
+.admin-body .vac-notification-row time,
+.admin-body .admin-notif-center__item strong,
+.admin-body .admin-notif-center__item p,
+.admin-body .admin-notif-center__item time,
+.admin-body .vac-admin-table__primary small,
+.admin-body .admin-topbar__user-role,
+.admin-body .text-muted,
+.admin-body .vac-muted {
+    color: var(--dashboard-muted) !important;
+}
+
+.admin-body .form-label {
+    color: #000000 !important;
+}
+
+.admin-body .admin-card__header h1,
+.admin-body .admin-card__header h2,
+.admin-body .admin-card__header h3,
+.admin-body .admin-card__header h4,
+.admin-body .admin-panel__header h1,
+.admin-body .admin-panel__header h2,
+.admin-body .admin-panel__header h3,
+.admin-body .admin-panel__title,
+.admin-body .admin-page-header__info h1,
+.admin-body .vac-dashboard-page-header h1,
+.admin-body .vac-activity-card__heading h3,
+.admin-body .admin-kpi__value,
+.admin-body .admin-table tbody td,
+.admin-body .vac-admin-table__row,
+.admin-body .form-input,
+.admin-body .form-textarea,
+.admin-body .form-select,
+.admin-body .vac-dashboard-page-header span,
+.admin-body .admin-topbar__user-name {
+    color: #111111 !important;
+}
+
+.admin-body .chip {
+    color: inherit !important;
+}
+
+.admin-body .form-input::placeholder,
+.admin-body .form-textarea::placeholder,
+.admin-body .admin-topbar__search input::placeholder {
+    color: #728378 !important;
+    opacity: 1 !important;
+}
+
+html[data-theme="dark"] .admin-body .form-input::placeholder,
+html[data-theme="dark"] .admin-body .form-textarea::placeholder,
+html[data-theme="dark"] .admin-body .admin-topbar__search input::placeholder {
+    color: #93a79b !important;
+}
+
+/* Final admin sidebar active-state guard: keep the active item a soft card/pill with no orange accent. */
+.admin-body .admin-sidebar__link.active,
+.admin-body .admin-sidebar.admin-sidebar--premium .admin-sidebar__link.active {
+    position: relative !important;
+    margin-inline: 0.45rem !important;
+    padding-inline: 0.95rem !important;
+    border-left: 0 !important;
+    border-inline: 1px solid var(--dashboard-border) !important;
+    border-radius: 12px !important;
+    background: var(--dashboard-surface) !important;
+    color: #111111 !important;
+    box-shadow: 0 10px 24px rgba(18, 53, 34, 0.08) !important;
+    overflow: hidden !important;
+}
+
+.admin-body .admin-sidebar__link.active::before,
+.admin-body .admin-sidebar.admin-sidebar--premium .admin-sidebar__link.active::before {
+    display: none !important;
+}
+
+.admin-body .admin-sidebar__link.active svg,
+.admin-body .admin-sidebar__link.active i,
+.admin-body .admin-sidebar.admin-sidebar--premium .admin-sidebar__link.active svg,
+.admin-body .admin-sidebar.admin-sidebar--premium .admin-sidebar__link.active i {
+    color: #111111 !important;
+    stroke: #111111 !important;
+    opacity: 1 !important;
+}
+
+.admin-body .admin-sidebar__link.active .admin-sidebar__badge,
+.admin-body .admin-sidebar.admin-sidebar--premium .admin-sidebar__link.active .admin-sidebar__badge {
+    background: rgba(0, 166, 81, 0.1) !important;
+    border-color: rgba(0, 166, 81, 0.16) !important;
+    color: #111111 !important;
+}
+
+.admin-body .admin-sidebar.collapsed .admin-sidebar__link.active,
+.admin-body .admin-sidebar.collapsed .admin-sidebar.admin-sidebar--premium .admin-sidebar__link.active {
+    width: 44px !important;
+    height: 44px !important;
+    margin-inline: auto !important;
+    padding: 0 !important;
+    border: 1px solid var(--dashboard-border) !important;
+    border-radius: 999px !important;
+    background: var(--dashboard-surface) !important;
+    box-shadow: 0 10px 20px rgba(18, 53, 34, 0.12) !important;
+}
+
+.admin-body .admin-sidebar.collapsed .admin-sidebar__link.active .admin-sidebar__badge,
+.admin-body .admin-sidebar.collapsed .admin-sidebar.admin-sidebar--premium .admin-sidebar__link.active .admin-sidebar__badge {
+    right: 0.28rem !important;
+    top: 0.28rem !important;
+}
+
+.admin-body .admin-sidebar__nav {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+}
+
+.admin-body .admin-sidebar__nav::-webkit-scrollbar {
+    width: 0 !important;
+    height: 0 !important;
 }

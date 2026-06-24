@@ -46,27 +46,27 @@ public class GlobalNavigationAdvice {
         Set<String> roles = user.getRoles().stream().map(r -> r.getName()).collect(Collectors.toSet());
         String userName = user.getFullName();
         if (roles.contains("SUPER_ADMIN")) {
-            return new NavContext(true, "Super Admin", "/admin/dashboard", userName,
+            return new NavContext(true, "Super Admin", "/admin/dashboard", userName, user.getProfileImageUrl(),
                     true, false, false, false, false, false);
         }
         if (roles.contains("CONTENT_MANAGER")) {
-            return new NavContext(true, "Content Manager", "/admin/content/dashboard", userName,
+            return new NavContext(true, "Content Manager", "/admin/content/dashboard", userName, user.getProfileImageUrl(),
                     false, true, false, false, false, false);
         }
         if (roles.contains("OPS_MANAGER")) {
-            return new NavContext(true, "Ops Manager", "/admin/ops/dashboard", userName,
+            return new NavContext(true, "Ops Manager", "/admin/ops/dashboard", userName, user.getProfileImageUrl(),
                     false, false, true, false, false, false);
         }
         if (roles.contains("TOUR_OPERATOR")) {
-            return new NavContext(true, "Tour Operator", "/tour-operators/portal", userName,
+            return new NavContext(true, "Tour Operator", "/tour-operators/portal", userName, user.getProfileImageUrl(),
                     false, false, false, true, false, false);
         }
         if (roles.contains("TALENT_APPLICANT")) {
-            return new NavContext(true, "Talent Applicant", "/talent/dashboard", userName,
+            return new NavContext(true, "Talent Applicant", "/talent/dashboard", userName, user.getProfileImageUrl(),
                     false, false, false, false, true, false);
         }
         if (roles.contains("REGISTERED_CLIENT")) {
-            return new NavContext(true, "Registered Client", "/client/dashboard", userName,
+            return new NavContext(true, "Registered Client", "/client/dashboard", userName, user.getProfileImageUrl(),
                     false, false, false, false, false, true);
         }
         return NavContext.guest();
@@ -128,6 +128,7 @@ public class GlobalNavigationAdvice {
             String roleLabel,
             String dashboardUrl,
             String userName,
+            String profileImageUrl,
             boolean superAdmin,
             boolean contentManager,
             boolean opsManager,
@@ -136,7 +137,7 @@ public class GlobalNavigationAdvice {
             boolean registeredClient
     ) {
         static NavContext guest() {
-            return new NavContext(false, "Guest", "/login", "Guest", false, false, false, false, false, false);
+            return new NavContext(false, "Guest", "/login", "Guest", null, false, false, false, false, false, false);
         }
     }
 }

@@ -18,22 +18,21 @@
 <body>
 <main layout:fragment="content" class="vac-blog-page">
 
-    <section class="hero-golden hero-golden--compact hero-golden--blog hero-golden--fitted hero-golden--frame-fill hero-golden--portrait-source vac-cinematic-hero reveal">
-        <div class="hero-golden__bg vac-cinematic-hero__bg">
-            <img class="hero-slide-backdrop" src="/uploads/7881368095630241.jpeg" alt="" aria-hidden="true" />
-            <img class="hero-slide active vac-cinematic-hero__img" src="/uploads/7881368095630241.jpeg" alt="Editorial story collage" loading="eager"
-                 onerror="this.onerror=null;this.src='/uploads/blog-talent-bg.jpeg';" />
-            <div class="hero-golden__veil vac-cinematic-hero__veil vac-cinematic-hero__veil--light"></div>
-        </div>
-        <div class="hero-golden__content">
-            <p class="hero-golden__kicker">Blog &amp; Stories · Adventure Journal</p>
-            <h1 class="hero-golden__title hero-golden__title--compact">The Rwandan Journal.</h1>
-            <div class="hero-golden__bottom">
-                <p class="hero-golden__sub">Real stories, expert travel insights, and cultural adventures shared by our local guides and fellow travelers from around the world.</p>
-                <div class="hero-golden__actions">
-                    <a href="#featured" class="btn-hero-primary">Read Latest Story</a>
-                    <a th:href="@{/contact}" class="btn-hero-outline">Share a Story</a>
+    <section class="vac-page-hero reveal">
+        <div class="vac-page-hero__inner">
+            <div class="vac-page-hero__copy">
+                <span class="vac-page-hero__eyebrow">THE JOURNAL</span>
+                <h1 class="vac-page-hero__title">STORIES FROM MUSANZE</h1>
+                <p class="vac-page-hero__lead">Real stories, expert travel insights, and cultural adventures shared by our local guides and fellow travelers from around the world.</p>
+                <div class="vac-page-hero__actions">
+                    <a href="#featured" class="btn btn-page-primary">READ STORIES</a>
+                    <a th:href="@{/contact}" class="btn btn-page-outline">EXPLORE CULTURE</a>
                 </div>
+            </div>
+            <div class="vac-page-hero__media">
+                <img src="/uploads/7881368095630241.jpeg" alt="Rwandan Performance Group"
+                     onerror="this.onerror=null;this.src='/uploads/blog-talent-bg.jpeg';" />
+                <div class="vac-page-hero__overlay"></div>
             </div>
         </div>
     </section>
@@ -91,7 +90,7 @@
                 </div>
             </div>
 
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:1.75rem;">
+            <div class="vac-blog-stories-grid">
                 <article class="card card--editorial vac-story-card vac-clickable-card"
                          th:each="post,iter : ${posts}"
                          th:if="${iter.index gt 4}"

@@ -17,22 +17,21 @@
 <body>
 <main layout:fragment="content">
 
-    <section class="hero-golden hero-golden--compact hero-golden--talent hero-golden--fitted hero-golden--frame-fill hero-golden--portrait-source vac-cinematic-hero reveal">
-        <div class="hero-golden__bg vac-cinematic-hero__bg">
-            <img class="hero-slide-backdrop" src="/uploads/55028426690959709.jpeg" alt="" aria-hidden="true" />
-            <img class="hero-slide active vac-cinematic-hero__img" src="/uploads/55028426690959709.jpeg" alt="Rwandan dancer in motion" loading="eager"
-                 onerror="this.onerror=null;this.src='/uploads/talent and media.jpg';" />
-            <div class="hero-golden__veil vac-cinematic-hero__veil vac-cinematic-hero__veil--light"></div>
-        </div>
-        <div class="hero-golden__content">
-            <p class="hero-golden__kicker">Talent &amp; Media · International pipeline</p>
-            <h1 class="hero-golden__title hero-golden__title--compact">Join the Next Generation of Rwandan Artists.</h1>
-            <div class="hero-golden__bottom">
-                <p class="hero-golden__sub">Portfolio development, mentorship, paid commissions, and a route into our global art store — for dancers, visual artists, and media creators.</p>
-                <div class="hero-golden__actions">
-                    <a href="#apply" class="btn-hero-primary">Apply Now</a>
-                    <a href="#profiles" class="btn-hero-outline">Meet Current Talent</a>
+    <section class="vac-page-hero reveal">
+        <div class="vac-page-hero__inner">
+            <div class="vac-page-hero__copy">
+                <span class="vac-page-hero__eyebrow">TALENT &amp; MEDIA</span>
+                <h1 class="vac-page-hero__title">THE NEXT GENERATION OF RWANDAN ARTISTS</h1>
+                <p class="vac-page-hero__lead">Portfolio development, mentorship, paid commissions, and a route into our global art store — for dancers, visual artists, and media creators.</p>
+                <div class="vac-page-hero__actions">
+                    <a href="#apply" class="btn btn-page-primary">APPLY TO PROGRAM</a>
+                    <a href="#profiles" class="btn btn-page-outline">MEET CURRENT TALENT</a>
                 </div>
+            </div>
+            <div class="vac-page-hero__media">
+                <img src="/uploads/55028426690959709.jpeg" alt="Emerging Rwandan artists"
+                     onerror="this.onerror=null;this.src='/uploads/talent and media.jpg';" />
+                <div class="vac-page-hero__overlay"></div>
             </div>
         </div>
     </section>
@@ -124,7 +123,7 @@
             <div th:if="${!#lists.isEmpty(profiles)}" class="vac-talent-profile-grid">
                 <article class="vac-talent-profile-card" th:each="profile : ${profiles}">
                     <div class="vac-talent-profile-card__media">
-                        <img th:if="${profile.primaryImageUrl != null and !#strings.isEmpty(profile.primaryImageUrl)}" th:src="${profile.primaryImageUrl}" th:alt="${profile.displayName}" loading="lazy" onerror="this.style.display='none';" />
+                        <img th:src="${profile.primaryImageUrl != null and !#strings.isEmpty(profile.primaryImageUrl) ? profile.primaryImageUrl : '/uploads/talent and media.jpg'}" th:alt="${profile.displayName}" loading="lazy" onerror="this.onerror=null;this.src='/uploads/talent and media.jpg';" />
                     </div>
                     <div class="vac-talent-profile-card__body">
                         <div class="vac-talent-profile-card__head">

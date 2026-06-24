@@ -1,8 +1,10 @@
 package com.volcanoartscenter.platform.shared.service;
 
 import com.volcanoartscenter.platform.shared.model.Booking;
+import com.volcanoartscenter.platform.shared.model.Donation;
 import com.volcanoartscenter.platform.shared.model.ShippingOrder;
 import com.volcanoartscenter.platform.shared.model.WebhookEventLog;
+import com.volcanoartscenter.platform.shared.email.TransactionalEmailService;
 import com.volcanoartscenter.platform.shared.notification.NotificationCategory;
 import com.volcanoartscenter.platform.shared.notification.NotificationEvent;
 import com.volcanoartscenter.platform.shared.payment.OrderStatusHistory;
@@ -12,6 +14,8 @@ import com.volcanoartscenter.platform.shared.payment.PaymentGateway;
 import com.volcanoartscenter.platform.shared.payment.PaymentService;
 import com.volcanoartscenter.platform.shared.payment.PaymentSourceType;
 import com.volcanoartscenter.platform.shared.repository.BookingRepository;
+import com.volcanoartscenter.platform.shared.repository.DonationCampaignRepository;
+import com.volcanoartscenter.platform.shared.repository.DonationRepository;
 import com.volcanoartscenter.platform.shared.repository.ShippingOrderRepository;
 import com.volcanoartscenter.platform.shared.repository.WebhookEventLogRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +24,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Service
@@ -31,8 +36,11 @@ public class WebhookProcessingService {
     private final ShippingOrderRepository shippingOrderRepository;
     private final OrderStatusHistoryRepository orderStatusHistoryRepository;
     private final BookingRepository bookingRepository;
+    private final DonationRepository donationRepository;
+    private final DonationCampaignRepository donationCampaignRepository;
     private final PaymentService paymentService;
     private final ApplicationEventPublisher eventPublisher;
+    private final TransactionalEmailService transactionalEmailService;
 
     /**
      * Stripe payment_intent.succeeded handler. Idempotent on externalEventId.
@@ -98,6 +106,24 @@ public class WebhookProcessingService {
         }
     }
 
+    @Transactional
+    public void processStripeSubscriptionInvoicePaid(String externalEventId, String subscriptionId) {
+        if (alreadyProcessed(externalEventId)) {
+            log.info("Idempotency: Stripe event {} already processed.", externalEventId);
+            return;
+        }
+        try {
+            Payment payment = paymentService.markCaptured(PaymentGateway.STRIPE_CARD, subscriptionId);
+            applyCapture(payment, OrderStatusHistory.Actor.WEBHOOK,
+                    "Stripe invoice.paid (" + externalEventId + ")");
+            recordEvent(externalEventId, "invoice.paid", "PROCESSED", null);
+        } catch (Exception ex) {
+            log.error("Failed to process Stripe invoice event {}", externalEventId, ex);
+            recordEvent(externalEventId, "invoice.paid", "FAILED", ex.getMessage());
+            throw ex;
+        }
+    }
+
     /** MTN MoMo callback handler. Status: SUCCESSFUL / FAILED / PENDING. */
     @Transactional
     public void processMomoCallback(String externalEventId, String momoReferenceId, String status, String reason) {
@@ -144,6 +170,7 @@ public class WebhookProcessingService {
         switch (payment.getSourceType()) {
             case SHIPPING_ORDER -> applyOrderCapture(payment, actor, reason);
             case BOOKING -> applyBookingCapture(payment, reason);
+            case DONATION -> applyDonationCapture(payment);
             default -> log.info("Capture for source {} id={} — no domain transition wired.",
                     payment.getSourceType(), payment.getSourceId());
         }
@@ -162,6 +189,14 @@ public class WebhookProcessingService {
                 booking.setStatus(Booking.BookingStatus.CONFIRMED);
                 booking.setConfirmedAt(LocalDateTime.now());
             }
+            booking.setStripePaymentIntentId(payment.getGatewayRef());
+            booking.setPaidAt(LocalDateTime.now());
+            boolean sendEmail = booking.getConfirmationEmailSentAt() == null && payment.getEmailSentAt() == null;
+            if (sendEmail) {
+                transactionalEmailService.sendBookingPaid(booking);
+                booking.setConfirmationEmailSentAt(LocalDateTime.now());
+                paymentService.markEmailSent(payment);
+            }
             bookingRepository.save(booking);
 
             if (payment.getPayerUserId() != null) {
@@ -177,6 +212,45 @@ public class WebhookProcessingService {
             log.info("Booking {} captured: status {}->{}, payment {}->{}",
                     booking.getBookingReference(), prevStatus, booking.getStatus(),
                     prevPay, booking.getPaymentStatus());
+        });
+    }
+
+    private void applyDonationCapture(Payment payment) {
+        donationRepository.findById(payment.getSourceId()).ifPresent(donation -> {
+            if (donation.getStatus() == Donation.DonationStatus.COMPLETED) {
+                return;
+            }
+            donation.setStatus(Donation.DonationStatus.COMPLETED);
+            donation.setCompletedAt(LocalDateTime.now());
+            donation.setStripePaymentIntentId(payment.getGatewayRef());
+            if (payment.getReceiptUrl() != null && !payment.getReceiptUrl().isBlank()) {
+                donation.setReceiptUrl(payment.getReceiptUrl());
+            }
+            if (donation.getCampaign() != null) {
+                var campaign = donation.getCampaign();
+                campaign.setRaisedAmount((campaign.getRaisedAmount() == null ? BigDecimal.ZERO : campaign.getRaisedAmount())
+                        .add(donation.getAmount() == null ? BigDecimal.ZERO : donation.getAmount()));
+                campaign.setDonorCount((campaign.getDonorCount() == null ? 0 : campaign.getDonorCount()) + 1);
+                donationCampaignRepository.save(campaign);
+            }
+            boolean sendEmail = donation.getConfirmationEmailSentAt() == null && payment.getEmailSentAt() == null;
+            if (sendEmail) {
+                transactionalEmailService.sendDonationPaid(donation);
+                donation.setConfirmationEmailSentAt(LocalDateTime.now());
+                paymentService.markEmailSent(payment);
+            }
+            donationRepository.save(donation);
+            if (payment.getPayerUserId() != null) {
+                eventPublisher.publishEvent(NotificationEvent.forEntity(
+                        payment.getPayerUserId(),
+                        NotificationCategory.DONATION_RECEIVED,
+                        "Donation confirmed: " + donation.getReference(),
+                        "Payment received. Thank you for supporting Volcano Arts Center conservation work.",
+                        "/conservation",
+                        "Donation",
+                        donation.getId()));
+            }
+            log.info("Donation {} captured and marked completed.", donation.getReference());
         });
     }
 
@@ -227,6 +301,14 @@ public class WebhookProcessingService {
             transitioned = true;
         }
         if (transitioned) {
+            order.setStripePaymentIntentId(payment.getGatewayRef());
+            order.setPaidAt(LocalDateTime.now());
+            boolean sendEmail = order.getConfirmationEmailSentAt() == null && payment.getEmailSentAt() == null;
+            if (sendEmail) {
+                transactionalEmailService.sendOrderPaid(order);
+                order.setConfirmationEmailSentAt(LocalDateTime.now());
+                paymentService.markEmailSent(payment);
+            }
             shippingOrderRepository.save(order);
             orderStatusHistoryRepository.save(OrderStatusHistory.builder()
                     .orderId(order.getId())

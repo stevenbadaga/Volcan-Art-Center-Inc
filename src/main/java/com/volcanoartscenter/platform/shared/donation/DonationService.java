@@ -136,6 +136,7 @@ public class DonationService {
                            "email", donorEmail));
             clientSecret = intent.clientSecret();
             saved.setTransactionId(intent.id());
+            saved.setStripePaymentIntentId(intent.id());
             donationRepository.save(saved);
 
             paymentService.createPending(PaymentGateway.STRIPE_CARD, intent.id(),

@@ -101,6 +101,18 @@ public class ShippingOrder {
     @Column(name = "payment_transaction_id", length = 200)
     private String paymentTransactionId;
 
+    @Column(name = "stripe_checkout_session_id", length = 200)
+    private String stripeCheckoutSessionId;
+
+    @Column(name = "stripe_payment_intent_id", length = 200)
+    private String stripePaymentIntentId;
+
+    @Column(name = "paid_at")
+    private LocalDateTime paidAt;
+
+    @Column(name = "confirmation_email_sent_at")
+    private LocalDateTime confirmationEmailSentAt;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_status", nullable = false, length = 20)
     @Builder.Default

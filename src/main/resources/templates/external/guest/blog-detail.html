@@ -19,40 +19,38 @@
       th:with="readMin=${post.content != null ? T(java.lang.Math).max(1, #strings.length(post.content) / 900) : 1}">
 
     <!-- Hero -->
-    <section class="vac-post-hero reveal">
-        <img class="vac-post-hero__img"
-             th:src="${post.displayFeaturedImageUrl != null ? post.displayFeaturedImageUrl : '/uploads/7881368095630241.jpeg'}"
-             alt="Article cover" loading="eager" onerror="this.onerror=null;this.src='/uploads/64457838418348827.jpeg';" />
-        <div class="vac-post-hero__veil"></div>
-        <div class="container vac-post-hero__inner">
-            <nav class="vac-xp-crumb">
-                <a th:href="@{/}">Home</a><span>/</span>
-                <a th:href="@{/blog}">Journal</a><span>/</span>
-                <span th:text="${post.category != null ? post.category.name() : 'Story'}">Story</span>
-            </nav>
-            <span class="vac-post-hero__badge" th:text="${post.category != null ? post.category.name() : 'STORY'}">STORY</span>
-            <h1 class="vac-post-hero__title" th:text="${post.title}">Post title</h1>
-            <p class="vac-post-hero__lead" th:if="${post.excerpt != null}" th:text="${post.excerpt}">Excerpt</p>
+    <section class="vac-page-hero vac-blog-detail-hero reveal">
+        <div class="vac-page-hero__inner">
+            <div class="vac-page-hero__copy">
+                <nav class="vac-xp-crumb">
+                    <a th:href="@{/}">Home</a><span>/</span>
+                    <a th:href="@{/blog}">Journal</a><span>/</span>
+                    <span th:text="${post.category != null ? post.category.name() : 'Story'}">Story</span>
+                </nav>
+                <span class="vac-page-hero__eyebrow" th:text="${post.category != null ? post.category.name() : 'STORY'}">STORY</span>
+                <h1 class="vac-page-hero__title" th:text="${post.title}">Post title</h1>
+                <p class="vac-page-hero__lead" th:if="${post.excerpt != null}" th:text="${post.excerpt}">Excerpt</p>
+                <div class="vac-blog-detail-hero__meta">
+                    <span class="vac-post-meta__avatar" th:text="${post.authorDisplayName != null ? #strings.substring(post.authorDisplayName,0,1) : 'V'}">V</span>
+                    <span class="vac-blog-detail-hero__author-info">
+                        <strong th:text="${post.authorDisplayName != null ? post.authorDisplayName : 'Volcano Arts Journal'}">Volcano Arts Journal</strong>
+                        <small th:if="${post.publishedAt != null}" th:text="${#temporals.format(post.publishedAt, 'MMMM d, yyyy')}">May 9, 2026</small>
+                    </span>
+                    <span class="vac-blog-detail-hero__facts" th:text="${readMin} + ' min read'">4 min read</span>
+                </div>
+            </div>
+            <div class="vac-page-hero__media" th:if="${post.displayFeaturedImageUrl != null or post.featuredImageUrl != null}">
+                <img th:src="${post.displayFeaturedImageUrl != null ? post.displayFeaturedImageUrl : '/uploads/7881368095630241.jpeg'}" alt="Article cover" loading="eager"
+                     onerror="this.onerror=null;this.src='/uploads/64457838418348827.jpeg';" />
+                <div class="vac-page-hero__overlay"></div>
+            </div>
         </div>
     </section>
 
     <!-- Article -->
     <section class="container vac-post-shell">
         <article class="vac-post-col reveal">
-            <!-- Meta bar -->
-            <div class="vac-post-meta">
-                <span class="vac-post-meta__author">
-                    <span class="vac-post-meta__avatar" th:text="${post.authorDisplayName != null ? #strings.substring(post.authorDisplayName,0,1) : 'V'}">V</span>
-                    <span>
-                        <strong th:text="${post.authorDisplayName != null ? post.authorDisplayName : 'Volcano Arts Journal'}">Volcano Arts Journal</strong>
-                        <small th:if="${post.publishedAt != null}" th:text="${#temporals.format(post.publishedAt, 'MMMM d, yyyy')}">May 9, 2026</small>
-                    </span>
-                </span>
-                <span class="vac-post-meta__facts">
-                    <span th:text="${readMin} + ' min read'">4 min read</span>
-                    <span th:if="${post.viewCount != null}" th:text="${post.viewCount} + ' views'">0 views</span>
-                </span>
-            </div>
+
 
             <!-- Body -->
             <div class="vac-post-prose" th:utext="${post.content}">Content</div>

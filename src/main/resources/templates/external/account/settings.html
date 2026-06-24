@@ -21,7 +21,12 @@
 
         <!-- Profile summary -->
         <div class="vac-settings-card vac-settings-summary">
-            <span class="vac-settings-avatar" th:text="${account.firstName != null ? #strings.substring(account.firstName,0,1) : 'U'}">U</span>
+            <span class="vac-settings-avatar">
+                <img th:if="${account.profileImageUrl != null and !#strings.isEmpty(account.profileImageUrl)}"
+                     th:src="${account.profileImageUrl}" alt="Profile image" />
+                <span th:unless="${account.profileImageUrl != null and !#strings.isEmpty(account.profileImageUrl)}"
+                      th:text="${account.firstName != null ? #strings.substring(account.firstName,0,1) : 'U'}">U</span>
+            </span>
             <div>
                 <h2 th:text="${account.fullName}">Full Name</h2>
                 <p th:text="${account.email}">email@example.com</p>
@@ -29,6 +34,20 @@
             <span class="vac-settings-since" th:if="${account.createdAt != null}"
                   th:text="'Member since ' + ${#temporals.format(account.createdAt, 'MMMM yyyy')}">Member since 2026</span>
         </div>
+
+        <form class="vac-settings-card vac-settings-profile-upload"
+              th:action="@{/account/settings/profile-image}"
+              method="post" enctype="multipart/form-data">
+            <div>
+                <h3 class="vac-settings-card__title">Profile image</h3>
+                <p class="vac-settings-card__sub">Upload a JPG, JPEG, PNG, or WebP image up to 5 MB.</p>
+            </div>
+            <label class="vac-profile-file-control">
+                <span>Choose image</span>
+                <input type="file" name="profileImage" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" required />
+            </label>
+            <button class="btn btn--primary" type="submit">Upload image</button>
+        </form>
 
         <div class="vac-settings-grid">
             <!-- Profile -->

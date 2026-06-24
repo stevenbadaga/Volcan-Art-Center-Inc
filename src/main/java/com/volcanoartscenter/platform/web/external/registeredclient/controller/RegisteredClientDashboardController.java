@@ -8,6 +8,7 @@ import com.volcanoartscenter.platform.shared.model.User;
 import com.volcanoartscenter.platform.shared.repository.ProductRepository;
 import com.volcanoartscenter.platform.web.external.registeredclient.service.RegisteredClientService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,10 +29,14 @@ public class RegisteredClientDashboardController {
     private final MessagingService messagingService;
     private final ProductRepository productRepository;
 
+    @Value("${platform.integrations.clerk.publishable-key:}")
+    private String clerkPublishableKey;
+
     @GetMapping("/register")
     public String registerPage(Model model) {
         model.addAttribute("currentPage", "home");
         model.addAttribute("pageTitle", "Create Client Account");
+        model.addAttribute("clerkPublishableKey", clerkPublishableKey);
         return "external/registered-client/register";
     }
 
@@ -55,6 +60,26 @@ public class RegisteredClientDashboardController {
 
     @GetMapping("/client/dashboard")
     public String dashboard(Authentication authentication, Model model) {
+        if (authentication == null || !authentication.isAuthenticated() || authentication.getName() == null
+                || "anonymousUser".equals(authentication.getName())) {
+            return "redirect:/login";
+        }
+        if (hasAuthority(authentication, "ROLE_SUPER_ADMIN")) {
+            return "redirect:/admin/dashboard";
+        }
+        if (hasAuthority(authentication, "ROLE_CONTENT_MANAGER")) {
+            return "redirect:/admin/content/dashboard";
+        }
+        if (hasAuthority(authentication, "ROLE_OPS_MANAGER")) {
+            return "redirect:/admin/ops/dashboard";
+        }
+        if (hasAuthority(authentication, "ROLE_TOUR_OPERATOR")) {
+            return "redirect:/tour-operators/portal";
+        }
+        if (hasAuthority(authentication, "ROLE_TALENT_APPLICANT")) {
+            return "redirect:/talent/dashboard";
+        }
+
         User user = currentUser(authentication);
         if (user == null) {
             return "redirect:/login";
@@ -162,5 +187,10 @@ public class RegisteredClientDashboardController {
         }
         return productRepository.findAllById(ids).stream()
                 .collect(Collectors.toMap(Product::getId, Product::getName));
+    }
+
+    private boolean hasAuthority(Authentication authentication, String authority) {
+        return authentication.getAuthorities() != null
+                && authentication.getAuthorities().stream().anyMatch(a -> authority.equals(a.getAuthority()));
     }
 }

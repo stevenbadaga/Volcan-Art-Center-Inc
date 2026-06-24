@@ -23,7 +23,6 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
     open-in-view: false
   flyway:
     enabled: false
@@ -160,6 +159,11 @@ platform:
       initial-delay-ms: 30000
       batch-size: 25
   integrations:
+    clerk:
+      publishable-key: ${CLERK_PUBLISHABLE_KEY:}
+      secret-key: ${CLERK_SECRET_KEY:}
+      webhook-secret: ${CLERK_WEBHOOK_SECRET:}
+      issuer: ${CLERK_ISSUER:}
     stripe:
       secret-key: ${STRIPE_SECRET_KEY:}
       publishable-key: ${STRIPE_PUBLISHABLE_KEY:}
@@ -203,7 +207,7 @@ platform:
     resend:
       api-url: ${RESEND_API_URL:https://api.resend.com/emails}
       api-key: ${RESEND_API_KEY:}
-      mail-from: ${MAIL_FROM:noreply@volcanoartscenter.rw}
+      mail-from: ${RESEND_FROM_EMAIL:${MAIL_FROM:noreply@volcanoartscenter.rw}}
   # ── Idempotency (PRD §3 Module 3) ──
   idempotency:
     enabled: true
@@ -240,6 +244,8 @@ spring:
   config:
     activate:
       on-profile: local
+    # Load root `.env` during local development so Clerk/Resend values are available.
+    import: optional:file:.env[.properties]
 
   datasource:
     url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/volcano_platform}

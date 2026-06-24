@@ -53,6 +53,20 @@ public class PaymentService {
     }
 
     @Transactional
+    public void markEmailSent(Payment payment) {
+        if (payment != null && payment.getEmailSentAt() == null) {
+            payment.setEmailSentAt(LocalDateTime.now());
+        }
+    }
+
+    @Transactional
+    public void attachReceipt(Payment payment, String receiptUrl) {
+        if (payment != null && receiptUrl != null && !receiptUrl.isBlank()) {
+            payment.setReceiptUrl(receiptUrl);
+        }
+    }
+
+    @Transactional
     public Payment markFailed(PaymentGateway gateway, String gatewayRef, String reason) {
         Payment payment = paymentRepository.findByGatewayAndGatewayRef(gateway, gatewayRef)
                 .orElseThrow(() -> new IllegalStateException(

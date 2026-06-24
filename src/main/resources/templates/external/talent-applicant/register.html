@@ -1,23 +1,72 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
 <head>
-    <title>Talent Applicant Registration</title>
+    <title>Create Talent Account — Volcano Arts Center</title>
 </head>
 <body>
 <main layout:fragment="content">
-    <section class="section">
-        <div class="container" style="max-width:760px;">
-            <h1>Create Talent Applicant Account</h1>
-            <div th:if="${successMessage}" style="background: rgba(46,125,50,0.16); border: 1px solid rgba(46,125,50,0.35); border-radius: var(--radius-md); color: #A5D6A7; padding: 1rem; margin: 1rem 0;" th:text="${successMessage}"></div>
-            <form th:action="@{/talent/register}" method="post" style="background: var(--gradient-card); border:1px solid rgba(255,255,255,.08); border-radius:var(--radius-lg); padding:1.5rem; display:grid; gap:.8rem; grid-template-columns:repeat(2,minmax(0,1fr));">
-                <div class="form-group"><label class="form-label">First Name</label><input class="form-input" name="firstName" required/></div>
-                <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" name="lastName" required/></div>
-                <div class="form-group"><label class="form-label">Email</label><input class="form-input" name="email" type="email" required/></div>
-                <div class="form-group"><label class="form-label">Phone</label><input class="form-input" name="phone"/></div>
-                <div class="form-group"><label class="form-label">Country / Location</label><input class="form-input" name="country"/></div>
-                <div class="form-group"><label class="form-label">Password</label><input class="form-input" name="password" type="password" minlength="8" required/></div>
-                <button class="btn btn--primary" type="submit" style="grid-column:1 / -1;">Create Account</button>
-            </form>
+    <section class="auth-shell vac-auth-shell">
+        <div class="vac-auth-layout reveal">
+            <aside class="vac-auth-visual" aria-hidden="true">
+                <div class="vac-auth-visual__media">
+                    <img class="vac-auth-visual__slide vac-auth-visual__slide--one" src="/uploads/new images/Boss 2.jpeg" alt="Talent Registry" />
+                    <div class="vac-auth-visual__veil"></div>
+                </div>
+            </aside>
+
+            <div class="auth-card vac-auth-card">
+                <span class="eyebrow vac-auth-eyebrow">VOLCANO ARTS TALENT PIPELINE</span>
+                <h1>CREATE ACCOUNT</h1>
+                <p class="auth-card__sub">Register to showcase your creative work, submit applications, and connect with the Volcano Arts curatorial team.</p>
+
+                <div th:if="${successMessage}" class="vac-auth-alert vac-auth-alert--success" th:text="${successMessage}"></div>
+
+                <form th:action="@{/talent/register}" method="post" class="vac-auth-form" id="vac-talent-register-form">
+                    <div class="form-row">
+                        <div class="field">
+                            <label class="form-label">FIRST NAME *</label>
+                            <input class="form-input" name="firstName" placeholder="e.g. Aline" required />
+                        </div>
+                        <div class="field">
+                            <label class="form-label">LAST NAME *</label>
+                            <input class="form-input" name="lastName" placeholder="e.g. Uwimana" required />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="field">
+                            <label class="form-label">EMAIL ADDRESS *</label>
+                            <input class="form-input" name="email" type="email" placeholder="you@example.com" required />
+                        </div>
+                        <div class="field">
+                            <label class="form-label">PHONE</label>
+                            <input class="form-input" name="phone" type="tel" placeholder="+250 7xx xxx xxx" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="field">
+                            <label class="form-label">COUNTRY / LOCATION</label>
+                            <input class="form-input" name="country" placeholder="Rwanda" value="Rwanda" />
+                        </div>
+                        <div class="field">
+                            <label class="form-label">PASSWORD *</label>
+                            <input class="form-input" name="password" type="password" minlength="8" placeholder="Minimum 8 characters" required />
+                            <small class="vac-field-hint" style="display:block; margin-top:4px; font-size:11px; opacity:0.75;">Use at least 8 characters with letters & numbers.</small>
+                        </div>
+                    </div>
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <button class="btn btn--primary vac-auth-submit" type="submit" id="vac-talent-register-submit">CREATE TALENT ACCOUNT</button>
+                </form>
+
+                <p class="vac-client-register__sign-in" style="font-family: var(--font-ui), sans-serif; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; text-align: center; margin-top: 1.5rem;">
+                    ALREADY HAVE AN ACCOUNT? <a th:href="@{/login}" style="color: #00a651; text-decoration: none;">SIGN IN</a>
+                </p>
+
+                <p class="vac-auth-backlink">
+                    <a th:href="@{/}">← RETURN TO WEBSITE</a>
+                </p>
+            </div>
         </div>
     </section>
 </main>
